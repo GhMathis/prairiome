@@ -29,7 +29,7 @@ read_excel("data/Metadata_Grid.xlsx") %>%
     X = as.numeric(str_split_fixed(GPS_localisation, pattern = ",", n = 2)[, 2]),
     Y = as.numeric(str_split_fixed(GPS_localisation, pattern = ",", n = 2)[, 1])
   ) %>%
-  select(X, Y, Grid_code) %>%
+  select(X, Y, Grid_code, Ecosystem) %>%
   st_as_sf(coords = c("X", "Y"), crs = 4326)%>%
   st_transform(grid_pos, crs = 2154)%>%
   mutate(X = st_coordinates(geometry)[, 1],
@@ -63,17 +63,31 @@ st_read("data/shapefiles/sql_statement_d551600.shp") %>%
   mutate(lib = str_replace_all(lib, "[,/ ']","_"),
          lib = str_replace_all(lib, "[.]","_"),
          lib = str_remove(lib, "[*]$"),
-         lib = str_remove(lib, "_$")) -> soil_occu
-
-soil_occu <- st_transform(soil_occu, 2154) # convert to Lambert
+         lib = str_remove(lib, "_$"))%>%
+  mutate(lib = case_when(
+    lib %in% c("Espace_bâti_diffus_et_autre_bâti","Tissu_urbain_discontinu",
+               "Tissu_urbain_continu","Décharge","Espace_ouvert_urbain",
+               "Équipement_sportif_et_de_loisirs","Zone_d_activité_et_équipement",
+               "Extraction_de_matériaux", "Chantier","Zone_portuaire") ~ "zone_urbaine",
+    lib %in% c("Plage", "Dune") ~ "littoral",
+    lib %in% c("Verger__oliveraie", "Culture_maraichère", "Vignoble") ~ "zone_de_culture",
+    lib %in% c("Grande_culture", "Culture_fourragère", "Marais_salant_exploité") ~ "zone_exploitation",
+    .default = lib
+  ))%>%
+  st_transform( 2154)-> soil_occu
+unique(soil_occu$lib)
+#area of each polygone
+soil_occu$area = soil_occu%>%
+  st_area()
 
 soil_occu %>%
-  mutate(n =1) %>%
-  pivot_wider(names_from = lib, values_from = n, values_fill = 0) -> soil_occu # make a complete disjunctive table
+  mutate(n =1,
+         lib2 = lib) %>% # duplicate lib (need it below to compute area per cover class)
+  pivot_wider(names_from = lib2, values_from = n, values_fill = 0) -> soil_occu # make a complete disjunctive table
 
 
-##### Limit tthe soil occupation shape file given a buffer around point to limit computation time with siland
-limit_map = st_buffer(grid_pos$geometry, 5000)%>%
+##### Limit the soil occupation shapefile given a buffer around point to limit computation time with siland
+limit_map = st_buffer(grid_pos$geometry, 2000)%>%
   st_union()%>%
   st_cast(to = "POLYGON")
 soil_occu_crop = st_crop(x = soil_occu, y =limit_map)
@@ -81,32 +95,77 @@ soil_occu_crop = st_crop(x = soil_occu, y =limit_map)
 map = ggplot()+
   geom_sf(data = soil_occu_crop,col = "gray", fill = NA)+
   geom_sf(data = limit_map, col ="red", fill = NA)+
-  geom_sf(data = grid_pos)+
+  geom_sf(data = grid_pos, aes(col =Ecosystem))+
   main_theme
 
 map
 ##### Format df of grid position to respect for siland
-soil_occu_crop = soil_occu_crop %>%
-  mutate(across(where(is.integer), as.numeric))
 
 grid_pos_forma = as.data.frame(grid_pos)%>%
-  rename( x1= "year", obs = "plant_abundance_grid")%>%
+  rename( obs = "plant_abundance_grid")%>%
   mutate(Id = 1:n())%>%
-  select(X,Y,x1,Id,obs)%>%
-  mutate(across(c(Id,obs,x1), as.numeric))
+  select(X,Y,Ecosystem, year,Id,obs)%>%
+  mutate(across(c(Id,obs), as.numeric),
+         year = as.character(year))
+str(grid_pos_forma)
+
+##### Compute are per cover type
+area_per_class = as.data.frame(soil_occu_crop)%>%
+  select(lib, area)%>%
+  group_by(lib)%>%
+  summarise(sum_area = sum(area, na.rm = T))%>%
+  mutate(perc_area = as.numeric(sum_area/sum(sum_area)*100))%>%
+  arrange(desc(perc_area))
+
+str(area_per_class)
+cover_names =  area_per_class%>%
+  filter(perc_area >.5)%>%
+  pull(lib)
 
 
-cover_names = names(soil_occu_crop)[names(soil_occu_crop) != "geometry"]
+hist(grid_pos_forma$obs, breaks =20)
+unique(grid_pos_forma$Ecosystem)
+t1 = Sys.time()
+(fmla <- as.formula(paste("obs ~ Ecosystem + year +", paste(cover_names, collapse= "+"))))
+mod = siland(fmla, land = soil_occu_crop%>%select(cover_names), data = grid_pos_forma,wd = 5)
+t2 = Sys.time()
+
+t2-t1
+mod$coefficients
+summary(mod)
+
+# d = 1:500
+# func.exp = function(d,delta){(2/(pi*delta**2))*exp(-2*d/delta)}
+# plot(d, func.exp(d,250), "l", col = "red")
+# for(delta in seq(50,200, by= 50)){
+#   points(d, func.exp(d,delta), "l")
+#   print(mean(func.exp(d,delta)))
+# }
+# d = seq(0,1,length.out = 100)
+# func.gaus = function(d,delta){(1/(2*delta)**2)*exp(-pi*(d/2*delta)**2)}
+# plot(d, func.gaus(d,250), "l", col = "red")
+# for(delta in seq(50,200, by= 50)){
+#   points(d, func.gaus(d,delta), "l")
+#   print(mean(func.gaus(d,delta)))
+# }
+par(mfrow = c(2,2))
+plot(mod)
+plot(grid_pos_forma$x1,grid_pos_forma$obs)
+mod_test = lm(obs~x1, data = grid_pos_forma)
+plot(mod_test)
+plotsiland.sif(mod)
+likres=siland.lik(mod,land= soil_occu_crop,data=grid_pos_forma,varnames=cover_names,seqd=seq(5,500,length=20))
 
 
+data(dataSiland)
+data(landSiland)
+res=siland(obs~x1+L1+L2,data=dataSiland,land=landSiland)
+siland.lik(res,dataSiland,land=landSiland,varnames=c("L1","L2"),seqd=seq(5,500,length=20))
 
 
-mod0 = siland("obs ~ x1", land = soil_occu_crop, data = grid_pos_forma,wd = 10, maxD=1000)
-for(i in 1: ){
-  (fmla <- as.formula(paste("obs ~ x1 + ", paste(cover_names, collapse= "+"))))
-  mod=siland(fmla, land = soil_occu_crop, data = grid_pos_forma,wd = 10, maxD=1000)
-  AIC_prev = mod$AIC
-}
+res2=siland(obs~x1+L1+L2,data=dataSiland,land=landSiland,init=c(20,150))
+siland.lik(res2,dataSiland,land=landSiland,varnames=c("L1","L2"))
+
 
 ##### Create buffer around grid
 buffer.aroud.point = function(pt, geo_data, layer_name, buffer_size){
