@@ -71,7 +71,6 @@ st_read("data/shapefiles/sql_statement_d551600.shp") %>%
                "Extraction_de_matériaux", "Chantier","Zone_portuaire") ~ "zone_urbaine",
     lib %in% c("Plage", "Dune") ~ "littoral",
     lib %in% c("Verger__oliveraie", "Culture_maraichère", "Vignoble") ~ "zone_de_culture",
-    lib %in% c("Grande_culture", "Culture_fourragère", "Marais_salant_exploité") ~ "zone_exploitation",
     .default = lib
   ))%>%
   st_transform( 2154)-> soil_occu
@@ -93,9 +92,10 @@ limit_map = st_buffer(grid_pos$geometry, 2000)%>%
 soil_occu_crop = st_crop(x = soil_occu, y =limit_map)
 
 map = ggplot()+
-  geom_sf(data = soil_occu_crop,col = "gray", fill = NA)+
-  geom_sf(data = limit_map, col ="red", fill = NA)+
-  geom_sf(data = grid_pos, aes(col =Ecosystem))+
+  geom_sf(data = soil_occu_crop,col = "gray",aes(fill = lib))+
+  #geom_sf(data = limit_map, col ="red", fill = NA)+
+  geom_sf(data = grid_pos, cex = 2.2, fill ="black")+
+  geom_sf(data = grid_pos, aes(col =Ecosystem),cex = 2)+
   main_theme
 
 map
@@ -119,17 +119,17 @@ area_per_class = as.data.frame(soil_occu_crop)%>%
 
 str(area_per_class)
 cover_names =  area_per_class%>%
-  filter(perc_area >.5)%>%
+  filter(perc_area >2.4)%>%
   pull(lib)
 
 
-hist(grid_pos_forma$obs, breaks =20)
+hist(grid_pos_forma$obs, breaks =40)
 unique(grid_pos_forma$Ecosystem)
 t1 = Sys.time()
 (fmla <- as.formula(paste("obs ~ Ecosystem + year +", paste(cover_names, collapse= "+"))))
-mod = siland(fmla, land = soil_occu_crop%>%select(cover_names), data = grid_pos_forma,wd = 5)
+mod = siland(fmla, land = soil_occu_crop%>%select(cover_names), data = grid_pos_forma, wd = 10, init = 20)
 t2 = Sys.time()
-
+mod
 t2-t1
 mod$coefficients
 summary(mod)
@@ -154,8 +154,9 @@ plot(grid_pos_forma$x1,grid_pos_forma$obs)
 mod_test = lm(obs~x1, data = grid_pos_forma)
 plot(mod_test)
 plotsiland.sif(mod)
-likres=siland.lik(mod,land= soil_occu_crop,data=grid_pos_forma,varnames=cover_names,seqd=seq(5,500,length=20))
+likres=siland.lik(mod,land= soil_occu_crop,data=grid_pos_forma,varnames=cover_names,seqd=seq(5,500,length=10))
 
+str(likres)
 
 data(dataSiland)
 data(landSiland)
