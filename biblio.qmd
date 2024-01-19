@@ -1,0 +1,19 @@
+---
+title: "Structural driver of plant community and  it's associated phylloshere microbiota"
+author: "Mathis Gheno"
+format: html
+editor: visual
+bibliography: references.bib
+---
+
+# Overview of plant community structure under high environmental pressure.
+
+Multitrophic complementary, the higher biodiversity at any trophic level benefits the entire system regarding energy flow/use (@Buzhdygan2020Biodiversity .
+
+@Odum1985Trends In a stressful environment, r-strategy tends to out-compete K-strategy organisms. The number of trophic levels or length of food chains tends to decrease, mostly because big organisms are less tolerant to stress. Sometimes stress reduces biodiversity, but it is not always the case. If the ecosystem climax is low abundance, maybe perturbation could increase abundance.
+
+@Tilman2001Diversity More diversity = more biomass productivity and carbon accumulation with the effect of niche complementarity
+
+# Unclassifiable 
+
+(Une definition un peu random, mais qui souleve des idées interessantes) La notion de stabilité d'un écosystème est elle-même fort complexe ; elle s'apprécie par des paramètres, variés, relatifs à la constance et à la durée d'un état d'équilibre, à l'inertie ou résistance aux perturbations, à l'amplitude des perturbations supportables, à la vitesse de retour, à l'équilibre, etc.
