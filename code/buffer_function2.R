@@ -186,17 +186,6 @@ plot(mod_test)
 plotsiland.sif(mod)
 likres=siland.lik(mod,land= soil_occu_crop%>%select(cover_names),data=grid_pos_forma,varnames=cover_names)
 likres
-str(likres)
-
-data(dataSiland)
-data(landSiland)
-res=siland(obs~x1+L1+L2,data=dataSiland,land=landSiland)
-siland.lik(res,dataSiland,land=landSiland,varnames=c("L1","L2"),seqd=seq(5,500,length=20))
-
-
-res2=siland(obs~x1+L1+L2,data=dataSiland,land=landSiland,init=c(20,150))
-siland.lik(res2,dataSiland,land=landSiland,varnames=c("L1","L2"))
-
 
 ##### Create buffer around grid
 buffer.aroud.point = function(pt, geo_data, layer_name, buffer_size){
