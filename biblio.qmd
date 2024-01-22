@@ -6,13 +6,27 @@ editor: visual
 bibliography: references.bib
 ---
 
-# Overview of plant community structure under high environmental pressure.
+# Overview of communities structure under high environmental pressure.
 
-Multitrophic complementary, the higher biodiversity at any trophic level benefits the entire system regarding energy flow/use (@Buzhdygan2020Biodiversity .
+## Plants
+
+Multitrophic complementary, the higher biodiversity at any trophic level benefits the entire system regarding energy flow/use (@Buzhdygan2020Biodiversity ).
 
 @Odum1985Trends In a stressful environment, r-strategy tends to out-compete K-strategy organisms. The number of trophic levels or length of food chains tends to decrease, mostly because big organisms are less tolerant to stress. Sometimes stress reduces biodiversity, but it is not always the case. If the ecosystem climax is low abundance, maybe perturbation could increase abundance.
 
-@Tilman2001Diversity More diversity = more biomass productivity and carbon accumulation with the effect of niche complementarity
+@Tilman2001Diversity More diversity = more biomass productivity and carbon accumulation with the effect of niche complementary
+
+## Bacteria
+
+@Zhang2016Stochastic Bactria community are strongly structured by salinity gradiant. Shared OTU between high and medium is important. More phylogenetic diversity in medium and high salinity pressure (especially in medium). Rare OTU increases with salinity, but diversity is similar between high and low .
+
+-   *Bacteroidetes*, *Protobacteria* (except *betaprotobacteria = low*), *Gemmatimonadetes* and *Firmicutes (*Gram-positive cell) have a high-salt environment
+
+-   *Nitriliruptorales* in medium salt environment
+
+-   *Acidobacteria*, *Chloroflexi*, *Cyanobacteria* and *Micrococcales* in low salt environnement
+
+The impact (not signif. only a tendency) of pH is weaker than salinity impact on the structure of B. communities when spaciality is taken into account.
 
 # Unclassifiable 
 
