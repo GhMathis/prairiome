@@ -20,7 +20,7 @@ main_theme = theme_bw()+
 ##### Load data #####
 
 otu_plant = read_xlsx("data/OTU_plant.xlsx")%>%
-  filter(grepl("CAM", Host_code))
+  filter(str_detect( Host_code, "CAM")) 
 
 ##########Host_code
 
