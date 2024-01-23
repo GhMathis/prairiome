@@ -19,23 +19,9 @@ main_theme = theme_bw()+
         strip.background = element_rect(fill="cornsilk"))
 ##### Load data #####
 
-otu_plant = read.delim2("data/otu_plant.txt", header = T)%>%
+otu_plant = read_xlsx("data/OTU_plant.xlsx")%>%
   filter(grepl("CAM", Host_code))
-str(otu_plant)
-otu_plant%>%
-  select_if(is.character)%>%
-  filter(grepl("-",Iris.reichenbachiana))
 
-otu_plant$Iris.reichenbachiana[grepl("-",otu_plant$Iris.reichenbachiana)]  = "20"
-otu_plant$Schedonorus.arundinaceus = str_replace_all(otu_plant$Schedonorus.arundinaceus, ",", ".")
-otu_plant$Schedonorus.arundinaceus[grepl(">",otu_plant$Schedonorus.arundinaceus)]  = "62.5"
-
-otu_plant[,2:ncol(otu_plant)]= data.frame(lapply(otu_plant[,2:ncol(otu_plant)], as.numeric))
-head(otu_plant)
-otu_plant[,50:70]
-otu_plant = otu_plant[,c(T,colSums(otu_plant[,colnames(otu_plant) != "Host_code"]) != 0) ]
-otu_plant[grepl("21_CAM_15", otu_plant$Host_code)| grepl("21_CAM_14", otu_plant$Host_code),]
-otu_plant$Host_code
 ##########Host_code
 
 
