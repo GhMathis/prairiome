@@ -4,13 +4,14 @@ author: "Mathis Gheno"
 format: html
 editor: visual
 bibliography: references.bib
+zotero: false
 ---
 
 # Overview of communities structure under high environmental pressure.
 
 ## Plants
 
-Multitrophic complementary, the higher biodiversity at any trophic level benefits the entire system regarding energy flow/use (@Buzhdygan2020Biodiversity ).
+Multitrophic complementary, the higher biodiversity at any trophic level benefits the entire system regarding energy flow/use @Buzhdygan2020Biodiversity
 
 @Odum1985Trends In a stressful environment, r-strategy tends to out-compete K-strategy organisms. The number of trophic levels or length of food chains tends to decrease, mostly because big organisms are less tolerant to stress. Sometimes stress reduces biodiversity, but it is not always the case. If the ecosystem climax is low abundance, maybe perturbation could increase abundance.
 
@@ -26,8 +27,16 @@ Multitrophic complementary, the higher biodiversity at any trophic level benefit
 
 -   *Acidobacteria*, *Chloroflexi*, *Cyanobacteria* and *Micrococcales* in low salt environnement
 
-The impact (not signif. only a tendency) of pH is weaker than salinity impact on the structure of B. communities when spaciality is taken into account.
+The impact (not signif. only a tendency) of pH is weaker than salinity impact on the structure of B. communities when spacial is considered.
 
-# Unclassifiable 
+## Virus
+
+@Roux2016Analysis Viral community structured given salt gradient in halophilic environments. Genetic similarity along the saline gradient and geographical localization (especially for high salinity). In highly halophilic environment, virus communities are genetically closer to each other than communities that are close geographically speaking. Co-evolution between host and virus?
+
+@Andreote2017Microbial Community structure along the pH, calcium and altitude gradients. *Siphoviridae* family correlate negatively with other virus
+
+@Wicaksono2023Viral Gammaproteobacteria
+
+# Unclassifiable
 
 (Une definition un peu random, mais qui souleve des idées interessantes) La notion de stabilité d'un écosystème est elle-même fort complexe ; elle s'apprécie par des paramètres, variés, relatifs à la constance et à la durée d'un état d'équilibre, à l'inertie ou résistance aux perturbations, à l'amplitude des perturbations supportables, à la vitesse de retour, à l'équilibre, etc.
