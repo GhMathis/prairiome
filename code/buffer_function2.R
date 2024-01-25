@@ -151,6 +151,7 @@ grid_pos_forma$lib
 (fmla <- as.formula(paste("obs ~ lib +", paste(cover_names, collapse= "+"))))
 mod = siland(fmla, land = soil_occu_crop%>%select(cover_names), data = grid_pos_forma, init = c(100,100,100,100), wd = 10, maxD = 2000)
 t2 = Sys.time()
+temp = soil_occu_crop%>%select(cover_names)
 mod
 t2-t1
 mod$coefficients
