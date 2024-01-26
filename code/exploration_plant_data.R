@@ -20,12 +20,15 @@ main_theme = theme_bw()+
 ##### Load data #####
 
 otu_plant = read_xlsx("data/OTU_plant.xlsx")%>%
-  filter(str_detect( Host_code, "CAM")) 
-
+  filter(str_detect( Host_code, "CAM"),
+         !str_detect(Host_code, "21_CAM_1[45]")) %>%
+  replace(is.na(.),0)
+vignette("regular-expressions")
 ##########Host_code
 
 
 otu_plant_long = otu_plant%>%
+
   mutate(year = as.factor(substring(Host_code,1,2)),
          grid = as.factor(substring(Host_code,8,9)),
          quadra = as.factor(substring(Host_code,10,11)),
@@ -40,11 +43,24 @@ otu_plant_long = otu_plant%>%
     )%>%
   filter(cover != 0)
 
+otu_plant_long %>%
+  select(Host_code, cover, Plant)%>%
+  mutate(Grid_code = str_extract(Host_code, ".._CAM_.."))%>%
+  group_by(Grid_code, Plant)%>%
+  summarise(grid_cover = sum(cover)/9)%>%
+  ungroup()%>%
+  pivot_wider(values_from = grid_cover, names_from = Plant, values_fill = 0) -> otu_plant_grid 
+
+write.table(otu_plant_grid, "data/otu_plant_grid_CAM.txt")
+
+otu_plant_grid$Grid_code
 table(otu_plant_long$Plant)
+otu_plant_cam$Host_code
 
 ggplot(otu_plant_long)+
   geom_point(aes(total_cover, plant_richness))+
   main_theme
+
 str(otu_plant_long)
 otu_plant_long%>%
   group_by(year, grid)%>%
