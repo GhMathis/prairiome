@@ -1,0 +1,40 @@
+---
+title: "test"
+output:
+  word_document: default
+  html_document: default
+date: "2024-01-29"
+bibliography: references.bib
+---
+
+**Sujet du stage** : Structure des communautés sous fortes contraintes environnementales : les communautés végétales, leur microbiote et leur virome associés dans les prairies de Camargue
+
+Les communautés de plante dans des zones telle que la Camargue, sont majoritairement structurées par le gradient de salinité. La composition des communautés bactérienne [@Zhang2021Salinity] ou virale [@Roux2016Analysisa] sont elles aussi fortement impactées par la salinité. Les études sur les milieux salins se concentrent majoritairement sur la structure des communautés végétales, microbiennes, fongiques et virales de façon indépendante. @Wicaksono2023Viral mettent tout de même en relation des communautés bactériennes et virales suivant le gradient salin, mais ne s'aventure que très peu dans l'ajout de l'effet des communautés végétales. Les études se concentrent aussi majoritairement sur l'effet de la concentration en sel, mais ne cherchent pas à étendre l'explication des systèmes à une vision plus large, en intégrant par exemple l'effet du type de couverture paysagère alentour, de la phylogénie local des plantes, de leurs traits fonctionnels ou encore de l'effet des interactions potentielles entre les 4 niveaux (plt, bac, champ, vir). Cela peut s'expliquer par la difficulté a démêler l'ensemble des effets qui sont généralement fortement colinéaires. L'objectif du stage serait d'avoir une vision globale de ce qui contrôle la structure des communautés de plantes, mais aussi de bactérie, champignon et virus. En effectuant des analyses corrélatives sur de nombreuses variables environnementales, mais aussi biotiques (comme la composition spécifique des différents compartiments, la production de biomasses, traits...) ou encore paysagères, nous allons chercher à comprendre au mieux les mécanismes sous-jacents qui contrôlent ces communautés complexes. Les questions principales sont : quels facteurs environnementaux autres que le gradient salin influence les communautés végétales ? La structure du microbiome (bactérien, fongique et viral) de la phyoshére est-elle impactée de façon directe par ce gradient salin (ou autres conditions environnementales) ou de façon indirecte via les communautés végétales (ou autres ex: bactérie $\iff$ virus) ?
+
+Une campagne d'échantillonnage de 42 grilles a été effectuée en Camargue entre 2020 et 2022, chacune comprend 9 quadras.
+
+::: {layout-ncol="2"}
+![Plan echantillonage](writing/images/plan_ech.png)
+
+![Localisations des grilles en Camargue](writing/images/map_gridpos.png)
+:::
+
+**Les données sont répartie en 3 catégorie de tableau, les metadatas, les OTU et les TAX**
+
+#### Metadata
+
+Données environnementales comme la concentration de multiples élements dans le sol, des mesures de salinité, de pH par grille. Il y a aussi une description du paysage situé autour des grilles (% des types d'occupation du sol dans un rayon (ex : 300m) autour de la grille). La biomasse et l'abondance par quadra.
+
+À venir : proximité phylogénétique moyenne des grilles pour les plantes, hygrométrie moyenne sur plusieurs années
+
+#### Données OTU
+
+Unité taxonomique opérationnelle
+
+Matrice des présences absences par quadra pour les bactéries, champignons et virus. Pour les plantes : pourcentages de recouvrements par quadra
+
+#### Données TAX
+
+Taxonomie des plantes, champignons, bactéries et virus observés sur l'ensemble des sites.
+
+## References
