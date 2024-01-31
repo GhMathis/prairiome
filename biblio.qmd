@@ -11,11 +11,15 @@ zotero: false
 
 ## Plants
 
-Multitrophic complementary, the higher biodiversity at any trophic level benefits the entire system regarding energy flow/use @Buzhdygan2020Biodiversity
+@Buzhdygan2020Biodiversity Multitrophic complementary, the higher biodiversity at any trophic level benefits the entire system regarding energy flow/use 
 
 @Odum1985Trends In a stressful environment, r-strategy tends to out-compete K-strategy organisms. The number of trophic levels or length of food chains tends to decrease, mostly because big organisms are less tolerant to stress. Sometimes stress reduces biodiversity, but it is not always the case. If the ecosystem climax is low abundance, maybe perturbation could increase abundance.
 
 @Tilman2001Diversity More diversity = more biomass productivity and carbon accumulation with the effect of niche complementary
+
+#### Landscape
+
+@SilveiradosSantos2022Landscape Test collinearity bewteen landscape with **VIF**. Effect positive effect of compositional heterogeneity and negatively patches with irregular shape (**colinéaire land pour la varaible "shape"** : patron irrégulier = penten, hetrogeneité des paysage ...) on plant richness $\rightarrow$ process of dispersion and pollination (*maybe if seed bank is more impact than the last two : less effect of landscape?*)
 
 ## Bacteria
 
@@ -35,7 +39,7 @@ The impact (not signif. only a tendency) of pH is weaker than salinity impact on
 
 @Andreote2017Microbial Community structure along the pH, calcium and altitude gradients. *Siphoviridae* family correlate negatively with other virus
 
-@Wicaksono2023Viral Gammaproteobacteria
+@Wicaksono2023Viral More gene for complex polysaccharide breakdown in the area dried out for over 10 years. More lysogenic in early stage / high salinity. High correlation between viral and bacterial community structure (and prokaryotic also)
 
 # Unclassifiable
 
