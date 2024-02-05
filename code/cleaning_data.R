@@ -17,6 +17,7 @@ write.table(otu_plant_cam, "data/data_clean/OTU_plant_CAM.txt")
 read_xlsx("data/Metadata_Sample.xlsx")%>%
   filter(str_detect(Locality, "Arles"))%>%
   select(-c(Rocks, Additional_information))-> metadata_quad_cam
+str(metadata_quad_cam)
 
 read_xlsx("data/OTU_plant.xlsx")%>%
   
@@ -39,11 +40,22 @@ read_xlsx("data/OTU_plant.xlsx")%>%
          .default = Soil))%>%
   mutate(Free_space = Litter +Soil) -> metadata_quad_cam
   
-
+metadata_quad_cam$Litter
 write.table(metadata_quad_cam, "data/data_clean/Metadata_quadra_CAM.txt")
 
 ##### Metadata grid
+otu_plant_cam%>%
+  pivot_longer(-Host_code, names_to = "Plant", values_to = "cover")%>%
+  mutate(Grid_code = substring(Host_code, 1,9))%>%
+  filter(cover != 0)%>%
+  group_by(Grid_code)%>%
+  summarise(
+    Richness_grid = n_distinct(Plant)# Richness per grid
+            ) -> metadatat_grid_plant
+read_xlsx("data/Habitats_EDGG_patures.xlsx")%>%
+  select(Grid_code = Sampling_n, Pature,Fauche)-> parurage
 
+parurage
 
 read_xlsx("data/donnee_sol.xlsx",col_names = F, skip = 3)%>%
   rename_with(~c("Grid_code", "Num", "pHwater", "lime_tot", "MO", "Phos", "K", "Mg",
@@ -52,8 +64,9 @@ read_xlsx("data/donnee_sol.xlsx",col_names = F, skip = 3)%>%
   filter(str_detect(Grid_code,"CAM" ))%>%
   mutate(Grid_code = str_extract(Grid_code,".._CAM_.." ))%>%
   left_join(y = read_xlsx("data/distance_fer_sol_EDGG_CAM.xlsx"), by = join_by(Grid_code == EDGG))%>%
-  mutate(Profondeur = as.numeric(str_remove(Profondeur, "[>]")),
-         depth_oxy = cut(Profondeur,
+  left_join(y = metadatat_grid_plant, by = "Grid_code")%>%
+  mutate(dep_oxy_num = as.numeric(str_remove(Profondeur, "[>]")),
+         depth_oxy = cut(dep_oxy_num,
                          breaks = c(0, 9, 19, 29, 39, Inf),
                          labels = c("0-9", "10-19", "20-29", "30-39", ">40"),
                          include.lowest = TRUE)) -> soil_data
@@ -65,6 +78,7 @@ read_xlsx("data/Metadata_grid.xlsx")%>%
     Y = as.numeric(str_split_fixed(GPS_localisation, pattern = ",", n = 2)[, 1])
   )%>%
   select(-GPS_localisation)%>%
-  left_join(soil_data, by= "Grid_code")-> Metadata_grid_cam
+  left_join(soil_data, by= "Grid_code")%>%
+  left_join(parurage, by = "Grid_code") -> Metadata_grid_cam
 
 write.table(Metadata_grid_cam, "data/data_clean/Metadata_grid_CAM.txt")
