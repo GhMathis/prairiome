@@ -1,0 +1,72 @@
+---
+title: "Landscape effect"
+format: html
+editor: visual
+bibliography: references.bib
+zotero: false
+---
+
+# Estimate a buffer size of landscape effect on plant and viral richness
+
+## The idea :
+
+The main objective of this part is to find a way to estimate a buffer radius around grids in which landscape could have the most impact on the richness of plants, the richness of viruses, or any other variable that we want to explain. For that, we will use the package Siland. It uses a form of a general linear model for spatial variables.
+
+## Implementation
+
+The main complexity is that the landscape cover types and environmental variables are strongly collinear. We must account for variance explained by environmental factors before trying to explain it with the landscape. It can be done easily with the Siland function because it accounts for local variation with a classic linear part in the model. The main issue with this is that there are too many environmental parameters to account for. If we give the model all environmental parameters adding over landscape parameters, there is a strong risk of overfiting our richness or having problems with the convergence of all parameters. To avoid that we must select in advance environmental parameters that account for the most variation of the explained variable. The first option is to compute a PCA of environmental factors and then use the axis that explains the most variation of environmental conditions as co-variable of the spacial model. The Siland model will thus attribute a part of the variance to a linear combination of multiple environmental variables and then search for the remaining variance explained by landscape variables. The second idea is to use a classic glm with all the environmental variables as explicative variables and then use the residuals of this model as variables to explain. It seems that this second option looks like what we wanted to avoid in the first place, so we will stick to the PCA method for now.
+
+## Method
+
+### Data
+
+The data have been collected in South France at the Tour du Valat's natural reserve (43° 30′ 30″ N, 4° 40′ 01″ E). There are in total 42 grids of 10m² each one composed of 9 quadra of 20 cm², these latter are distributed in an X shape form in grids. In each quadra an exhaustive identification of plant richness has been done and an estimation of bacterial, fungal, and viral communities of the phyllosphere. Species cover, soil cover (Plant, Litter, Bare Soil) and biomass have also been collected for plants at the quadra scale. Environmental variables have been sampled 3 times (in random locations?) per grid and averaged to limit measure errors. Soil occupation shapefile comes from \[\] and has been collected in 2016 by \[...\]. We have grouped soil cover data into 5 classes: *Wetlands* are composed of land that has periods of submersion and is weakly anthropized; *non-emitting propagules* contain landscapes that are very unlikely to emitte propagules that could colonize the saline grassland (eg. forest, beach or permanent water areas); *natural landscape* contain weakly anthropized land that doesn't occur in the 2 previous class (those land could still be pasture); *artificial landscape* contain all the highly anthropized cover types, like urban area or roads, those cover are the one that could have high importance for importing exotic organisms; *cultivated* are land that is used for plantation, like rice or forage. We also have information on pasture and mow occurrence in parcels \[database?\] and pasture intensity \[database?\]. For weather data, we have hydrometry between 2018 and 2022 that comes from \[database?\].
+
+### Analysis
+
+To compute optimal buffer radii of soil occupation that affects plant or viral richness we used the package Siland [@Carpentier2021Siland]. The model has 2 distinct components: a classic regression part with an intercept and estimators for each variable and a regression part on the spatial component. To summarize, the model tries to minimize the log-likelihood $[y|\theta]$ of 3 parameter types; estimator of the size effect for local variables $\alpha$, estimator of the size effect for each class in the landscape $\beta$, estimator of the shape of the curve for each class $\delta$.
+
+$$
+Y = \mu +\alpha X+ \sum\beta_k\sum f_{\delta_k}(d_{i,k})z_r^k 
+$$
+
+Maximization algorithm of Siland :
+
+![Diagram of Siland optimization algorithm](Diagram/algo_siland.svg){fig-align="center"}
+
+To avoid catching part of the variance induced by environmental variables we first compute a PCA to extract the axis that represents most of the variance of environmental condition. We then use those linear combinations of environmental variables as descriptors of the local grid's conditions. The model contains in total 8 variables, 3 local variables extracted from the PCA and 5 landscape variables. The model is set up with a Gaussian function for the landscape effect and uses a Poisson error family. To validate the good convergence of buffer radii, we checked visually that the log-likelihood of all Spatial Influence Functions (SIF) of landscapes have a minimum that intersects the overall minimal log-likelihoods of the model (as prescribed by the author of the package). Finally, a bootstrap of the local explain variable (eg. richness) coupled with their explicative variables (eg. Dim of PCA) is done to assess that the landscape has a statistical significance.
+
+### Results
+
+#### PCA
+
+![PCA on environnemental variables. Grids are compared by their Euclidian distance in the spaces of environmental variables and clustering is done with the ward method](figures/buffer/PCA_env.svg)
+
+The first axis which accounts for 43.9% of the variation is explained mostly by soil structure and soil fertility. On the left of the PCA the prominent environmental condition is the presence of sand (Fine or Coarse) and an absence of organic and mineral materials. This axis might be highly correlated to the distance from the sea. On the right soil is more fertile with a lot of clay, silt and organic materials. The second axis represents the saline gradient, on the top the most salted area and on the bottom the least salted. This axis might be highly correlated with the topography of the terrain.
+
+If we want to resume, group 1 in red represents a grid with low fertility, they should be located close to the sea because of the important quantity of sand. Group 2 in blue represents grids that have a low salt concentration, the cause of this low concentration might be caused by topological factors. Group 3 represents grids that are mostly far away from the sea with fertile soil, but the topography might brings the water table closer to the surface, which increases the salt concentration.
+
+##### Table 1 :Absolute contribution of variables on the 3 main axis
+
+|             | Dim.1 **(43.9%)** | Dim.2 **(19.2)** | Dim.3 **(11.5)** |
+|-------------|-------------------|------------------|------------------|
+| clay        | **9.6**           | 0.0              | 1.8              |
+| SandC       | **8.9**           | 0.1              | 6.8              |
+| N           | **7.9**           | 4.1              | 3.9              |
+| MO          | **7.8**           | 4.1              | 5.6              |
+| C           | **7.8**           | 4.1              | 5.6              |
+| Res         | **7.6**           | 3.4              | 1.0              |
+| Ca          | **7.3**           | 5.0              | 2.1              |
+| Mg          | **7.2**           | 6.1              | 1.3              |
+| SiltF       | **7.1**           | 0.0              | **13.4**         |
+| K           | 5.7               | 0.4              | 4.9              |
+| dep_oxy_num | 4.2               | 3.3              | 2.7              |
+| SandF       | 3.9               | 0.8              | 2.3              |
+| SiltC       | 3.1               | 6.7              | 0.4              |
+| Na          | 2.8               | **18.0**         | 0.3              |
+| pHwater     | 2.7               | 5.5              | 0.6              |
+| Cond        | 2.1               | **18.3**         | 0.1              |
+| Cl          | 1.8               | **18.7**         | 0.0              |
+| CN          | 1.5               | 0.9              | **10.6**         |
+| Phos        | 1.0               | 0.0              | 1.6              |
+| lime_tot    | 0.0               | 0.2              | **34.9**         |

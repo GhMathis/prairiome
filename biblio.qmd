@@ -11,7 +11,7 @@ zotero: false
 
 ## Plants
 
-@Buzhdygan2020Biodiversity Multitrophic complementary, the higher biodiversity at any trophic level benefits the entire system regarding energy flow/use 
+@Buzhdygan2020Biodiversity Multitrophic complementary, the higher biodiversity at any trophic level benefits the entire system regarding energy flow/use
 
 @Odum1985Trends In a stressful environment, r-strategy tends to out-compete K-strategy organisms. The number of trophic levels or length of food chains tends to decrease, mostly because big organisms are less tolerant to stress. Sometimes stress reduces biodiversity, but it is not always the case. If the ecosystem climax is low abundance, maybe perturbation could increase abundance.
 
