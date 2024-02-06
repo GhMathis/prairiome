@@ -21,6 +21,7 @@ main_theme = theme_bw()+
         axis.title=element_text(size=10),
         strip.background = element_rect(fill="cornsilk"))
 
+
 ##### Load shapefile of soil occupation
 st_read("data/shapefiles/sql_statement_d551600.shp")  %>% 
   select(lib = lib1_16)%>%

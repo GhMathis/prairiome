@@ -22,8 +22,10 @@ main_theme = theme_bw()+
 otu_plant = read_xlsx("data/OTU_plant.xlsx")%>%
   filter(str_detect( Host_code, "CAM"),
          !str_detect(Host_code, "21_CAM_1[45]")) %>%
+  select(-Richness)%>%
   replace(is.na(.),0)
-vignette("regular-expressions")
+
+otu_plant$Richness
 ##########Host_code
 
 

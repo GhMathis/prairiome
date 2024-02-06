@@ -18,7 +18,9 @@ library(tidyverse)
 library(corrplot)
 library(ade4)
 library(vegan)
+library(readxl)
 library(RColorBrewer)
+library(open)
 main_theme = theme_bw()+
   theme(line = element_blank(), 
         axis.line = element_line(colour = "black"),
@@ -45,10 +47,10 @@ read.table("data/Metadata_Grid_CAM.txt", header = T)%>%
          d_oxy = "Profondeur") -> metadata_grid
 
 out_plant = read.table("data/otu_plant_grid_CAM.txt")
+str(out_plant)
 
 out_plant_df = out_plant[,-1]
 #attr(out_plant_matrix, "dimnames")[[1]] = out_plant$Grid_code
-
 
 ```
 
@@ -100,7 +102,7 @@ par(mfrow = c(2,1))
 barplot(colSums(otu_plant_scale),type = "text")
 barplot(colSums(out_plant_df),type = "text")
 ######### PCA analysis of env variables
-pca_cover <- PCA(otu_plant_scale, plot =F)
+pca_cover <- PCA(otu_plant_scale)
 plot(pca_cover)
 s.corcircle(pca_cover$li)
 s.traject(pca_cover$li)
@@ -108,7 +110,7 @@ s.label(pca_cover$li,add.plot=T)
 
 fviz_pca_ind(pca_cover, col.ind = "cos2",gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), repel = TRUE)
 fviz_pca_ind(pca_cover, col.ind = "contrib",gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07", repel = TRUE))
-fviz_pca_var(pca_cover, col.var = "contrib", gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), geom = c( "point"), repel = TRUE)
+fviz_pca_var(pca_cover, col.var = "contrib", gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), geom = c( "arrow"), repel = TRUE)
 
 # clustering
 CAH_cover = HCPC(pca_cover, metric = "euclidean", method = "ward", nb.clust =3)
@@ -164,7 +166,8 @@ cor(metadata_grid_quanti)%>%
   corrplot( method = "square")
 str(metadata_grid_quanti)
 data.frame(metadata_grid_quanti)%>%
-  select(-c(X,Y, MO, C, N,Ca,Na, clay, SiltF,Mg, Cl, Cond)) ->clean_metadata_grid_quanti
+  select(-c(X,Y,# MO, C, N,Ca,Na, clay, SiltF,Mg, Cl, Cond, 
+            Z_hu, M_cu, M_nat, Z_eau, Abun)) ->clean_metadata_grid_quanti
 cor(clean_metadata_grid_quanti)%>%
   corrplot( method = "number")
 ######### PCA analysis of env variables
@@ -182,9 +185,10 @@ fviz_pca_biplot(pca_env2,col.var = "orange2", repel = TRUE, habillage = CAH_env$
   scale_color_brewer(palette="Set1") +
   scale_fill_brewer(palette="Set1")+
   main_theme
-
+windows()
 ggplot(metadata_grid)+
   geom_point(aes(X,Y, col = CAH_env$data.clust$clust))+
+  facet_wrap(~year)+
   scale_color_brewer(palette="Set1") 
 # Valeurs propres
 eig.val_env <- get_eigenvalue(pca_env2)
@@ -201,7 +205,10 @@ res.var_env$cos2           # Quality of the plot
 res.ind_env <- get_pca_ind(pca_env2)
 res.ind_env$coord          # Coordonates
 res.ind_env$contrib        # Contributions to axes
-res.ind_env$cos2    
+res.ind_env$cos2  
+
+ggplot(metadata_grid)+
+  geom_point(aes(X,Y, col = CAH_cover$data.clust$clust))
 ```
 
 ### co-inerte

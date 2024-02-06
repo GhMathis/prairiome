@@ -45,7 +45,7 @@ main_theme = theme_bw()+
 
 ##### Load shapefile of soil occupation
 st_read("data/shapefiles/sql_statement_d551600.shp") %>% 
-  select(geometry,lib = lib1_16)%>%
+  select(geometry,lib = lib3_16)%>%
   mutate(lib = str_replace_all(lib, "[,/ ']","_"),
          lib = str_replace_all(lib, "[.]","_"),
          lib = str_remove(lib, "[*]$"),
@@ -98,9 +98,9 @@ limit_map = st_buffer(grid_pos$geometry, 4000)%>%
   st_union()%>%
   st_cast(to = "POLYGON")
 soil_occu_crop = st_crop(x = soil_occu, y =limit_map)
-
+str(soil_occu)
 map = ggplot()+
-  geom_sf(data = soil_occu_crop,col = "gray",aes(fill = lib))+
+  geom_sf(data = soil_occu_crop,col = "gray",(aes(fill = lib)))+
   #geom_sf(data = limit_map, col ="red", fill = NA)+
   geom_sf(data = grid_pos, cex = 2.2, fill ="black")+
   geom_sf(data = grid_pos, cex = 2)+

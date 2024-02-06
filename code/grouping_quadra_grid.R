@@ -10,7 +10,7 @@ otu_plant = read_xlsx("data/OTU_plant.xlsx")%>%
   filter(str_detect( Host_code, "CAM"),
          !str_detect(Host_code, "21_CAM_1[45]")) %>%
   replace(is.na(.),0)
-vignette("regular-expressions")
+
 library(GGally)
 ##########Host_code
 
@@ -25,13 +25,7 @@ otu_plant_long = otu_plant%>%
          
   )%>%
   select(c(year, grid, quadra, total_cover, plant_richness, Host_code))-> data_quadra
-  %>%
-  pivot_longer(cols = -c(year, grid, quadra, total_cover, plant_richness, Host_code), names_to = "Plant", values_to = "cover")  %>%
-  group_by(quadra)%>%
-  mutate(
-    relative_abundance = cover/total_cover,
-  )%>%
-  filter(cover != 0)
+ 
 
 
 ggplot(metadata_sample_cam)+
