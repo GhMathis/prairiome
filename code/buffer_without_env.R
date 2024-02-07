@@ -2,6 +2,7 @@
 # General
 library(RColorBrewer)
 library(tidyverse)
+library(ggrepel)
 #library(open)
 # Multivar
 library(FactoMineR)
@@ -79,6 +80,12 @@ fviz_pca_biplot(pca_env,col.var = "orange2", repel = TRUE,axes = c(1,3), habilla
   main_theme
 dev.set(0)
 
+  
+  mutate(area =  st_area(.), #area of each polygone
+         n =1,
+         lib2 = as.factor(lib))%>%
+  pivot_wider(names_from = lib2, values_from = n, values_fill = 0)-> soil_occu
+
 ## test 
 
 pca_env$ind$coord
@@ -130,6 +137,7 @@ st_read("data/shapefiles/sql_statement_d551600.shp")  %>%
          lib2 = as.factor(lib))%>%
   pivot_wider(names_from = lib2, values_from = n, values_fill = 0)-> soil_occu
 
+
 ##### Change positions of grids to lambert projection (for siland package)
 metadata_grid%>%
   st_as_sf(coords = c("X", "Y"), crs = 4326)%>%
@@ -142,10 +150,30 @@ metadata_grid%>%
   )%>%
   distinct(Grid_code, .keep_all = TRUE)%>% # if duplication is append in the st_joit above... just in case
   as.data.frame(.)%>%
-  bind_cols(as.data.frame(pca_env$ind$coord[,1:3]))-> grid_metadata
+  bind_cols(as.data.frame(pca_env$ind$coord[,1:3]))-> metadata_grid
+
+metadata_grid%>%
+  select(X,Y)%>%
+  st_as_sf(coords = c("X", "Y"), crs = st_crs(soil_occu))%>%
+  st_buffer(4000)%>%
+  st_union()%>%
+  st_cast(to = "POLYGON") ->limit_map
+  
+soil_occu_crop = st_crop(x = soil_occu, y =limit_map)
+soil_occu_crop%>%
+  mutate(lib = factor(lib,levels = c("artificial", "cultivated", "wetland", "non_emitting", "natural_landscape"),
+                      labels =  c("artificial", "cultivated", "wetland", "non emitting", "natural landscape")))%>%
+ggplot()+
+  geom_sf(col = "gray",aes(fill = lib) )+
+  geom_point(data = metadata_grid,aes(X,Y, col = CAH_env$data.clust$clust),  cex = 2.5)+
+  geom_text_repel(data = metadata_grid,aes(X,Y, col = CAH_env$data.clust$clust, label = 1:42),  cex = 3.5)+
+  scale_fill_brewer(palette = "Pastel2")+
+  scale_color_brewer(palette = "Set1")+
+  labs(colour = "Grid cluster", fill ="Cover type")+
+  main_theme
 
 ##### Area per class cover on the overall landscape
-as.data.frame(soil_occu)%>%
+as.data.frame(soil_occu_crop)%>%
   select(lib, area)%>%
   group_by(lib)%>%
   summarise(sum_area = sum(area, na.rm = T))%>%
@@ -156,38 +184,21 @@ area_per_class%>%
   #filter(perc_area >2.5)%>%
   pull(lib) -> cover_names 
 
-soil_occu_forma = soil_occu%>%
+soil_occu_crop_forma = soil_occu_crop%>%
   filter(lib %in% cover_names)
 
 ##### Compute buffers sizes estimations
-glm_form = as.formula(paste("Richness_grid ~ ", paste(colnames(metadata_grid_scale), collapse= "+")))
-glm_form =  as.formula("Richness_grid ~ Dim.1 + Dim.2 + Dim.3")
-hist(grid_metadata$Richness_grid, breaks = 20)
-mod1 = glm(glm_form, data= grid_metadata, family = "poisson")
-summary(mod1)
-grid_metadata$resid_richness_glm = mod1$residuals
-
 #explication de la richesse par des combinaison linéaire de variables environnementales
 # et par les variables paysagéres.
 (fmla <- as.formula(paste("Richness_grid ~ Dim.1 + Dim.2 + Dim.3 +", paste(cover_names, collapse= "+"))))
-mod1 = siland(fmla, land = soil_occu_forma, init = c(100, 100, 100, 100, 100), data = grid_metadata, wd = 10)
-summary(mod1)
-mod1pois = siland(fmla, land = soil_occu_forma, init = c(100, 100, 100, 100, 100), data = grid_metadata, wd = 10, family = "poisson")
+mod1pois = siland(fmla, land = soil_occu_crop, init = c(100, 100, 100, 100, 100), data = metadata_grid, wd = 10, family = "poisson")
 summary(mod1pois)
-# Variable paysager seul pour expliquer les résidus de la richesse en fonction des variables environnemental
-(fmla <- as.formula(paste("resid_richness_glm ~1+", paste(cover_names, collapse= "+"))))
-mod2 = siland(fmla, land = soil_occu_forma, init = c(100, 100, 100, 100, 100), data = grid_metadata, wd = 10)
-summary(mod2)
 
-ggplot(grid_metadata)+
+ggplot(metadata_grid)+
   geom_point(aes(Dim.1, Richness_grid ))
 summary(mod)
 
-siland.quantile(mod)
-
-plotsiland.sif(mod1)
-summary(mod1)
-likres = siland.lik(mod1pois,land = soil_occu_forma,data = grid_metadata, varnames = cover_names)
+likres = siland.lik(mod1pois,land = soil_occu_forma,data = metadata_grid, varnames = cover_names)
 likres
 siland.quantile(mod1pois)
 
@@ -195,7 +206,7 @@ plotsiland.sif(mod1pois)
 ##### Bootstrap of landscape
 library(doParallel)
 library(foreach)
-land_bootstrap = function(soil_occu_forma, grid_metadata){
+land_bootstrap = function(soil_occu_forma, metadata_grid){
     # soil_occu_forma %>%
     #   select(lib)%>%
     #   mutate(lib = sample(lib))%>%
@@ -208,15 +219,15 @@ land_bootstrap = function(soil_occu_forma, grid_metadata){
       pull(lib)%>%
       unique() -> cover_names
   ID = sample(1:42)
-  temp= grid_metadata
+  temp= metadata_grid
   temp[,names(temp)%in%c("Richness_grid","Dim.1", "Dim.2", "Dim.3")] = temp[ID,names(temp)%in%c("Richness_grid","Dim.1", "Dim.2", "Dim.3")]
-    # grid_metadata %>%
+    # metadata_grid %>%
     #   mutate(Richness_grid = sample((Richness_grid))) -> temp
   (fmla <- as.formula(paste("Richness_grid ~ Dim.1 + Dim.2 + Dim.3 +", paste(cover_names, collapse= "+"))))
   
   mod = siland(fmla, land = soil_occu_forma, init = c(100, 100, 100, 100, 100), data = temp, wd = 10, family = "poisson")
   return(mod)
-}#mod_test = siland(fmla, land = soil_occu_forma, init = c(100, 100, 100, 100, 100), data = grid_metadata, wd = 20)
+}#mod_test = siland(fmla, land = soil_occu_forma, init = c(100, 100, 100, 100, 100), data = metadata_grid, wd = 20)
 
 #vignette("foreach")
 
@@ -227,7 +238,7 @@ registerDoParallel(cl)
 
 test <- foreach(n_iter = 1:80, .packages = c("tidyverse", "siland", "sf")) %dopar% {
   tryCatch({
-    land_bootstrap(soil_occu_forma, grid_metadata)
+    land_bootstrap(soil_occu_forma, metadata_grid)
   }, error = function(e) {
     cat("Error in iteration", n_iter, ":", conditionMessage(e), "\n")
     NULL  # Returning NULL to avoid issues with gathering results
@@ -240,7 +251,7 @@ save(test, file = "outputs/richenss_bootstrap.RData")
 vignette("siland")
 summary(test[[4]])
 test[[6]]$pval0
-siland.lik(test[[4]],land = soil_occu_forma,data = grid_metadata, varnames = cover_names)
+siland.lik(test[[4]],land = soil_occu_forma,data = metadata_grid, varnames = cover_names)
 test[[6]]$loglik
 test[[6]]$loglik0
 test[[6]]$landcontri
