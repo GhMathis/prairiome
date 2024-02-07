@@ -193,16 +193,21 @@ soil_occu_crop_forma = soil_occu_crop%>%
 (fmla <- as.formula(paste("Richness_grid ~ Dim.1 + Dim.2 + Dim.3 +", paste(cover_names, collapse= "+"))))
 mod1pois = siland(fmla, land = soil_occu_crop, init = c(100, 100, 100, 100, 100), data = metadata_grid, wd = 10, family = "poisson")
 summary(mod1pois)
-
+vignette("siland")
 ggplot(metadata_grid)+
-  geom_point(aes(Dim.1, Richness_grid ))
+  geom_text(aes(Dim.2, Richness_grid , label = 1:42))+
+  geom_smooth(aes(Dim.2, Richness_grid ), method = "lm")
+  geom_abline(intercept = -4.05, slope = -0.06)
 summary(mod)
 
 likres = siland.lik(mod1pois,land = soil_occu_forma,data = metadata_grid, varnames = cover_names)
-likres
+likres+
+  main_theme
 siland.quantile(mod1pois)
 
-plotsiland.sif(mod1pois)
+plotsiland.sif(mod1pois)+
+  main_theme
+  
 ##### Bootstrap of landscape
 library(doParallel)
 library(foreach)
