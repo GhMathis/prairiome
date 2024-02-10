@@ -85,35 +85,36 @@ div.csl-indent {
 <h1>Estimate a buffer size of landscape effect on plant and viral richness</h1>
 <section id="the-idea" class="level2">
 <h2 class="anchored" data-anchor-id="the-idea">The idea :</h2>
-<p>The main objective of this part is to find a way to estimate a buffer radius around grids in which landscape could have the most impact on plants richness, viral richness or any others variables that we want to explain. For that, we will use the package Siland. It uses a form of a general linear model for spatial variables.</p>
+<p>The main objective of this part is to find a way to estimate a buffer radius around grids in which landscape could have the most impact on plants richness, viral richness or any others variables that we want to explain. For that, we will use the package <em>Siland</em>. It uses a form of a general linear model for spatial variables.</p>
+</section>
+<section id="hypothesis" class="level2">
+<h2 class="anchored" data-anchor-id="hypothesis">Hypothesis</h2>
+<p>1- Environmental variables that mainly structure the environment are salinity concentration and flooding potential. They are diven by distance from the sea. 2- Because grids are for the majority old, communities of plant should be resistant to external invasion in suhca way that Landscape has no effect on species richness (when environmental variance is considered).</p>
 </section>
 <section id="implementation" class="level2">
 <h2 class="anchored" data-anchor-id="implementation">Implementation</h2>
-<p>The main complexity is that the landscape cover types and environmental variables are strongly collinear (eg. it is more likely to find agricultural lands in fertile soil with low salt concentration). We must account for variance explained by environmental factors before trying to explain it with the landscape. It can be done easily with the Siland function because it accounts for local effects (aka environmental variables) with a classic linear part and a global effect part (aka landscapes). The main issue with this is that there are too many environmental and landscape parameters to account for (more than 20 env variables + one cover type = one parameter <span class="math inline">\(\Rightarrow\)</span> more than 25 variables for 42 observations). If we give the model all environmental parameters adding over landscape parameters, there is a strong risk of over-fitting our richness or having problems with the convergence of all parameters. To avoid that we must select in advance environmental parameters that account for the most variation of the explained variable. The first option is to compute a PCA of environmental factors and then use the axis that explains the most variation of environmental conditions as co-variable of the spacial model. The <em>Siland</em> model will thus attribute a part of the variance to a linear combination of multiple environmental variables and then search for the remaining variance explained by landscape variables (I’m not fully sure of that because of the loop for parameter convergence …). This is a good way to reduce the variables in the landscape model. However, the PCA doesn’t select necessarily environmental variables that explain the most variance in the response variable. Thus, using this method, we assume that the environmental variables that vary the most in the study area have the highest contributions to the variance of the explained variable. (This is a strong hypothesis that we must assume 🥵, but it is not completely bad because it is honest to assume a priori that richness will vary along those main gradients). The second idea is to use a classic glm with all explanatory environmental variables and then use the residuals of this model as variables to explain. This method doesn’t make the strong hypothesis of the first one, but it looks like what we wanted to avoid in the first place: over-fitting and convergence issues. So for now we will stick to the PCA</p>
+<p>The main complexity is that the landscape cover types and environmental variables are strongly collinear (eg. it is more likely to find agricultural lands in fertile soil with low salt concentration). We must account for variance explained by environmental factors before trying to explain it with the landscape. It can be done easily with the <em>Siland</em> function because it accounts for local effects (aka environmental variables) with a classic linear part and a spacial effect part (aka landscapes). The main issue with this is that there are too many environmental and landscape parameters to account for (more than 20 env variables + one cover type = one parameter <span class="math inline">\(\Rightarrow\)</span> more than 25 variables for 42 observations). If we give the model all environmental parameters adding over landscape parameters, there is a strong risk of over-fitting our richness or having problems with the convergence of all parameters. To avoid that we must select in advance environmental parameters that account for the most variation of the explained variable. The first option is to compute a PCA of environmental factors and then use the axis that explains the most variation of environmental conditions as co-variable of the spacial model. The <em>Siland</em> model will thus attribute a part of the variance to a linear combination of multiple environmental variables and then search for the remaining variance explained by landscape variables (I’m not fully sure of that because of the loop for parameter convergence …). This is a good way to reduce the variables in the landscape model. However, the PCA doesn’t select necessarily environmental variables that explain the most variance in the response variable. Thus, using this method, we assume that the environmental variables that vary the most in the study area have the highest contributions to the variance of the explained variable. (This is a strong hypothesis that we must assume 🥵, but it is not completely bad because it is honest to assume a priori that richness will vary along those main gradients). The second idea is to use a classic glm with all explanatory environmental variables and then use the residuals of this model as variables to explain. This method doesn’t make the strong hypothesis of the first one, but it looks like what we wanted to avoid in the first place: over-fitting and convergence issues. So for now we will stick to the PCA</p>
 </section>
 <section id="method" class="level2">
 <h2 class="anchored" data-anchor-id="method">Method</h2>
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
 <p>The data has been collected in South France at the Tour du Valat’s natural reserve (43° 30′ 30″ N, 4° 40′ 01″ E). There are in total 42 grids of 10m² each one composed of 9 quadra of 20 cm², these latter are distributed in an X shape form in grids. In each quadra an exhaustive identification of plant richness has been done and an estimation of bacterial, fungal, and viral communities of the phyllosphere. Species cover, soil cover (Plant, Litter, Bare Soil) and biomass have also been collected for plants at the quadra scale. Environmental variables have been sampled 3 times (in random locations?) per grid and averaged to limit measure errors. Soil occupation shapefile comes from the regional database of soil occupation of PACA and was collected in 2016 [OCSOL 2016].</p>
-<p><strong>Environmental not integrated for now</strong></p>
-<p><strong><em>–</em></strong></p>
-<p>We also have information on grazing and mowing in the plots [database ?] and on grazing intensity [database ?]. For meteorological data, we have hydrometry between 2018 and 2022 from [database?]</p>
-<p><strong><em>–</em></strong></p>
+<p><strong><em>–</em>Environmental variables not integrated for now</strong> We also have information on grazing and mowing in the plots [database ?] and on grazing intensity [database ?]. For meteorological data, we have hydrometry between 2018 and 2022 from [database?] <strong><em>–</em></strong></p>
 <p>We have grouped the land-use data into 5 classes: Wetlands are made up of lands that have periods of submergence and can be slightly anthropized (pasture); Non-emitting propagules contain landscapes that are very unlikely to emit propagules that could colonize the salt meadow (e.g.&nbsp;forests, beaches or areas of permanent water); natural landscapes contain lightly anthropized (pasture) land that does not feature in the previous two classes; artificial landscapes contain all types of heavily anthropized cover, such as urban areas or roads, these covers are those that could be of great importance for the import of exotic organisms; cultivated lands are the one used for plantations, such as rice or forage crops.</p>
 </section>
 <section id="analysis" class="level3">
 <h3 class="anchored" data-anchor-id="analysis">Analysis</h3>
-<p>To compute optimal buffer radii of soil occupation that affects plant (or viral richness later) we used the package Siland <span class="citation" data-cites="Carpentier2021Siland">(<a href="#ref-Carpentier2021Siland" role="doc-biblioref">Carpentier and Martin 2021</a>)</span>. The model has 2 distinct components: a classic regression part with an intercept and estimators for each variable and a regression part on the spatial component. To summarize, the model tries to minimize the log-likelihood <span class="math inline">\([y|\theta]\)</span> of 3 parameter types; parameters for size effects of local variables (<span class="math inline">\(\alpha_l\)</span>), parameters for sizes effects of each cover type ( <span class="math inline">\(\beta_k\)</span>), parameters for the shape of the curve of each cover type (<span class="math inline">\(\delta_k\)</span>).</p>
+<p>To compute optimal buffer radii of soil occupation that affects plant (or viral richness later) we used the package <em>Siland</em> <span class="citation" data-cites="Carpentier2021Siland">(<a href="#ref-Carpentier2021Siland" role="doc-biblioref">Carpentier and Martin 2021</a>)</span>. The model has 2 distinct components: a classic regression part with an intercept and estimators for each variable and a regression part on the spatial component. To summarize, the model tries to minimize the log-likelihood <span class="math inline">\([y|\theta]\)</span> of 3 parameter types; parameters for size effects of local variables (<span class="math inline">\(\alpha_l\)</span>), parameters for sizes effects of each cover type ( <span class="math inline">\(\beta_k\)</span>), parameters for the shape of the curve of each cover type (<span class="math inline">\(\delta_k\)</span>).</p>
 <p><span class="math display">\[
 Y = \mu +\sum_L\alpha_l X+ \sum_K\beta_k\sum_R f_{\delta_k}(d_{i,r})z_r^k
 \]</span></p>
 <p><span class="math inline">\(L\)</span>: index of observation point (grids); <span class="math inline">\(K\)</span>: index of cover type; <span class="math inline">\(R\)</span>: landscape mesh index. If the landscape variable <span class="math inline">\(k\)</span> is a presence/absence variable, <span class="math inline">\(z_r^k\)</span> is equal to one or zero. <span class="math inline">\(f_{\delta_k}\)</span> Spacial Influence Function (gauss, expo or uniform)</p>
-<p>Maximization algorithm of Siland :</p>
-<div class="quarto-figure quarto-figure-center">
+<p>Maximization algorithm of <em>Siland</em> :</p>
+<div id="fig-map" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="Diagram/algo_siland.svg" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Diagram of Siland optimization algorithm. Steps 2 and 3 are repeated until convergence of all parameters (or maximum repetitions is reached)</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;1: Diagram of <em>Siland</em> optimization algorithm. Steps 2 and 3 are repeated until convergence of all parameters (or maximum repetitions is reached)</figcaption>
 </figure>
 </div>
 <p>To avoid catching part of the variance induced by environmental variables we first compute a PCA to extract the axis that represents most of the variance of environmental condition. We then use those linear combinations of environmental variables as descriptors of the local grid’s conditions. The model contains in total 8 variables, 3 local variables extracted from the PCA and 5 covers types variables. The model uses a Gaussian function for the landscape effect and uses a Poisson error family. To validate the good convergence of buffer radii, we checked visually that the log-likelihood of all Spatial Influence Functions (SIF) have a minimum that intersects the overall minimal log-likelihoods of the model (as prescribed by the author of the package). Finally, a bootstrap of the local explain variable (eg. richness) coupled with their local explanatory variables (eg. Dim of PCA) is done to assess that the landscape has a statistical significance.</p>
@@ -122,17 +123,19 @@ Y = \mu +\sum_L\alpha_l X+ \sum_K\beta_k\sum_R f_{\delta_k}(d_{i,r})z_r^k
 <h3 class="anchored" data-anchor-id="results">Results</h3>
 <section id="pca" class="level4">
 <h4 class="anchored" data-anchor-id="pca">PCA</h4>
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-PCA" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="figures/buffer/PCA_env.svg" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption"><strong>PCA on environmental variables</strong>. The clustering grids are compared by their Euclidian distance and segregation is done with the ward method</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;2: <strong>PCA on environmental variables</strong>. The clustering grids are compared by their Euclidian distance and segregation is done with the ward method</figcaption>
 </figure>
 </div>
 <p>The first axis which accounts for 43.9% of the variation is explained mostly by soil structure and soil fertility. On the left of the PCA the prominent environmental conditions are the presence of sand (Fine or Coarse) and an absence of organic and mineral materials. On the right soil is more fertile with a lot of clay, silt and organic materials. This axis might be highly correlated to the distance from the sea. The second axis represents the saline gradient, on the top the most salted area and on the bottom the least salted. This axis might be correlated with terrain topography.</p>
 <p>Group 1 in red represents a grid with low fertility, they should be located close to the sea because of the important quantity of sand. Group 2 in blue represents grids with a low salt concentration, the cause of this low concentration might be a consequence of topological factors. Group 3 represents grids that are mostly far away from the sea with fertile soil, but the topography might bring the water table closer to the surface, which increases the salt concentration.</p>
-<section id="table-1-absolute-contribution-of-variables-on-the-3-main-axis" class="level5">
-<h5 class="anchored" data-anchor-id="table-1-absolute-contribution-of-variables-on-the-3-main-axis">Table 1 :Absolute contribution of variables on the 3 main axis</h5>
+<section id="section" class="level5">
+<h5 class="anchored" data-anchor-id="section"></h5>
+<div id="tbl-axisPCA" class="anchored">
 <table class="table">
+<caption>Table&nbsp;1: Absolute contribution of variables on the 3 main axes</caption>
 <colgroup>
 <col style="width: 19%">
 <col style="width: 27%">
@@ -143,8 +146,8 @@ Y = \mu +\sum_L\alpha_l X+ \sum_K\beta_k\sum_R f_{\delta_k}(d_{i,r})z_r^k
 <tr class="header">
 <th></th>
 <th>Dim.1 <strong>(43.9%)</strong></th>
-<th>Dim.2 <strong>(19.2)</strong></th>
-<th>Dim.3 <strong>(11.5)</strong></th>
+<th>Dim.2 <strong>(19.2%)</strong></th>
+<th>Dim.3 <strong>(11.5%)</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -270,6 +273,7 @@ Y = \mu +\sum_L\alpha_l X+ \sum_K\beta_k\sum_R f_{\delta_k}(d_{i,r})z_r^k
 </tr>
 </tbody>
 </table>
+</div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/buffer/map_cover_cluster.svg" class="img-fluid figure-img"></p>
@@ -280,11 +284,14 @@ Y = \mu +\sum_L\alpha_l X+ \sum_K\beta_k\sum_R f_{\delta_k}(d_{i,r})z_r^k
 </section>
 </section>
 <section id="siland" class="level4">
-<h4 class="anchored" data-anchor-id="siland">Siland</h4>
-<p>Null model formula : Richness_grid ~ Dim.1 + Dim.2 + Dim.3</p>
+<h4 class="anchored" data-anchor-id="siland"><em>Siland</em></h4>
+<p>Null model formula : Richness_grid ~ 1</p>
+<p>No landscape model formula : Richness_grid ~ Dim.1 + Dim.2 + Dim.3</p>
 <p>Complete model formula : Richness_grid ~ Dim.1 + Dim.2 + Dim.3 + wetland + non_emitting + cultivated + natural_landscape + artificial</p>
-<p>The null model has an <strong>AIC = 525</strong> and the Full model has an <strong>AIC = 342</strong></p>
+<p>The null model has an <strong>AIC = 550</strong>, no landscape model has an <strong>AIC = 525</strong> and the Full model has an <strong>AIC = 342</strong> No landscape model has a <strong>pseudo R² = 9%</strong> and the Full model has an <strong>pseudo R² = 65%</strong></p>
+<div id="tbl-coef" class="anchored">
 <table class="table">
+<caption>Table&nbsp;2: Output of the Siland full model (poisson family estimate not transformed)</caption>
 <thead>
 <tr class="header">
 <th style="text-align: center;">Variable</th>
@@ -356,6 +363,7 @@ Y = \mu +\sum_L\alpha_l X+ \sum_K\beta_k\sum_R f_{\delta_k}(d_{i,r})z_r^k
 </tr>
 </tbody>
 </table>
+</div>
 <div id="fig-SIF" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -376,10 +384,10 @@ Y = \mu +\sum_L\alpha_l X+ \sum_K\beta_k\sum_R f_{\delta_k}(d_{i,r})z_r^k
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;1: The values for the SIF mean are 189 m for wetland, 223 m for non-emitting land, 131 m for cultivated land, 120 m for natural landscape and 129 m for artificial land.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: The values for the SIF mean are 189 m for wetland, 223 m for non-emitting land, 131 m for cultivated land, 120 m for natural landscape and 129 m for artificial land.</figcaption><p></p>
 </figure>
 </div>
-<p>The 95 percentiles of each SIF are 448 m for wetland, 528 m for non-emitting land, 311 m for cultivated land, 285 m for natural landscape and 305 m for artificial land (they are not shown on the <a href="#fig-sif">Figure&nbsp;1 (b)</a>.</p>
+<p><strong>95% of the influence for each landscape (95 percentiles of each SIF) are 448 m for wetlands, 528 m for non-emitting lands, 311 m for cultivated lands, 285 m for natural landscapes and 305 m for artificial land</strong> (they are not shown on the <a href="#fig-sif">Figure&nbsp;3 (b)</a>.</p>
 </section>
 <section id="bootstrap" class="level4">
 <h4 class="anchored" data-anchor-id="bootstrap">Bootstrap</h4>
@@ -389,8 +397,8 @@ Y = \mu +\sum_L\alpha_l X+ \sum_K\beta_k\sum_R f_{\delta_k}(d_{i,r})z_r^k
 <section id="conclusion" class="level3">
 <h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
 <p>We’ve seen that the environmental condition of our study area is mainly structured along 2 gradients. The first one is the distance from the sea which has the consequence of modifying the soil texture and fertility. The second is salt concentration which is probably induced by topography.</p>
-<p>(preliminary conclusion) Species <strong>richness is negatively impacted by Dim.1 and Dim.2</strong> of the PCA (also Dim.3 but I don’t know how to interpret it), this is strange because, for the first dimension, this means that the more fertile/distant from the sea grids have less richness, and the ones with poor soil and closer to the sea have more richness. For the second dimension, this means that grids with higher salt concentrations are richer than the ones with lower salt concentrations. This pattern might be caused by an over-representation of agriculture in fertile/low-salinity soil (unlikely because grids aren’t dispatched in cultural areas). Or it can also result from high stress (need a bit of bib here) <span class="math inline">\(\Rightarrow\)</span> <em>in which coexistence scenario does high-stress result in more richness?</em> Or cover type has a really strong effect, grids close to agricultural land receive less species capable of persistence ? or receive fertilizer through soil leaching (check abundance of fabacea and fast growing species) ? Both can cause a reduction of species richness.</p>
-<p>Landscapes affect plant richness in a maximum <strong>radius range of approximately 300 m to 550 m</strong> depending on the cover type in the Camarague lands. Artificial lands and wetlands have the most important impact and the longer distance of impact on the species richness while non-emitting, cultivated and natural landscapes have less influence and a shorter distance of impact.</p>
+<p>(preliminary idea/interpretation, not super robust, keep in mind that the explain richness variance by the 3 dimension is only 9%) Species <strong>richness is negatively impacted by Dim.1 and Dim.2</strong> of the PCA (also Dim.3 but I don’t know how to interpret it for now), this is strange because, for the first dimension, this means that less fertile grid are richer than more fertile one. For the second dimension, this means that grids with higher salt concentrations are richer than the ones with lower salt concentrations(<a href="#tbl-coef">Table&nbsp;2</a>, <a href="#fig-map">Figure&nbsp;1</a> and <a href="#fig-PCA">Figure&nbsp;2</a>). So more stress equal more species. This pattern might be caused by an over-representation of agriculture in fertile/low-salinity soil (unlikely because grids aren’t dispatched in cultural areas). Or it can also result from high stress (need a bit of bib here) <span class="math inline">\(\Rightarrow\)</span> <em>in which coexistence scenario does high-stress result in more richness?</em> Or cover type has a really strong effect, grids close to agricultural land receive less species capable of persistence ? or receive fertilizer through soil leaching (check abundance of fabacea and fast growing species) ? Both can cause a reduction of species richness. Further analysis need to be done to see if those tendency are real or not.</p>
+<p>Landscapes affect plant richness in a maximum <strong>radius range of approximately 300 m to 550 m</strong> depending on the cover type in the Camarague lands (<a href="#fig-sif">Figure&nbsp;3 (b)</a>). Artificial lands and wetlands have the most important impact and the longer distance of impact on the species richness while non-emitting, cultivated and natural landscapes have less influence and a shorter distance of impact. With this model we conclude that landscape has an impact on species richness when environmental variables are considered, so we reject our second hypothesis. However the assumption that the 3 fist axis of the PCA explain well the richness is not well supported when we look at the pseudo R² of our model. So there is 2 options : the richness variance is explain mostly by landscape or second option, we didn’t capture environmental gradient that explain richness in the PCA. Anyway the objective of this part was to evaluate a buffer radius where landscape could have an effect. Now With this information we will extract percentage cover, landscape diversity or other landscape descriptor in a radius of 500 m around grids and make further analysis.</p>
 
 </section>
 </section>
