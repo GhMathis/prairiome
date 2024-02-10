@@ -3,6 +3,7 @@
 library(RColorBrewer)
 library(tidyverse)
 library(ggrepel)
+library(readxl)
 #library(open)
 # Multivar
 library(FactoMineR)
@@ -11,11 +12,10 @@ library(tidyverse)
 library(corrplot)
 library(ade4)
 library(vegan)
-library(readxl)
+
 library(PerformanceAnalytics)
 
 # Geographical
-library(readxl)
 library(sp)
 library(sf)
 library(siland)
@@ -193,7 +193,13 @@ soil_occu_crop_forma = soil_occu_crop%>%
 (fmla <- as.formula(paste("Richness_grid ~ Dim.1 + Dim.2 + Dim.3 +", paste(cover_names, collapse= "+"))))
 mod1pois = siland(fmla, land = soil_occu_crop, init = c(100, 100, 100, 100, 100), data = metadata_grid, wd = 10, family = "poisson")
 summary(mod1pois)
-vignette("siland")
+str(mod1pois)
+(358.03-123.97)/358.03
+summary(glm(Richness_grid~ Dim.1 + Dim.2 + Dim.3 ,family=poisson(link="log"), data =metadata_grid  ))
+(358.03-327.54)/358.03
+summary(glm(Richness_grid~1 ,family=poisson(link="log"), data =metadata_grid  ))
+
+round(exp(mod1pois$result$coefficients),1)
 ggplot(metadata_grid)+
   geom_text(aes(Dim.2, Richness_grid , label = 1:42))+
   geom_smooth(aes(Dim.2, Richness_grid ), method = "lm")
