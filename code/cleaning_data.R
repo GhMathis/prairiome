@@ -81,4 +81,28 @@ read_xlsx("data/Metadata_grid.xlsx")%>%
   left_join(soil_data, by= "Grid_code")%>%
   left_join(parurage, by = "Grid_code") -> Metadata_grid_cam
 
+#####Abundance indices at grid levels
+library(iNEXT)
+
+read_xlsx("data/OTU_plant.xlsx")%>%
+  filter(str_detect( Host_code, "CAM"),
+         !str_detect(Host_code, "21_CAM_1[45]")) %>%
+  replace(is.na(.),0)%>%
+  pivot_longer(-Host_code, names_to = "Plant", values_to = "cover")  %>%
+  filter(cover != 0)%>%
+  
+  pivot_wider(values_from = cover, names_from = Host_code   , values_fill = 0) -> otu_plant_cam
+rownames(otu_plant_cam) = otu_plant_cam$Plant
+as.data.frame(otu_plant_cam)%>%
+  dplyr::select(-Plant) -> otu_plant_cam
+str(otu_plant_cam)
+data(spider)
+iNEXT()
+str(bird)
+data(bird)
+out2 <- iNEXT(otu_plant_cam[,2], q=0, datatype="abundance")
+out2
+
+
+
 write.table(Metadata_grid_cam, "data/data_clean/Metadata_grid_CAM.txt")
