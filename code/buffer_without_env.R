@@ -40,7 +40,7 @@ main_theme = theme_bw()+
 read.table("data/data_clean/Metadata_Grid_CAM.txt", header = T) -> metadata_grid
 
 metadata_grid %>%
-  select(pHwater, lime_tot, MO, Phos, K, Mg, Ca, Na, N, C, 
+  dplyr::select(pHwater, lime_tot, MO, Phos, K, Mg, Ca, Na, N, C, 
          CN, clay, SiltF, SiltC, SandF, SandC, Cl, Res, Cond,
          dep_oxy_num)%>%
   scale()%>%
@@ -79,12 +79,6 @@ fviz_pca_biplot(pca_env,col.var = "orange2", repel = TRUE,axes = c(1,3), habilla
   scale_fill_brewer(palette="Set1")+
   main_theme
 dev.set(0)
-
-  
-  mutate(area =  st_area(.), #area of each polygone
-         n =1,
-         lib2 = as.factor(lib))%>%
-  pivot_wider(names_from = lib2, values_from = n, values_fill = 0)-> soil_occu
 
 ## test 
 
@@ -129,7 +123,7 @@ st_read("data/shapefiles/sql_statement_d551600.shp")  %>%
     
     .default = lib4_16
   ))%>%
-  select(lib)%>%
+  dplyr::select(lib)%>%
   st_transform( 2154)%>%
   
   mutate(area =  st_area(.), #area of each polygone
@@ -146,14 +140,14 @@ metadata_grid%>%
          Y =  as.numeric(st_coordinates(geometry)[, 2]))%>%
   st_join(.,
           soil_occu%>%
-            select(lib,area)
+            dplyr::select(lib,area)
   )%>%
   distinct(Grid_code, .keep_all = TRUE)%>% # if duplication is append in the st_joit above... just in case
   as.data.frame(.)%>%
-  bind_cols(as.data.frame(pca_env$ind$coord[,1:3]))-> metadata_grid
+  bind_cols(as.data.frame(pca_env$ind$coord))-> metadata_grid
 
 metadata_grid%>%
-  select(X,Y)%>%
+  dplyr::select(X,Y)%>%
   st_as_sf(coords = c("X", "Y"), crs = st_crs(soil_occu))%>%
   st_buffer(4000)%>%
   st_union()%>%
@@ -174,7 +168,7 @@ ggplot()+
 
 ##### Area per class cover on the overall landscape
 as.data.frame(soil_occu_crop)%>%
-  select(lib, area)%>%
+  dplyr::select(lib, area)%>%
   group_by(lib)%>%
   summarise(sum_area = sum(area, na.rm = T))%>%
   mutate(perc_area = as.numeric(sum_area/sum(sum_area)*100))%>%
@@ -194,10 +188,26 @@ soil_occu_crop_forma = soil_occu_crop%>%
 mod1pois = siland(fmla, land = soil_occu_crop, init = c(100, 100, 100, 100, 100), data = metadata_grid, wd = 10, family = "poisson")
 summary(mod1pois)
 str(mod1pois)
+
+
 (358.03-123.97)/358.03
-summary(glm(Richness_grid~ Dim.1 + Dim.2 + Dim.3 ,family=poisson(link="log"), data =metadata_grid  ))
+mod2 = glm(Richness_grid~  Dim.1 + Dim.2 + Dim.3+Dim.4 + Dim.5 ,family=poisson(link="log"), data =metadata_grid  )
+summary(mod2)
+hist(mod2$residuals, breaks = 20)
 (358.03-327.54)/358.03
 summary(glm(Richness_grid~1 ,family=poisson(link="log"), data =metadata_grid  ))
+
+#### Deviance >> df => surdispestion => binomial negative
+library(MASS)
+glm.negbin = glm.nb(Richness_grid~ Dim.1 + Dim.2 + Dim.3 + Dim.4 +Dim.5 , data =metadata_grid )
+summary(glm.negbin)
+(47.581  -42.963)/47.581
+summary(glm.nb(Richness_grid~ 1 , data =metadata_grid ))
+glm.negbin = glm.nb(Richness_grid~ depth_oxy , data =metadata_grid )
+summary(glm.negbin)
+
+glm.negbin = glm.nb(Richness_grid~ clay + MO + Cond + pHwater , data =metadata_grid)
+
 
 round(exp(mod1pois$result$coefficients),1)
 ggplot(metadata_grid)+
@@ -215,72 +225,126 @@ plotsiland.sif(mod1pois)+
   main_theme
   
 ##### Bootstrap of landscape
-library(doParallel)
-library(foreach)
-land_bootstrap = function(soil_occu_forma, metadata_grid){
-    # soil_occu_forma %>%
-    #   select(lib)%>%
-    #   mutate(lib = sample(lib))%>%
-    #   mutate(area =  st_area(.), #area of each polygone
-    #          n =1,
-    #          lib2 = as.factor(lib))%>%
-    #   pivot_wider(names_from = lib2, values_from = n, values_fill = 0) -> soil_occu_forma
-    # 
-    soil_occu_forma%>%
-      pull(lib)%>%
-      unique() -> cover_names
-  ID = sample(1:42)
-  temp= metadata_grid
-  temp[,names(temp)%in%c("Richness_grid","Dim.1", "Dim.2", "Dim.3")] = temp[ID,names(temp)%in%c("Richness_grid","Dim.1", "Dim.2", "Dim.3")]
-    # metadata_grid %>%
-    #   mutate(Richness_grid = sample((Richness_grid))) -> temp
-  (fmla <- as.formula(paste("Richness_grid ~ Dim.1 + Dim.2 + Dim.3 +", paste(cover_names, collapse= "+"))))
+# library(doParallel)
+# library(foreach)
+# land_bootstrap = function(soil_occu_forma, metadata_grid){
+#     # soil_occu_forma %>%
+#     #   select(lib)%>%
+#     #   mutate(lib = sample(lib))%>%
+#     #   mutate(area =  st_area(.), #area of each polygone
+#     #          n =1,
+#     #          lib2 = as.factor(lib))%>%
+#     #   pivot_wider(names_from = lib2, values_from = n, values_fill = 0) -> soil_occu_forma
+#     # 
+#     soil_occu_forma%>%
+#       pull(lib)%>%
+#       unique() -> cover_names
+#   ID = sample(1:42)
+#   temp= metadata_grid
+#   temp[,names(temp)%in%c("Richness_grid","Dim.1", "Dim.2", "Dim.3")] = temp[ID,names(temp)%in%c("Richness_grid","Dim.1", "Dim.2", "Dim.3")]
+#     # metadata_grid %>%
+#     #   mutate(Richness_grid = sample((Richness_grid))) -> temp
+#   (fmla <- as.formula(paste("Richness_grid ~ Dim.1 + Dim.2 + Dim.3 +", paste(cover_names, collapse= "+"))))
+#   
+#   mod = siland(fmla, land = soil_occu_forma, init = c(100, 100, 100, 100, 100), data = temp, wd = 10, family = "poisson")
+#   return(mod)
+# }#mod_test = siland(fmla, land = soil_occu_forma, init = c(100, 100, 100, 100, 100), data = metadata_grid, wd = 20)
+# 
+# #vignette("foreach")
+# 
+# #Create cluster with desired number of cores (careful need lot of RAM)  
+# #core processes
+# cl <- makeCluster(4)
+# registerDoParallel(cl)
+# 
+# test <- foreach(n_iter = 1:80, .packages = c("tidyverse", "siland", "sf")) %dopar% {
+#   tryCatch({
+#     land_bootstrap(soil_occu_forma, metadata_grid)
+#   }, error = function(e) {
+#     cat("Error in iteration", n_iter, ":", conditionMessage(e), "\n")
+#     NULL  # Returning NULL to avoid issues with gathering results
+#   })
+# }
+# stopCluster(cl)
+# 
+# save(test, file = "outputs/richenss_bootstrap.RData")
+# 
+# vignette("siland")
+# summary(test[[4]])
+# test[[6]]$pval0
+# siland.lik(test[[4]],land = soil_occu_forma,data = metadata_grid, varnames = cover_names)
+# test[[6]]$loglik
+# test[[6]]$loglik0
+# test[[6]]$landcontri
+# str(test[[2]]$result$R)
+# test[[4]]$result$converged
+# 
+# AIC_mod = c()
+# AIC_null = c()
+# nolandscape_effect = c()
+# for(i in 1:length(test)){
+#   AIC_mod = c(AIC_mod, test[[i]]$AIC)
+#   AIC_null = c(AIC_null,test[[i]]$AIC0)
+#   nolandscape_effect = c(nolandscape_effect, test[[i]]$pval0)
+#   
+# }
+# par(mfrow = c(1,1))
+# hist(AIC_null-AIC_mod, breaks = 60)
+# abline(v =( mod1pois$AIC0-mod1pois$AIC), col= "red")
+# hist(nolandscape_effect, breaks = 60)
+# abline(v =mod1$pval0, col= "red")
+
+
+buffer.around.point = function(pt, geo_data, layer_name, buffer_size){
+  pt = as.matrix(pt)
+  if(nrow(pt) == 2){
+    pt = t(pt)
+  }
+  pt_vect = terra::vect(pt, type="points", atts=NULL, crs=terra::crs(geo_data))
+  buffer_vec <- terra::buffer(pt_vect, buffer_size)
+  crop_suface = terra::crop(geo_data, buffer_vec)
   
-  mod = siland(fmla, land = soil_occu_forma, init = c(100, 100, 100, 100, 100), data = temp, wd = 10, family = "poisson")
-  return(mod)
-}#mod_test = siland(fmla, land = soil_occu_forma, init = c(100, 100, 100, 100, 100), data = metadata_grid, wd = 20)
-
-#vignette("foreach")
-
-#Create cluster with desired number of cores (careful need lot of RAM)  
-#core processes
-cl <- makeCluster(4)
-registerDoParallel(cl)
-
-test <- foreach(n_iter = 1:80, .packages = c("tidyverse", "siland", "sf")) %dopar% {
-  tryCatch({
-    land_bootstrap(soil_occu_forma, metadata_grid)
-  }, error = function(e) {
-    cat("Error in iteration", n_iter, ":", conditionMessage(e), "\n")
-    NULL  # Returning NULL to avoid issues with gathering results
-  })
-}
-stopCluster(cl)
-
-save(test, file = "outputs/richenss_bootstrap.RData")
-
-vignette("siland")
-summary(test[[4]])
-test[[6]]$pval0
-siland.lik(test[[4]],land = soil_occu_forma,data = metadata_grid, varnames = cover_names)
-test[[6]]$loglik
-test[[6]]$loglik0
-test[[6]]$landcontri
-str(test[[2]]$result$R)
-test[[4]]$result$converged
-
-AIC_mod = c()
-AIC_null = c()
-nolandscape_effect = c()
-for(i in 1:length(test)){
-  AIC_mod = c(AIC_mod, test[[i]]$AIC)
-  AIC_null = c(AIC_null,test[[i]]$AIC0)
-  nolandscape_effect = c(nolandscape_effect, test[[i]]$pval0)
+  names(crop_suface)[names(crop_suface) == layer_name] = "focal_layer"
   
+  sufaces_class = data.frame( class= crop_suface$focal_layer, surface = expanse(crop_suface, unit="m", transform=TRUE))
+  sufaces_per_class = sufaces_class%>%
+    group_by(class)%>%
+    summarise(sum_area = sum(surface, na.rm = T))%>%
+    mutate(perc_area = sum_area/sum(sum_area)*100,
+           X = pt[1],
+           Y = pt[2])%>%
+    arrange(desc(perc_area))
+  
+  return(list(sufaces_per_class = sufaces_per_class, crop_suface = st_as_sf(crop_suface) ))
 }
-par(mfrow = c(1,1))
-hist(AIC_null-AIC_mod, breaks = 60)
-abline(v =( mod1pois$AIC0-mod1pois$AIC), col= "red")
-hist(nolandscape_effect, breaks = 60)
-abline(v =mod1$pval0, col= "red")
 
+##### Compute area percentage within a buffer
+buffer_size = 500 # buffer radius
+croped_surfaces = apply(metadata_grid[,2:3], 1, function(x)
+  buffer.around.point(pt = x, geo_data = vect(soil_occup_forma), layer_name = "lib", buffer_size = buffer_size))
+
+# croped_surfaces contain percentage area dataframes and also a sp objects of 
+# each buffer (if needed for graphical representation of the landscape for exemple)
+
+##### Extract and group percentage area dataframes into one dataframe
+
+area_per_buffer = croped_surfaces[[1]][[1]]
+area_per_buffer$Grid_code =metadata_grid$Grid_code[1]
+for (i in 2:length(croped_surfaces)){
+  temp = croped_surfaces[[i]][[1]]
+  temp$Grid_code = metadata_grid$Grid_code[i]
+  area_per_buffer = rbind(area_per_buffer ,temp)
+}
+
+ggplot(area_per_buffer)+
+  geom_point(aes(x=class, perc_area),cex = 2)+
+  facet_wrap(~Grid_code)
+
+area_per_buffer$buffer_size = buffer_size
+area_per_buffer%>%
+  select(class, perc_area, Grid_code,buffer_size)%>%
+  pivot_wider(names_from = class, values_from = perc_area, values_fill = 0) -> area_per_buffer_wide 
+
+
+area_per_buffer_wide%>%
+  write.table(file = "data/clean_data/Buffer_cover_CAM.txt")
