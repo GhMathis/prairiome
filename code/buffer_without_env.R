@@ -147,7 +147,7 @@ metadata_grid%>%
   bind_cols(as.data.frame(pca_env$ind$coord))-> metadata_grid
 
 metadata_grid%>%
-  dplyr::select(X,Y)%>%
+  #dplyr::select(X,Y)%>%
   st_as_sf(coords = c("X", "Y"), crs = st_crs(soil_occu))%>%
   st_buffer(4000)%>%
   st_union()%>%
@@ -185,17 +185,33 @@ soil_occu_crop_forma = soil_occu_crop%>%
 #explication de la richesse par des combinaison linéaire de variables environnementales
 # et par les variables paysagéres.
 (fmla <- as.formula(paste("Richness_grid ~ Dim.1 + Dim.2 + Dim.3 +", paste(cover_names, collapse= "+"))))
+(fmla <- as.formula(paste("Richness_grid ~depth_oxy+  ", paste(cover_names, collapse= "+"))))
 mod1pois = siland(fmla, land = soil_occu_crop, init = c(100, 100, 100, 100, 100), data = metadata_grid, wd = 10, family = "poisson")
 summary(mod1pois)
 str(mod1pois)
 
 
 (358.03-123.97)/358.03
-mod2 = glm(Richness_grid~  Dim.1 + Dim.2 + Dim.3+Dim.4 + Dim.5 ,family=poisson(link="log"), data =metadata_grid  )
+
+covar = names(metadata_grid)[c(7:25,28:30)]
+(fmla_full <- as.formula(paste("Richness_grid ~  ", paste(covar, collapse= "+"))))
+mod2 = glm(fmla_full ,family=poisson(link="log"), data =metadata_grid  )
+outmod = step(mod2, list(lower = ~1, upper = mod2), direction  = "both", steps = 5000)
 summary(mod2)
+mod_depth = glm(Richness_grid ~ depth_oxy ,family=poisson(link="log"), data =metadata_grid  )
+summary(mod_depth)
 hist(mod2$residuals, breaks = 20)
 (358.03-327.54)/358.03
 summary(glm(Richness_grid~1 ,family=poisson(link="log"), data =metadata_grid  ))
+
+#### Shanon
+plot(metadata_grid$Dim.1, metadata_grid$Simpson_grid)
+summary(glm(Shannon_grid~1 ,family=gaussian(link="identity"), data =metadata_grid  ))
+mod2_shanon = glm(Shannon_grid~  Dim.1 + Dim.2 + Dim.3,family=gaussian(link="identity"), data =metadata_grid  )
+summary(mod2_shanon)
+(16.065    -14.968  )/16.065    
+(fmla <- as.formula(paste("Richness_grid ~ Dim.1 + Dim.2 + Dim.3 +", paste(cover_names, collapse= "+"))))
+mod3_shanon = siland(fmla, land = soil_occu_crop, init = c(100, 100, 100, 100, 100), data = metadata_grid, wd = 10, family = "poisson")
 
 #### Deviance >> df => surdispestion => binomial negative
 library(MASS)
@@ -216,14 +232,62 @@ ggplot(metadata_grid)+
   geom_abline(intercept = -4.05, slope = -0.06)
 summary(mod)
 
-likres = siland.lik(mod1pois,land = soil_occu_forma,data = metadata_grid, varnames = cover_names)
+likres = siland.lik(mod1pois,land = soil_occu_crop,data = metadata_grid, varnames = cover_names)
 likres+
   main_theme
 siland.quantile(mod1pois)
 
 plotsiland.sif(mod1pois)+
   main_theme
+
+#####
+library(raster)
+library(scalescape)
+library(doParallel)
+library(nlme) 
+
+
+vignette("scalescape")
+ext <- floor(extent(soil_occu_crop))
+
+raster_list = list()
+rr <- raster(ext, res=50)
+names_lands = c("wetland", "cultivated", "natural_landscape", "non_emitting", "artificial")
+
+temp = soil_occu_crop%>%dplyr::select(contains(names_lands[1]))
+raster::rasterize(temp,rr)
+cl <- makeCluster(5)
+registerDoParallel(cl)    
+list_raster = foreach(i=1:5, .packages = c("tidyverse", "raster","sf")) %dopar% {
+  temp = soil_occu_crop%>%dplyr::select(contains(names_lands[i]))
   
+  raster::rasterize(temp,rr)
+  
+}
+stopCluster()
+
+metadata_grid%>%
+  dplyr::select(X,Y)%>%
+  st_as_sf(coords = c("X","Y")) -> site
+str(rr)
+wetland_matrix <- landscape_matrix(list_raster[[1]], site, max.radius = 2000) 
+cultivated_matrix <- landscape_matrix(list_raster[[2]], site, max.radius = 2000) 
+natural_matrix <- landscape_matrix(list_raster[[3]], site, max.radius = 2000) 
+non_emitting_matrix <- landscape_matrix(list_raster[[4]], site, max.radius = 2000) 
+artificial_matrix <- landscape_matrix(list_raster[[5]], site, max.radius = 2000)
+
+mod0.gls <- gls(Richness_grid ~ Dim.1 + Dim.2 + Dim.3, metadata_grid, method = "ML", correlation=corGaus(form = ~ X + Y, nugget=T))
+summary(mod0.gls)
+# Fit null model without landscape variables 
+mod0 <- glm(Richness_grid~Dim.1 + Dim.2 + Dim.3, family=poisson(link="log"), data = metadata_grid)
+#run dist weight 
+mod <- dist_weight(mod0 = mod0, landscape.vars = list(wetland = wetland_matrix, 
+                                                      cultivated = cultivated_matrix,
+                                                      natural = natural_matrix, 
+                                                      non_emitting = non_emitting_matrix,
+                                                      artificial = artificial_matrix),
+    landscape.formula = '~ . + wetland + cultivated + natural + non_emitting + artificial', data = metadata_grid) 
+
 ##### Bootstrap of landscape
 # library(doParallel)
 # library(foreach)

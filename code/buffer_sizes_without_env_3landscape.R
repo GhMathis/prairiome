@@ -147,7 +147,7 @@ metadata_grid%>%
 metadata_grid%>%
   dplyr::select(X,Y)%>%
   st_as_sf(coords = c("X", "Y"), crs = st_crs(soil_occu))%>%
-  st_buffer(4000)%>%
+  st_buffer(6000)%>%
   st_union()%>%
   st_cast(to = "POLYGON") ->limit_map
 
@@ -178,10 +178,37 @@ area_per_class%>%
 ##### Compute buffers sizes estimations
 #explication de la richesse par des combinaison linéaire de variables environnementales
 # et par les variables paysagéres.
-(fmla <- as.formula(paste("Richness_grid ~ Dim.1 + Dim.2 + Dim.3 +", paste(cover_names, collapse= "+"))))
-mod1pois = siland(fmla, land = soil_occu_crop, data = metadata_grid, init = c(50,50,50), wd = 5, family = "poisson")
+library(car)
+metadata_grid
+metadata_grid%>%
+  mutate(Na_class= cut(Na,
+                       breaks = c(0, 500,2000, Inf),
+                       labels = c("0-500", "500-2000", ">2000"),
+                       include.lowest = TRUE),
+         clay_class= cut(clay,
+                       breaks = c(0, 25, Inf),
+                       labels = c("0-25", "25-50"),
+                       include.lowest = TRUE)) -> metadata_grid
 
-summary(mod1pois)
-likres = siland.lik(mod1pois,land = soil_occu_crop,data = metadata_grid, varnames = cover_names)
-likres+
-  main_theme
+mod_no_land <- glm(Richness_grid~Pature*Fauche + Na_class +clay_class , family=poisson(link="log"), data = metadata_grid)
+summary(mod_no_land)
+hist(mod_no_land$residuals, breaks = 20)
+Anova(mod_no_land,3)
+
+str(mod_no_land)
+
+(mod_no_land$null.deviance - mod_no_land$deviance)/mod_no_land$null.deviance
+
+metadata_grid$richness_resid = mod_no_land$residual
+
+(fmla_res <- as.formula(paste("richness_resid~1 +", paste(cover_names, collapse= "+"))))
+mod_res = siland(fmla_res, land = soil_occu_crop, data = metadata_grid,init = c(100,300,500), wd = 5, family = "gaussian")
+summary(mod_res)
+(mod_res$result$null.deviance - mod_res$result$deviance)/mod_res$result$null.deviance*0.52
+
+siland.quantile(mod_res)
+likres_res = siland.lik(mod_res,land = soil_occu_crop,data = metadata_grid, varnames = cover_names)
+likres_res+
+  main_theme 
+
+
