@@ -47,15 +47,12 @@ write.table(metadata_quad_cam, "data/data_clean/Metadata_quadra_CAM.txt")
 otu_plant_cam%>%
   pivot_longer(-Host_code, names_to = "Plant", values_to = "cover")%>%
   mutate(Grid_code = substring(Host_code, 1,9))%>%
-  filter(cover != 0)%>%
-  group_by(Grid_code)%>%
-  summarise(
-    Richness_grid = n_distinct(Plant)# Richness per grid
-            ) -> metadatat_grid_plant
-read_xlsx("data/Habitats_EDGG_patures.xlsx")%>%
-  select(Grid_code = Sampling_n, Pature,Fauche)-> parurage
+  filter(cover != 0) -> metadatat_grid_plant
 
-parurage
+read_xlsx("data/Habitats_EDGG_patures.xlsx")%>%
+  select(Grid_code = Sampling_n, Pature,Fauche)-> paturage
+
+paturage
 
 read_xlsx("data/donnee_sol.xlsx",col_names = F, skip = 3)%>%
   rename_with(~c("Grid_code", "Num", "pHwater", "lime_tot", "MO", "Phos", "K", "Mg",
@@ -64,7 +61,7 @@ read_xlsx("data/donnee_sol.xlsx",col_names = F, skip = 3)%>%
   filter(str_detect(Grid_code,"CAM" ))%>%
   mutate(Grid_code = str_extract(Grid_code,".._CAM_.." ))%>%
   left_join(y = read_xlsx("data/distance_fer_sol_EDGG_CAM.xlsx"), by = join_by(Grid_code == EDGG))%>%
-  left_join(y = metadatat_grid_plant, by = "Grid_code")%>%
+  #left_join(y = metadatat_grid_plant, by = "Grid_code")%>%
   mutate(dep_oxy_num = as.numeric(str_remove(Profondeur, "[>]")),
          depth_oxy = cut(dep_oxy_num,
                          breaks = c(0, 9, 19, 29, 39, Inf),
@@ -84,25 +81,35 @@ read_xlsx("data/Metadata_grid.xlsx")%>%
 #####Abundance indices at grid levels
 library(iNEXT)
 
-read_xlsx("data/OTU_plant.xlsx")%>%
-  filter(str_detect( Host_code, "CAM"),
-         !str_detect(Host_code, "21_CAM_1[45]")) %>%
-  replace(is.na(.),0)%>%
+otu_plant_cam%>%
   pivot_longer(-Host_code, names_to = "Plant", values_to = "cover")  %>%
   filter(cover != 0)%>%
-  
   pivot_wider(values_from = cover, names_from = Host_code   , values_fill = 0) -> otu_plant_cam
+
+
+  
 rownames(otu_plant_cam) = otu_plant_cam$Plant
 as.data.frame(otu_plant_cam)%>%
   dplyr::select(-Plant) -> otu_plant_cam
-str(otu_plant_cam)
-data(spider)
-iNEXT()
-str(bird)
-data(bird)
-out2 <- iNEXT(otu_plant_cam[,2], q=0, datatype="abundance")
-out2
 
+otu_plant_cam_binary = otu_plant_cam
+otu_plant_cam_binary[otu_plant_cam != 0] = 1 
 
+richness_grid = c()
+shannon_grid = c()
+simpson_grid = c()
+# Loop through sample names and extract corresponding columns into list
+for(sample_name in unique(Metadata_grid_cam$Grid_code)) {
+  temp <- otu_plant_cam_binary[, str_detect(names(otu_plant_cam_binary), sample_name)]
+  richness_grid = c(richness_grid , ChaoRichness(temp, datatype="incidence_raw")[[1]])
+  shannon_grid = c(shannon_grid, ChaoShannon(temp, datatype="incidence_raw")[[1]])
+  simpson_grid = c(simpson_grid, ChaoSimpson(temp, datatype="incidence_raw")[[1]])
+  
+}
+length(richness_grid)
+Metadata_grid_cam%>%
+  mutate(Richness_grid = richness_grid,
+         Shannon_grid = shannon_grid,
+         Simpson_grid = simpson_grid) -> Metadata_grid_cam
 
 write.table(Metadata_grid_cam, "data/data_clean/Metadata_grid_CAM.txt")
