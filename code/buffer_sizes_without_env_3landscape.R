@@ -195,7 +195,6 @@ summary(mod_no_land)
 hist(mod_no_land$residuals, breaks = 20)
 Anova(mod_no_land,3)
 
-str(mod_no_land)
 
 (mod_no_land$null.deviance - mod_no_land$deviance)/mod_no_land$null.deviance
 
@@ -211,4 +210,59 @@ likres_res = siland.lik(mod_res,land = soil_occu_crop,data = metadata_grid, varn
 likres_res+
   main_theme 
 
+#####
 
+
+buffer.around.point = function(pt, geo_data, layer_name, buffer_size){
+  pt = as.matrix(pt)
+  if(nrow(pt) == 2){
+    pt = t(pt)
+  }
+  pt_vect = terra::vect(pt, type="points", atts=NULL, crs=terra::crs(geo_data))
+  buffer_vec <- terra::buffer(pt_vect, buffer_size)
+  crop_suface = terra::crop(geo_data, buffer_vec)
+  
+  names(crop_suface)[names(crop_suface) == layer_name] = "focal_layer"
+  
+  sufaces_class = data.frame( class= crop_suface$focal_layer, surface = expanse(crop_suface, unit="m", transform=TRUE))
+  sufaces_per_class = sufaces_class%>%
+    group_by(class)%>%
+    summarise(sum_area = sum(surface, na.rm = T))%>%
+    mutate(perc_area = sum_area/sum(sum_area)*100,
+           X = pt[1],
+           Y = pt[2])%>%
+    arrange(desc(perc_area))
+  
+  return(list(sufaces_per_class = sufaces_per_class, crop_suface = st_as_sf(crop_suface) ))
+}
+
+##### Compute area percentage within a buffer
+buffer_size = 500 # buffer radius
+croped_surfaces = apply(data.frame(metadata_grid$X,metadata_grid$Y) , 1, function(x)
+  buffer.around.point(pt = x, geo_data = vect(soil_occu_crop), layer_name = "lib", buffer_size = buffer_size))
+
+# croped_surfaces contain percentage area dataframes and also a sp objects of 
+# each buffer (if needed for graphical representation of the landscape for exemple)
+
+##### Extract and group percentage area dataframes into one dataframe
+
+area_per_buffer = croped_surfaces[[1]][[1]]
+area_per_buffer$Grid_code =metadata_grid$Grid_code[1]
+for (i in 2:length(croped_surfaces)){
+  temp = croped_surfaces[[i]][[1]]
+  temp$Grid_code = metadata_grid$Grid_code[i]
+  area_per_buffer = rbind(area_per_buffer ,temp)
+}
+
+ggplot(area_per_buffer)+
+  geom_point(aes(x=class, perc_area),cex = 2)+
+  facet_wrap(~Grid_code)
+
+area_per_buffer$buffer_size = buffer_size
+area_per_buffer%>%
+  select(class, perc_area, Grid_code,buffer_size)%>%
+  pivot_wider(names_from = class, values_from = perc_area, values_fill = 0) -> area_per_buffer_wide 
+
+area_per_buffer_wide[3:5] = round(area_per_buffer_wide[3:5], 1)
+area_per_buffer_wide%>%
+  write.table(file = "data/data_clean/Buffer_3ldscp_CAM.txt")

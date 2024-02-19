@@ -12,7 +12,7 @@ library(tidyverse)
 library(corrplot)
 library(ade4)
 library(vegan)
-
+library(car)
 library(PerformanceAnalytics)
 
 # Geographical
@@ -154,9 +154,7 @@ metadata_grid%>%
   st_cast(to = "POLYGON") ->limit_map
   
 soil_occu_crop = st_crop(x = soil_occu, y =limit_map)
-soil_occu_crop%>%
-  mutate(lib = factor(lib,levels = c("artificial", "cultivated", "wetland", "non_emitting", "natural_landscape"),
-                      labels =  c("artificial", "cultivated", "wetland", "non emitting", "natural landscape")))%>%
+
 ggplot()+
   geom_sf(col = "gray",aes(fill = lib) )+
   geom_point(data = metadata_grid,aes(X,Y, col = CAH_env$data.clust$clust),  cex = 2.5)+
@@ -185,52 +183,11 @@ soil_occu_crop_forma = soil_occu_crop%>%
 #explication de la richesse par des combinaison linéaire de variables environnementales
 # et par les variables paysagéres.
 (fmla <- as.formula(paste("Richness_grid ~ Dim.1 + Dim.2 + Dim.3 +", paste(cover_names, collapse= "+"))))
-(fmla <- as.formula(paste("Richness_grid ~depth_oxy+  ", paste(cover_names, collapse= "+"))))
 mod1pois = siland(fmla, land = soil_occu_crop, init = c(100, 100, 100, 100, 100), data = metadata_grid, wd = 10, family = "poisson")
+
+mod1pois
 summary(mod1pois)
-str(mod1pois)
 
-
-(358.03-123.97)/358.03
-
-covar = names(metadata_grid)[c(7:25,28:30)]
-(fmla_full <- as.formula(paste("Richness_grid ~  ", paste(covar, collapse= "+"))))
-mod2 = glm(fmla_full ,family=poisson(link="log"), data =metadata_grid  )
-outmod = step(mod2, list(lower = ~1, upper = mod2), direction  = "both", steps = 5000)
-summary(mod2)
-mod_depth = glm(Richness_grid ~ depth_oxy ,family=poisson(link="log"), data =metadata_grid  )
-summary(mod_depth)
-hist(mod2$residuals, breaks = 20)
-(358.03-327.54)/358.03
-summary(glm(Richness_grid~1 ,family=poisson(link="log"), data =metadata_grid  ))
-
-#### Shanon
-plot(metadata_grid$Dim.1, metadata_grid$Simpson_grid)
-summary(glm(Shannon_grid~1 ,family=gaussian(link="identity"), data =metadata_grid  ))
-mod2_shanon = glm(Shannon_grid~  Dim.1 + Dim.2 + Dim.3,family=gaussian(link="identity"), data =metadata_grid  )
-summary(mod2_shanon)
-(16.065    -14.968  )/16.065    
-(fmla <- as.formula(paste("Richness_grid ~ Dim.1 + Dim.2 + Dim.3 +", paste(cover_names, collapse= "+"))))
-mod3_shanon = siland(fmla, land = soil_occu_crop, init = c(100, 100, 100, 100, 100), data = metadata_grid, wd = 10, family = "poisson")
-
-#### Deviance >> df => surdispestion => binomial negative
-library(MASS)
-glm.negbin = glm.nb(Richness_grid~ Dim.1 + Dim.2 + Dim.3 + Dim.4 +Dim.5 , data =metadata_grid )
-summary(glm.negbin)
-(47.581  -42.963)/47.581
-summary(glm.nb(Richness_grid~ 1 , data =metadata_grid ))
-glm.negbin = glm.nb(Richness_grid~ depth_oxy , data =metadata_grid )
-summary(glm.negbin)
-
-glm.negbin = glm.nb(Richness_grid~ clay + MO + Cond + pHwater , data =metadata_grid)
-
-
-round(exp(mod1pois$result$coefficients),1)
-ggplot(metadata_grid)+
-  geom_text(aes(Dim.2, Richness_grid , label = 1:42))+
-  geom_smooth(aes(Dim.2, Richness_grid ), method = "lm")
-  geom_abline(intercept = -4.05, slope = -0.06)
-summary(mod)
 
 likres = siland.lik(mod1pois,land = soil_occu_crop,data = metadata_grid, varnames = cover_names)
 likres+
@@ -239,126 +196,37 @@ siland.quantile(mod1pois)
 
 plotsiland.sif(mod1pois)+
   main_theme
+######
 
-#####
-library(raster)
-library(scalescape)
-library(doParallel)
-library(nlme) 
-
-
-vignette("scalescape")
-ext <- floor(extent(soil_occu_crop))
-
-raster_list = list()
-rr <- raster(ext, res=50)
-names_lands = c("wetland", "cultivated", "natural_landscape", "non_emitting", "artificial")
-
-temp = soil_occu_crop%>%dplyr::select(contains(names_lands[1]))
-raster::rasterize(temp,rr)
-cl <- makeCluster(5)
-registerDoParallel(cl)    
-list_raster = foreach(i=1:5, .packages = c("tidyverse", "raster","sf")) %dopar% {
-  temp = soil_occu_crop%>%dplyr::select(contains(names_lands[i]))
-  
-  raster::rasterize(temp,rr)
-  
-}
-stopCluster()
-
+metadata_grid
 metadata_grid%>%
-  dplyr::select(X,Y)%>%
-  st_as_sf(coords = c("X","Y")) -> site
-str(rr)
-wetland_matrix <- landscape_matrix(list_raster[[1]], site, max.radius = 2000) 
-cultivated_matrix <- landscape_matrix(list_raster[[2]], site, max.radius = 2000) 
-natural_matrix <- landscape_matrix(list_raster[[3]], site, max.radius = 2000) 
-non_emitting_matrix <- landscape_matrix(list_raster[[4]], site, max.radius = 2000) 
-artificial_matrix <- landscape_matrix(list_raster[[5]], site, max.radius = 2000)
-
-mod0.gls <- gls(Richness_grid ~ Dim.1 + Dim.2 + Dim.3, metadata_grid, method = "ML", correlation=corGaus(form = ~ X + Y, nugget=T))
-summary(mod0.gls)
-# Fit null model without landscape variables 
-mod0 <- glm(Richness_grid~Dim.1 + Dim.2 + Dim.3, family=poisson(link="log"), data = metadata_grid)
-#run dist weight 
-mod <- dist_weight(mod0 = mod0, landscape.vars = list(wetland = wetland_matrix, 
-                                                      cultivated = cultivated_matrix,
-                                                      natural = natural_matrix, 
-                                                      non_emitting = non_emitting_matrix,
-                                                      artificial = artificial_matrix),
-    landscape.formula = '~ . + wetland + cultivated + natural + non_emitting + artificial', data = metadata_grid) 
-
-##### Bootstrap of landscape
-# library(doParallel)
-# library(foreach)
-# land_bootstrap = function(soil_occu_forma, metadata_grid){
-#     # soil_occu_forma %>%
-#     #   select(lib)%>%
-#     #   mutate(lib = sample(lib))%>%
-#     #   mutate(area =  st_area(.), #area of each polygone
-#     #          n =1,
-#     #          lib2 = as.factor(lib))%>%
-#     #   pivot_wider(names_from = lib2, values_from = n, values_fill = 0) -> soil_occu_forma
-#     # 
-#     soil_occu_forma%>%
-#       pull(lib)%>%
-#       unique() -> cover_names
-#   ID = sample(1:42)
-#   temp= metadata_grid
-#   temp[,names(temp)%in%c("Richness_grid","Dim.1", "Dim.2", "Dim.3")] = temp[ID,names(temp)%in%c("Richness_grid","Dim.1", "Dim.2", "Dim.3")]
-#     # metadata_grid %>%
-#     #   mutate(Richness_grid = sample((Richness_grid))) -> temp
-#   (fmla <- as.formula(paste("Richness_grid ~ Dim.1 + Dim.2 + Dim.3 +", paste(cover_names, collapse= "+"))))
-#   
-#   mod = siland(fmla, land = soil_occu_forma, init = c(100, 100, 100, 100, 100), data = temp, wd = 10, family = "poisson")
-#   return(mod)
-# }#mod_test = siland(fmla, land = soil_occu_forma, init = c(100, 100, 100, 100, 100), data = metadata_grid, wd = 20)
-# 
-# #vignette("foreach")
-# 
-# #Create cluster with desired number of cores (careful need lot of RAM)  
-# #core processes
-# cl <- makeCluster(4)
-# registerDoParallel(cl)
-# 
-# test <- foreach(n_iter = 1:80, .packages = c("tidyverse", "siland", "sf")) %dopar% {
-#   tryCatch({
-#     land_bootstrap(soil_occu_forma, metadata_grid)
-#   }, error = function(e) {
-#     cat("Error in iteration", n_iter, ":", conditionMessage(e), "\n")
-#     NULL  # Returning NULL to avoid issues with gathering results
-#   })
-# }
-# stopCluster(cl)
-# 
-# save(test, file = "outputs/richenss_bootstrap.RData")
-# 
-# vignette("siland")
-# summary(test[[4]])
-# test[[6]]$pval0
-# siland.lik(test[[4]],land = soil_occu_forma,data = metadata_grid, varnames = cover_names)
-# test[[6]]$loglik
-# test[[6]]$loglik0
-# test[[6]]$landcontri
-# str(test[[2]]$result$R)
-# test[[4]]$result$converged
-# 
-# AIC_mod = c()
-# AIC_null = c()
-# nolandscape_effect = c()
-# for(i in 1:length(test)){
-#   AIC_mod = c(AIC_mod, test[[i]]$AIC)
-#   AIC_null = c(AIC_null,test[[i]]$AIC0)
-#   nolandscape_effect = c(nolandscape_effect, test[[i]]$pval0)
-#   
-# }
-# par(mfrow = c(1,1))
-# hist(AIC_null-AIC_mod, breaks = 60)
-# abline(v =( mod1pois$AIC0-mod1pois$AIC), col= "red")
-# hist(nolandscape_effect, breaks = 60)
-# abline(v =mod1$pval0, col= "red")
+  mutate(Na_class= cut(Na,
+                       breaks = c(0, 500,2000, Inf),
+                       labels = c("0-500", "500-2000", ">2000"),
+                       include.lowest = TRUE),
+         clay_class= cut(clay,
+                         breaks = c(0, 25, Inf),
+                         labels = c("0-25", "25-50"),
+                         include.lowest = TRUE)) -> metadata_grid
 
 
+mod_no_land <- glm(Richness_grid~Pature*Fauche + Na_class +clay_class , family=poisson(link="log"), data = metadata_grid)
+summary(mod_no_land)
+hist(mod_no_land$residuals, breaks = 20)
+Anova(mod_no_land,3)
+
+(mod_no_land$null.deviance - mod_no_land$deviance)/mod_no_land$null.deviance
+
+metadata_grid$richness_resid = mod_no_land$residual
+
+(fmla_res <- as.formula(paste("richness_resid~1 +", paste(cover_names, collapse= "+"))))
+mod_res = siland(fmla_res, land = soil_occu_crop, data = metadata_grid,init = c(100,300,100,100,100), wd = 10, family = "gaussian")
+mod_res
+summary(mod_res)
+likres2 = siland.lik(mod_res,land = soil_occu_crop,data = metadata_grid, varnames = cover_names)
+likres2+
+  main_theme
+#####
 buffer.around.point = function(pt, geo_data, layer_name, buffer_size){
   pt = as.matrix(pt)
   if(nrow(pt) == 2){
