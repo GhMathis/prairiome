@@ -1,0 +1,293 @@
+---
+title: "Untitled"
+output: html_document
+date: "2024-02-23"
+---
+
+```{r}
+library(tidyverse)
+library(FactoMineR)
+library(factoextra)
+library(corrplot)
+library(vegan)
+library(ade4)
+library(car)
+library(ggpubr)
+library(ggrepel)
+library(RColorBrewer)
+# objet pour mettre en forme les graphiques ggplot
+main_theme = theme_bw()+
+  theme(line = element_blank(), 
+        axis.line = element_line(colour = "black"),
+        panel.border = element_blank(),
+        axis.ticks =  element_line(colour = "black"),
+        axis.text.x = element_text(colour = "black", size=22),
+        axis.text.y = element_text(colour = "black", size=22),
+        legend.title = element_text(colour = "black", size=20),
+        legend.title.align=0.5,
+        legend.text = element_text(colour = "black", size=18),
+        axis.title=element_text(size=28))
+```
+
+```{r}
+read.table("data/data_clean/Metadata_grid_CAM.txt", header = T)%>%
+  left_join(read.table("data/data_clean/Buffer_3ldscp_CAM.txt", header = T), by = "Grid_code") -> metadata_grid
+  
+metadata_quadra = read.table("data/data_clean/Metadata_quadra_CAM.txt")
+
+read.table("data/data_clean/OTU_virus_CAM.txt")%>%
+  mutate( Grid_code = str_extract(Host_code, ".._CAM_.."))%>%
+  group_by(Grid_code) %>%
+  summarise_if(is.numeric, sum) -> OUT_virus_grid
+
+Grid_code = OUT_virus_grid$Grid_code
+OUT_virus_grid = as.data.frame(OUT_virus_grid[, -1])
+rownames(OUT_virus_grid) = Grid_code
+#str(OUT_virus_grid)
+```
+
+```{r}
+colnames(metadata_grid)
+metadata_grid%>%
+  dplyr::select(pHwater, lime_tot, MO, Phos, K, Mg, Ca, Na, N, C, 
+         CN, clay, SiltF, SiltC, SandF, SandC, Cl, Res, Cond,
+         dep_oxy_num, Pature, Fauche, natural, cultivated, artificial)%>%
+  mutate(across(c(Pature,Fauche), as.factor),
+    across(where(is.numeric), ~decostand(., method = "standardize")))-> metadata_grid_standard
+
+
+length(which(colSums(OUT_virus_grid)<=1))/length(colSums(OUT_virus_grid)) # propostion of virus observed only one time (and 0 time)
+
+OUT_virus_grid_clean = OUT_virus_grid[,colSums(OUT_virus_grid)>1] # rm 1 obs virus
+null_richness = rowSums(OUT_virus_grid_clean)!=0
+OUT_virus_grid_clean = OUT_virus_grid_clean[rowSums(OUT_virus_grid_clean)!=0,] # rm grid with 0 richness
+
+OUT_virus_stantdard = decostand(OUT_virus_grid_clean, method = "hellinger") 
+rowSums(OUT_virus_stantdard)
+
+metadata_grid_standard%>%
+  filter(null_richness) -> metadata_grid_standard
+  
+```
+
+```{r}
+rda_full = rda(OUT_virus_stantdard ~ .  ,metadata_grid_standard)
+rda_full$call
+
+p_var_full = summary(rda_full)
+### Avec colinéarité:
+
+# Partitioning of variance:
+#               Inertia Proportion
+# Total          0.4917     1.0000
+# Conditioned    0.0924     0.1879 => Partie expliquée par la dépendance spatiale
+# Constrained    0.2305     0.4689 => Partie expliquée par les variables env.
+# Unconstrained  0.1687     0.3432
+
+RsquareAdj(rda_full)$adj.r.squared
+RsquareAdj(rda_full)$r.squared   # => Notre modèle explique à ~47% l'assemblage des communautés (correspond à la partie "Constrained" de la rda)
+round(vif.cca(rda_full),2)
+```
+
+```{r}
+
+plot(rda_full)
+```
+
+```{r}
+#, MO, C, Cond, SiltF,clay,SandC,Cl,Mg
+metadata_grid_standard%>%
+  select(-c(natural, MO, C, Cond, Mg, SiltF, clay, SandC, Cl,N, SiltC) )-> metadata_grid_selected
+rda_selected = rda(OUT_virus_stantdard ~ .  ,metadata_grid_selected)
+round(vif.cca(rda_selected),2)
+
+```
+
+```{r}
+plot(rda_selected)
+summary(rda_selected)
+```
+
+```{r}
+rda_ordistep <- ordiR2step(rda(OUT_virus_stantdard ~ 1, metadata_grid_selected),
+                      scope = formula(rda_selected),
+                      direction = "both",
+                      R2scope = F,
+                      pstep = 10000,
+                      trace = FALSE)
+p_var_full3 = summary(rda_ordistep)
+str(p_var_full3)
+p_var_full3  
+```
+
+```{r}
+rda_ordistep$tot.chi
+anova.cca(rda_ordistep, permutations = 10000)
+
+anova_rda_ordistep = anova.cca(rda_ordistep, permutations = 10000, by ="term")
+
+# conversion en pourcentage pour faciliter l'interprétation
+str(anova_rda_ordistep)
+anova_rda_ordistep$Variance = (anova_rda_ordistep$Variance/ rda_ordistep$tot.chi)*100
+anova_rda_ordistep
+
+```
+
+```{r}
+RsquareAdj(rda_selected)$r.square # 18 param ( 46%)
+
+RsquareAdj(rda_ordistep)$r.square # 3 param
+# -30% of variance explaine for 15
+```
+
+```{r, fig.show='hide'}
+
+pl <- ordiplot(rda_ordistep,scaling = 1)
+perc <- round(100*(summary(rda_ordistep)$cont$importance[2, 1:3]), 2)
+str(perc)
+
+```
+
+```{r}
+# Type 1 scaling
+
+par(mfrow = c(1,1))
+
+##### Sites
+env_var = as.data.frame(pl$biplot*attr(pl$biplot,"arrow.mul"))
+env_var$type = rownames(env_var)
+
+env_var_discret = data.frame(t(pl$centroids[2,]))
+env_var_discret$type = rownames(pl$centroids)[2]
+
+sites = as.data.frame(pl$sites)
+sites$type = rownames(sites)
+
+species = as.data.frame(pl$species)
+ggplot()+
+  geom_segment(data = env_var,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), linewidth = 1)+
+  geom_label_repel(data = env_var,aes(x=RDA1,y = RDA2,label = type),  cex = 3.5)+
+  geom_text_repel(data = sites, aes(x=RDA1,y = RDA2, label = type), cex = 3,max.overlaps = 40,col = "steelblue")+
+  geom_point(data = species, aes(x=RDA1,y = RDA2), col = "darkolivegreen4")+
+  
+  labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"))+
+  main_theme
+```
+
+```{r}
+cluster2_sp = hcut(species, hc_metric = "euclidean", hc_method = "ward.D2", k =2)
+cluster3_sp = hcut(species, hc_metric = "euclidean", hc_method = "ward.D2", k =3)
+cluster4_sp = hcut(species, hc_metric = "euclidean", hc_method = "ward.D2", k =4)
+cluster5_sp = hcut(species, hc_metric = "euclidean", hc_method = "ward.D2", k =5)
+fviz_silhouette(cluster2_sp)
+fviz_silhouette(cluster3_sp)
+fviz_silhouette(cluster4_sp)
+fviz_silhouette(cluster5_sp)
+
+
+
+cluster2_sites = hcut(sites[,1:2], hc_metric = "euclidean", hc_method = "ward.D2", k =2)
+cluster3_sites = hcut(sites[,1:2], hc_metric = "euclidean", hc_method = "ward.D2", k =3)
+cluster4_sites = hcut(sites[,1:2], hc_metric = "euclidean", hc_method = "ward.D2", k =4)
+cluster5_sites = hcut(sites[,1:2], hc_metric = "euclidean", hc_method = "ward.D2", k =5)
+fviz_silhouette(cluster2_sites)
+fviz_silhouette(cluster3_sites)
+fviz_silhouette(cluster4_sites)
+fviz_silhouette(cluster5_sites)
+
+cluster3_site_df = data.frame(cluster3_sites$data, clust = as.factor(cluster3_sites$cluster))
+```
+
+```{r}
+cluster_sp_df = data.frame(cluster5_sp$data, clust = as.factor(cluster5_sp$cluster))
+
+cluster_sp_df$Plant_species = rownames(cluster_sp_df)
+
+cluster_sp_df%>%
+  full_join(tax_plant, by = join_by("Plant_species"))-> cluster_sp_df
+```
+
+```{r}
+ggplot()+
+  geom_segment(data = env_var,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1.5, col = "gray3")+
+  geom_label_repel(data = env_var,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
+   geom_segment(data = env_var_discret,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1, col = "gray3")+
+  geom_label_repel(data = env_var_discret,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
+  geom_point(data = cluster3_site_df, aes(x=RDA1,y = RDA2, shape = clust), cex = 3)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2, col = clust), size = 3,stroke=2, shape =4)+
+ 
+  labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Cluster species", shape = "Cluster sites")+
+  scale_color_brewer(palette ="Set1")+
+  main_theme+
+   theme(line = element_line())
+```
+
+
+```{r}
+metadata_grid_standard%>%
+  select(-c(Pature, Fauche))%>%
+  as.matrix()%>%
+  cor() -> env_cor
+corrplot.mixed(env_cor)
+```
+
+```{r}
+
+g1 = ggplot()+
+  geom_segment(data = env_var,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1.5, col = "gray3")+
+  geom_label_repel(data = env_var,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
+  geom_point(data = cluster3_site_df, aes(x=RDA1,y = RDA2, shape = clust), cex = 3)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2),col = "gray", size = 3,stroke=2, shape =4)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2, col = Salinity_tolerance ), size = 3,stroke=2, shape =4, na.rm = TRUE)+
+  geom_segment(data = env_var_discret,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1, col = "gray3")+
+  geom_label_repel(data = env_var_discret,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
+  labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Salnity tolerance", shape = "Cluster sites")+
+  scale_color_brewer(palette ="Set1")+
+  main_theme+
+   theme(line = element_line())
+
+g2 = ggplot()+
+  geom_segment(data = env_var,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1.5, col = "gray3")+
+  geom_label_repel(data = env_var,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
+  geom_point(data = cluster3_site_df, aes(x=RDA1,y = RDA2, shape = clust), cex = 3)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2),col = "gray", size = 3,stroke=2, shape =4)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2, col = life_style), size = 3,stroke=2, shape =4,  na.rm = TRUE)+
+  geom_segment(data = env_var_discret,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"),    size = 1, col = "gray3")+
+  geom_label_repel(data = env_var_discret,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
+  labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Life span", shape = "Cluster sites")+
+  scale_color_brewer(palette ="Set1")+
+  main_theme+
+   theme(line = element_line())
+#ggarrange(g1, g2)
+g1
+g2
+```
+
+```{r}
+ ggplot()+
+  geom_segment(data = env_var,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1.5, col = "gray3")+
+  geom_label_repel(data = env_var,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
+  geom_point(data = cluster3_site_df, aes(x=RDA1,y = RDA2, shape = clust), cex = 3)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2),col = "gray", size = 3,stroke=2, shape =4)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2, col = GRIME), size = 3,stroke=2, shape =4,  na.rm = TRUE)+
+  geom_segment(data = env_var_discret,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"),    size = 1, col = "gray3")+
+  geom_label_repel(data = env_var_discret,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
+  labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Life span", shape = "Cluster sites")+
+  scale_color_brewer(palette ="Set1")+
+  main_theme+
+   theme(line = element_line())
+
+ ggplot()+
+  geom_segment(data = env_var,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1.5, col = "gray3")+
+  geom_label_repel(data = env_var,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
+  geom_point(data = cluster3_site_df, aes(x=RDA1,y = RDA2, shape = clust), cex = 3)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2),col = "gray", size = 3,stroke=2, shape =4)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2, col = Plant_photosynthetic_pathway), size = 3,stroke=2, shape =4,  na.rm = TRUE)+
+  geom_segment(data = env_var_discret,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"),    size = 1, col = "gray3")+
+  geom_label_repel(data = env_var_discret,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
+  labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Photo path", shape = "Cluster sites")+
+  scale_color_brewer(palette ="Set1")+
+  main_theme+
+   theme(line = element_line())
+```
+
