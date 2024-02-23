@@ -1,7 +1,7 @@
 library(readxl)
 library(tidyverse)
 library(otuSummary)
-vi
+
 main_theme = theme_bw()+
   theme(line = element_blank(), 
         axis.line = element_line(colour = "black"),
@@ -33,6 +33,7 @@ read_xlsx("data/Metadata_Sample.xlsx") %>%
   group_by(Grid_code)%>%
   full_join(dist_df, by = join_by(quadra_A == quadra_A), relationship = "many-to-many" )-> dist_for_each_quadra
 dist_for_each_quadra = na.omit(dist_for_each_quadra)
+
 write.table(dist_for_each_quadra, "data/data_clean/dist_for_each_quadra.txt")
 
 test = read.table("data/data_clean/dist_for_each_quadra.txt", header = T)
