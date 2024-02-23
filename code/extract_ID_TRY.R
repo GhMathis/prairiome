@@ -42,7 +42,7 @@ traits %>%
   dplyr::select(AccSpeciesName, OriglName,TraitID, OrigValueStr) ->traits_temp
 
 unique(traits_temp$OrigValueStr)
-str(test)
+
 traits_temp%>%
   group_by(TraitID,OriglName)%>%
   summarise(n = n(),first = first(OrigValueStr))%>%
@@ -72,7 +72,7 @@ traits_temp%>%
   select(-c(OriglName, TraitID ,OrigValueStr))%>%
   filter(!duplicated(AccSpeciesName)) -> traits_clean
 head(traits_clean)
-unique(GRIME_clean$OrigValueStr_modif)
+
 traits_temp%>%
   full_join(ID_names_clean, by = join_by(TraitID))%>%
   filter(clean_name == "GRIME")%>%
@@ -90,6 +90,19 @@ traits_temp%>%
   select(-c(OriglName, TraitID ,OrigValueStr))%>%
   filter(!duplicated(AccSpeciesName)) -> GRIME_clean
 
+traits_temp%>%
+  full_join(ID_names_clean, by = join_by(TraitID))%>%
+  filter(clean_name == "Plant_photosynthetic_pathway")%>%
+  mutate(OrigValueStr_modif = case_when(
+    OrigValueStr %in% c("C3", "c3", "3","C3?") ~ "C3",
+    OrigValueStr %in% c("C4", "c4", "C4?") ~ "C4",
+    AccSpeciesName =="Sonchus maritimus" ~ "C4",
+    .default = OrigValueStr))%>% 
+  
+  select(-c(OriglName, TraitID ,OrigValueStr))%>%
+  filter(!duplicated(AccSpeciesName)) ->photo_path
+
+unique(photo_path$OrigValueStr_modif)
 ##################
 
 
@@ -108,6 +121,7 @@ life_span%>%
 
 traits_clean = rbind(traits_clean,life_span_CAM_clean)
 traits_clean = rbind(traits_clean,GRIME_clean)
+traits_clean = rbind(traits_clean,photo_path)
 tax_plant_CAM%>%
   select(Plant_species, Plant_genus,  Sp_names)%>%
   full_join(traits_clean, by = join_by("Sp_names" == "AccSpeciesName"), relationship = "many-to-many")%>%
