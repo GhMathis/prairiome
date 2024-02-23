@@ -3,7 +3,7 @@ title: "Untitled"
 output: html_document
 date: "2024-02-20"
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ```{r}
@@ -14,7 +14,7 @@ library(corrplot)
 library(vegan)
 library(ade4)
 library(car)
-
+library(ggpubr)
 
 # objet pour mettre en forme les graphiques ggplot
 main_theme = theme_bw()+
@@ -84,7 +84,6 @@ RsquareAdj(rda_full)$adj.r.squared
 RsquareAdj(rda_full)$r.squared   # => Notre modèle explique à ~47% l'assemblage des communautés (correspond à la partie "Constrained" de la rda)
 round(vif.cca(rda_full),2)
 ```
-
 
 ```{r}
 
@@ -168,7 +167,6 @@ ggplot()+
   main_theme
 ```
 
-
 ```{r}
 cluster2_sp = hcut(species, hc_metric = "euclidean", hc_method = "ward.D2", k =2)
 cluster3_sp = hcut(species, hc_metric = "euclidean", hc_method = "ward.D2", k =3)
@@ -208,7 +206,7 @@ ggplot()+
   geom_label_repel(data = env_var,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
   geom_point(data = cluster3_site_df, aes(x=RDA1,y = RDA2, shape = clust), cex = 3)+
   geom_point(data = cluster3_sp_df, aes(x=RDA1,y = RDA2, col = clust), size = 3,stroke=2, shape =4)+
-  geom_point(data = env_var_discret, aes(x=RDA1,y = RDA2,label = as.factor(type)),  cex = 3.5,col = "steelblue")+
+  geom_point(data = env_var_discret, aes(x=RDA1,y = RDA2,fill = as.factor(type)),  cex = 3.5,col = "steelblue", shape =21)+
   labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Cluster species", shape = "Cluster sites")+
   scale_color_brewer(palette ="Set1")+
   main_theme+
@@ -282,8 +280,11 @@ g2 = ggplot()+
   scale_color_brewer(palette ="Set1")+
   main_theme+
    theme(line = element_line())
-ggarrange(g1, g2)
+#ggarrange(g1, g2)
+g1
+g2
 ```
+
 ```{r}
  ggplot()+
   geom_segment(data = env_var,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1.5, col = "gray3")+
@@ -294,6 +295,19 @@ ggarrange(g1, g2)
   geom_segment(data = env_var_discret,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"),    size = 1, col = "gray3")+
   geom_label_repel(data = env_var_discret,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
   labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Life span", shape = "Cluster sites")+
+  scale_color_brewer(palette ="Set1")+
+  main_theme+
+   theme(line = element_line())
+
+ ggplot()+
+  geom_segment(data = env_var,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1.5, col = "gray3")+
+  geom_label_repel(data = env_var,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
+  geom_point(data = cluster3_site_df, aes(x=RDA1,y = RDA2, shape = clust), cex = 3)+
+  geom_point(data = cluster3_sp_df, aes(x=RDA1,y = RDA2),col = "gray", size = 3,stroke=2, shape =4)+
+  geom_point(data = cluster3_sp_df, aes(x=RDA1,y = RDA2, col = Plant_photosynthetic_pathway), size = 3,stroke=2, shape =4,  na.rm = TRUE)+
+  geom_segment(data = env_var_discret,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"),    size = 1, col = "gray3")+
+  geom_label_repel(data = env_var_discret,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
+  labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Photo path", shape = "Cluster sites")+
   scale_color_brewer(palette ="Set1")+
   main_theme+
    theme(line = element_line())
@@ -351,4 +365,3 @@ g.mspa <- insert(g.abund[[i]], g.mspa, posi = p2[[i]], plot = FALSE)
 
 g.mspa
 ```
-
