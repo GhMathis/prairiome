@@ -2,16 +2,26 @@ library(tidyverse)
 library(readxl)
 
 ##### OTU Camargue
+
+### PLANT
 read_xlsx("data/OTU_plant.xlsx")%>%
   filter(str_detect( Host_code, "CAM"),
          !str_detect(Host_code, "21_CAM_1[45]")) %>%
   replace(is.na(.),0)%>%
   select(-Richness)%>%
-  pivot_longer(-Host_code, names_to = "Plant", values_to = "cover")  %>%
-  filter(cover != 0)%>%
-  
-  pivot_wider(values_from = cover, names_from = Plant, values_fill = 0) -> otu_plant_cam
+  select(Host_code, where(~is.numeric(.x) && sum(.x) != 0 )) -> otu_plant_cam
+
 write.table(otu_plant_cam, "data/data_clean/OTU_plant_CAM.txt")
+table(str_detect(otu_plant_cam$Host_code, "21_CAM_07"))
+### VIRUS
+read.delim2("data/S1_Viral_OTU.txt",header = T)%>%
+  rename(Host_code = "X")%>%
+  filter(str_detect( Host_code, "CAM"),
+         !str_detect(Host_code, "21_CAM_1[45]")) %>%
+  select(Host_code, where(~is.numeric(.x) && sum(.x) != 0 ))-> otu_virus_cam
+
+
+write.table(otu_virus_cam, "data/data_clean/OTU_virus_CAM.txt")
 
 ##### Metadata Quadra 
 read_xlsx("data/Metadata_Sample.xlsx")%>%
@@ -19,28 +29,28 @@ read_xlsx("data/Metadata_Sample.xlsx")%>%
   select(-c(Rocks, Additional_information))-> metadata_quad_cam
 str(metadata_quad_cam)
 
-read_xlsx("data/OTU_plant.xlsx")%>%
-  
-  filter(str_detect( Host_code, "CAM"),
-         !str_detect(Host_code, "21_CAM_1[45]")) %>%
-  replace(is.na(.),0)%>%
-  mutate(year = as.factor(substring(Host_code,1,2)),
+read.table("data/data_clean/OTU_plant_CAM.txt",header = T)%>%
+  reframe(Host_code = Host_code,
+         year = as.factor(substring(Host_code,1,2)),
          grid = as.factor(substring(Host_code,8,9)),
          quadra = as.factor(substring(Host_code,10,11)),
-         total_cover = rowSums(across(where(is.numeric)))
+         total_cover = rowSums(across(where(is.numeric))),
+         Plant_richness = rowSums(across(where(is.numeric), ~.x != 0))
          
   )%>%
-  pivot_longer(-c(Host_code,Richness, year, grid, quadra, total_cover), names_to = "Plant", values_to = "cover") %>%
-  filter(cover != 0)%>%
-  pivot_wider(values_from = cover, names_from = Plant)%>%
-  select(Richness,year,grid,quadra, total_cover,Host_code)%>%
+  select(Plant_richness,year,grid,quadra, total_cover,Host_code)%>%
   left_join(metadata_quad_cam, by ="Host_code")%>%
-  mutate(across(c(Vegetation, Litter, Soil),~as.numeric(.x)))%>%
-  mutate(Soil = case_when(str_detect(Host_code, "20_CAM_01")~ 0,
-         .default = Soil))%>%
-  mutate(Free_space = Litter +Soil) -> metadata_quad_cam
-  
-metadata_quad_cam$Litter
+  mutate(across(c(Vegetation, Litter, Soil),~as.numeric(.x)),
+         Soil = case_when(str_detect(Host_code, "20_CAM_01")~ 0,
+         .default = Soil),
+         Free_space = Litter +Soil) -> metadata_quad_cam
+
+read.table("data/data_clean/OTU_virus_CAM.txt",header = T)%>%
+  reframe(Host_code = Host_code,
+          Viral_richness = rowSums(across(where(is.numeric), ~.x != 0))
+          )%>%
+  left_join(metadata_quad_cam, by ="Host_code")-> metadata_quad_cam
+
 write.table(metadata_quad_cam, "data/data_clean/Metadata_quadra_CAM.txt")
 
 ##### Metadata grid
@@ -52,7 +62,6 @@ otu_plant_cam%>%
 read_xlsx("data/Habitats_EDGG_patures.xlsx")%>%
   select(Grid_code = Sampling_n, Pature,Fauche)-> paturage
 
-paturage
 
 read_xlsx("data/donnee_sol.xlsx",col_names = F, skip = 3)%>%
   rename_with(~c("Grid_code", "Num", "pHwater", "lime_tot", "MO", "Phos", "K", "Mg",
@@ -76,40 +85,67 @@ read_xlsx("data/Metadata_grid.xlsx")%>%
   )%>%
   select(-GPS_localisation)%>%
   left_join(soil_data, by= "Grid_code")%>%
-  left_join(parurage, by = "Grid_code") -> Metadata_grid_cam
+  left_join(paturage, by = "Grid_code") -> Metadata_grid_cam
 
 #####Abundance indices at grid levels
 library(iNEXT)
 
 otu_plant_cam%>%
   pivot_longer(-Host_code, names_to = "Plant", values_to = "cover")  %>%
-  filter(cover != 0)%>%
-  pivot_wider(values_from = cover, names_from = Host_code   , values_fill = 0) -> otu_plant_cam
+  pivot_wider(values_from = cover, names_from = Host_code   , values_fill = 0) -> otu_plant_cam_trpose
+otu_plant_cam_trpose = as.data.frame(otu_plant_cam_trpose)
+rownames(otu_plant_cam_trpose) = otu_plant_cam_trpose$Plant
+as.data.frame(otu_plant_cam_trpose)%>%
+  dplyr::select(-Plant) -> otu_plant_cam_trpose
+otu_plant_cam_binary = otu_plant_cam_trpose
+otu_plant_cam_binary[otu_plant_cam_trpose != 0] = 1 
+
+Plant_richness_grid = c()
+Plant_shannon_grid = c()
+Plant_simpson_grid = c()
 
 
-  
-rownames(otu_plant_cam) = otu_plant_cam$Plant
-as.data.frame(otu_plant_cam)%>%
-  dplyr::select(-Plant) -> otu_plant_cam
+otu_virus_cam%>%
+  pivot_longer(-Host_code, names_to = "Virus", values_to = "presence")  %>%
+  pivot_wider(values_from = presence, names_from = Host_code   , values_fill = 0) -> otu_virus_cam_trpose
+otu_virus_cam_trpose = as.data.frame(otu_virus_cam_trpose)
+rownames(otu_virus_cam_trpose) = otu_virus_cam_trpose$Virus
+as.data.frame(otu_virus_cam_trpose)%>%
+  dplyr::select(-Virus) -> otu_virus_cam_trpose
 
-otu_plant_cam_binary = otu_plant_cam
-otu_plant_cam_binary[otu_plant_cam != 0] = 1 
-
-richness_grid = c()
-shannon_grid = c()
-simpson_grid = c()
+rownames(otu_virus_cam_trpose)
+Virus_richness_grid = c()
+Virus_shannon_grid = c()
+Virus_simpson_grid = c()
 # Loop through sample names and extract corresponding columns into list
 for(sample_name in unique(Metadata_grid_cam$Grid_code)) {
+  ### Plant
   temp <- otu_plant_cam_binary[, str_detect(names(otu_plant_cam_binary), sample_name)]
-  richness_grid = c(richness_grid , ChaoRichness(temp, datatype="incidence_raw")[[1]])
-  shannon_grid = c(shannon_grid, ChaoShannon(temp, datatype="incidence_raw")[[1]])
-  simpson_grid = c(simpson_grid, ChaoSimpson(temp, datatype="incidence_raw")[[1]])
+  Plant_richness_grid = c(Plant_richness_grid , ChaoRichness(temp, datatype="incidence_raw")[[1]])
+  Plant_shannon_grid = c(Plant_shannon_grid, ChaoShannon(temp, datatype="incidence_raw")[[1]])
+  Plant_simpson_grid = c(Plant_simpson_grid, ChaoSimpson(temp, datatype="incidence_raw")[[1]])
+  
+  ### Virus
+  temp <- otu_virus_cam_trpose[, str_detect(names(otu_virus_cam_trpose), sample_name)]
+  if(sum(temp) != 0){
+   
+    Virus_richness_grid = c(Virus_richness_grid , ChaoRichness(temp, datatype="incidence_raw")[[1]])
+    Virus_shannon_grid = c(Virus_shannon_grid, ChaoShannon(temp, datatype="incidence_raw")[[1]])
+    Virus_simpson_grid = c(Virus_simpson_grid, ChaoSimpson(temp, datatype="incidence_raw")[[1]])
+  }else{
+    Virus_richness_grid = c(Virus_richness_grid , 0)
+    Virus_shannon_grid = c(Virus_shannon_grid, 0)
+    Virus_simpson_grid = c(Virus_simpson_grid, 0)
+  }
   
 }
-length(richness_grid)
+
 Metadata_grid_cam%>%
-  mutate(Richness_grid = richness_grid,
-         Shannon_grid = shannon_grid,
-         Simpson_grid = simpson_grid) -> Metadata_grid_cam
+  mutate(Plant_richness_grid = Plant_richness_grid,
+         Plant_shannon_grid = Plant_shannon_grid,
+         Plant_simpson_grid = Plant_simpson_grid,
+         Virus_richness_grid = Virus_richness_grid,
+         Virus_shannon_grid = Virus_shannon_grid,
+         Virus_simpson_grid = Virus_simpson_grid) -> Metadata_grid_cam
 
 write.table(Metadata_grid_cam, "data/data_clean/Metadata_grid_CAM.txt")
