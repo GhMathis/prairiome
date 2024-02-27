@@ -182,7 +182,7 @@ soil_occu_crop_forma = soil_occu_crop%>%
 ##### Compute buffers sizes estimations
 #explication de la richesse par des combinaison linéaire de variables environnementales
 # et par les variables paysagéres.
-(fmla <- as.formula(paste("Richness_grid ~ Dim.1 + Dim.2 + Dim.3 +", paste(cover_names, collapse= "+"))))
+(fmla <- as.formula(paste("Plant_richness_grid ~ Dim.1 + Dim.2 + Dim.3 +", paste(cover_names, collapse= "+"))))
 mod1pois = siland(fmla, land = soil_occu_crop, init = c(100, 100, 100, 100, 100), data = metadata_grid, wd = 10, family = "poisson")
 
 mod1pois
@@ -210,7 +210,7 @@ metadata_grid%>%
                          include.lowest = TRUE)) -> metadata_grid
 
 
-mod_no_land <- glm(Richness_grid~Pature*Fauche + Na_class +clay_class , family=poisson(link="log"), data = metadata_grid)
+mod_no_land <- glm(Plant_richness_grid~Pature*Fauche + Na_class +clay_class , family=poisson(link="log"), data = metadata_grid)
 summary(mod_no_land)
 hist(mod_no_land$residuals, breaks = 20)
 Anova(mod_no_land,3)
@@ -220,12 +220,13 @@ Anova(mod_no_land,3)
 metadata_grid$richness_resid = mod_no_land$residual
 
 (fmla_res <- as.formula(paste("richness_resid~1 +", paste(cover_names, collapse= "+"))))
-mod_res = siland(fmla_res, land = soil_occu_crop, data = metadata_grid,init = c(100,300,100,100,100), wd = 10, family = "gaussian")
+mod_res = siland(fmla_res, land = soil_occu_crop, data = metadata_grid,init = c(100,500,300,100,500), wd = 5, family = "gaussian")
 mod_res
 summary(mod_res)
 likres2 = siland.lik(mod_res,land = soil_occu_crop,data = metadata_grid, varnames = cover_names)
 likres2+
   main_theme
+siland.quantile(mod_res)
 #####
 buffer.around.point = function(pt, geo_data, layer_name, buffer_size){
   pt = as.matrix(pt)
@@ -251,9 +252,9 @@ buffer.around.point = function(pt, geo_data, layer_name, buffer_size){
 }
 
 ##### Compute area percentage within a buffer
-buffer_size = 500 # buffer radius
-croped_surfaces = apply(metadata_grid[,2:3], 1, function(x)
-  buffer.around.point(pt = x, geo_data = vect(soil_occup_forma), layer_name = "lib", buffer_size = buffer_size))
+buffer_size = 1500 # buffer radius
+croped_surfaces = apply(data.frame(metadata_grid$X, metadata_grid$Y), 1, function(x)
+  buffer.around.point(pt = x, geo_data = vect(soil_occu_crop), layer_name = "lib", buffer_size = buffer_size))
 
 # croped_surfaces contain percentage area dataframes and also a sp objects of 
 # each buffer (if needed for graphical representation of the landscape for exemple)
@@ -279,4 +280,4 @@ area_per_buffer%>%
 
 
 area_per_buffer_wide%>%
-  write.table(file = "data/clean_data/Buffer_cover_CAM.txt")
+  write.table(file = "data/data_clean/Buffer_5ldscp_CAM.txt")

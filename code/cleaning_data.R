@@ -1,5 +1,6 @@
 library(tidyverse)
 library(readxl)
+library(iNEXT)
 
 ##### OTU Camargue
 
@@ -70,7 +71,6 @@ read_xlsx("data/donnee_sol.xlsx",col_names = F, skip = 3)%>%
   filter(str_detect(Grid_code,"CAM" ))%>%
   mutate(Grid_code = str_extract(Grid_code,".._CAM_.." ))%>%
   left_join(y = read_xlsx("data/distance_fer_sol_EDGG_CAM.xlsx"), by = join_by(Grid_code == EDGG))%>%
-  #left_join(y = metadatat_grid_plant, by = "Grid_code")%>%
   mutate(dep_oxy_num = as.numeric(str_remove(Profondeur, "[>]")),
          depth_oxy = cut(dep_oxy_num,
                          breaks = c(0, 9, 19, 29, 39, Inf),
@@ -85,10 +85,11 @@ read_xlsx("data/Metadata_grid.xlsx")%>%
   )%>%
   select(-GPS_localisation)%>%
   left_join(soil_data, by= "Grid_code")%>%
+  left_join(y = read.table("data/data_clean/Buffer_5ldscp_CAM.txt"), by = "Grid_code")%>%
   left_join(paturage, by = "Grid_code") -> Metadata_grid_cam
 
 #####Abundance indices at grid levels
-library(iNEXT)
+
 
 otu_plant_cam%>%
   pivot_longer(-Host_code, names_to = "Plant", values_to = "cover")  %>%
