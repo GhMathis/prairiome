@@ -42,19 +42,20 @@ distances <- nbdists(nb = knn2nb(div.knear4), coords = xy)
 invd1 <- lapply(distances, function(x) (1 / x))
 pond4.stan <- nb2listw(neighbours = knn2nb(div.knear4),  # Enable compatibility by 
                        style = "B", # Binary values (0 / 1),
-                       #glist = invd1,
+                       glist = invd1,
                        zero.policy = TRUE  # Set 0 when the observation has no neighbors
 )
 
 pond4.stan
 
 str(metadata_quadra)
+moran.test(x=metadata_quadra$Plant_richness, listw = pond4.stan,randomisation = T)
 metadata_quadra%>%
   group_by(Grid_code)%>%
-  summarise(Moran_index_Richness = moran.test(x=Richness, listw = pond4.stan,randomisation = T)$estimate[1],
-            Moran_expect = moran.test(x=Richness, listw = pond4.stan,randomisation = T)$estimate[2],
-            Moran_varariance = moran.test(x=Richness, listw = pond4.stan,randomisation = T)$estimate[3],
-            Moran_pval = moran.mc(x=Richness, listw = pond4.stan, nsim = 1000)$p.value,
+  summarise(Moran_index_Richness = moran.test(x=Plant_richness, listw = pond4.stan,randomisation = T)$estimate[1],
+            Moran_expect = moran.test(x=Plant_richness, listw = pond4.stan,randomisation = T)$estimate[2],
+            Moran_varariance = moran.test(x=Plant_richness, listw = pond4.stan,randomisation = T)$estimate[3],
+            Moran_pval = moran.mc(x=Plant_richness, listw = pond4.stan, nsim = 1000)$p.value,
             significativity = ifelse(Moran_pval <0.05, "signif", "no signif")) -> moran_index_Richness
 
 ggplot(moran_index_Richness)+
@@ -65,12 +66,29 @@ ggplot(moran_index_Richness)+
   main_theme+
   theme(axis.text.x = element_text(angle = 90))
 
-moran.test(x=metadata_quadra%>%filter(Grid_code == "20_CAM_02")%>%pull(Richness), listw = pond4.stan,randomisation = T)
-moran.mc(x=metadata_quadra%>%filter(Grid_code == "20_CAM_02")%>%pull(Richness), listw = pond4.stan, nsim = 100)
+metadata_quadra%>%
+  group_by(Grid_code)%>%
+  filter(sum(Viral_richness)>=3)%>%
+  summarise(Moran_index_Richness = moran.test(x=Viral_richness, listw = pond4.stan,randomisation = T)$estimate[1],
+            Moran_expect = moran.test(x=Viral_richness, listw = pond4.stan,randomisation = T)$estimate[2],
+            Moran_varariance = moran.test(x=Viral_richness, listw = pond4.stan,randomisation = T)$estimate[3],
+            Moran_pval = moran.mc(x=Viral_richness, listw = pond4.stan, nsim = 1000)$p.value,
+            significativity = ifelse(Moran_pval <0.05, "signif", "no signif")) -> moran_index_Richness_viral
+
+ggplot(moran_index_Richness_viral)+
+  geom_point(aes(Grid_code, Moran_index_Richness, col= significativity), cex =2)+
+  geom_errorbar( aes(x= Grid_code,
+                     ymin=Moran_index_Richness-sqrt(Moran_varariance), ymax=Moran_index_Richness+sqrt(Moran_varariance), col= significativity))+
+  geom_point(aes(Grid_code, Moran_expect), col = "red", cex =2)+
+  main_theme+
+  theme(axis.text.x = element_text(angle = 90))
+
+moran.test(x=metadata_quadra%>%filter(Grid_code == "20_CAM_02")%>%pull(Plant_richness), listw = pond4.stan,randomisation = T)
+moran.mc(x=metadata_quadra%>%filter(Grid_code == "20_CAM_02")%>%pull(Plant_richness), listw = pond4.stan, nsim = 100)
 cor4pp <-
   sp.correlogram(
     knn2nb(div.knear4),
-    metadata_quadra%>%filter(Grid_code == "20_CAM_01")%>%pull(Richness),
+    metadata_quadra%>%filter(Grid_code == "20_CAM_01")%>%pull(Plant_richness),
     order = 3,  # maximum of the scale (lag)
     method = "I",
     zero.policy = TRUE,
