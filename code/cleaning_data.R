@@ -90,6 +90,40 @@ read_xlsx("data/Metadata_grid.xlsx")%>%
 
 #####Abundance indices at grid levels
 
+rbind(t(data.frame(sample_size = rep(9,42))),.)
+
+read.table("data/data_clean/OTU_plant_CAM.txt")%>%
+  mutate( Grid_code = str_extract(Host_code, ".._CAM_.."))%>%
+  group_by(Grid_code) %>%
+  mutate(across(where(is.numeric), ~ifelse(. != 0,1,0 ))) %>%
+  summarise_if(is.numeric, sum)%>%
+  #mutate(n_sample = rep(9,42))%>%
+  pivot_longer(-c(Grid_code), names_to = "Plant", values_to = "occur")%>%
+  # mutate(occur  =  case_when(occur == 0 ~ NA,
+  #                            .default = occur))%>%
+  pivot_wider(values_from = occur, names_from = Grid_code )%>%
+  column_to_rownames("Plant")-> OUT_plant_grid_binary_list
+
+rbind(sample_size = rep(9,42),OUT_plant_grid_binary_list) -> OUT_plant_grid_binary_list
+
+OUT_plant_grid_binary_list
+  OUT_plant_grid_binary_list#%>%
+  as.list()%>%
+  map(., discard, .p = rlang::is_na)-> OUT_plant_grid_binary_list
+
+read.table("data/data_clean/OTU_virus_CAM.txt")%>%
+  mutate( Grid_code = str_extract(Host_code, ".._CAM_.."))%>%
+  group_by(Grid_code) %>%
+  mutate(across(where(is.numeric), ~ifelse(. != 0,1,0 ))) %>%
+  summarise_if(is.numeric, sum)%>%
+  pivot_longer(-Grid_code, names_to = "Virus", values_to = "occur")%>%
+  mutate(occur  =  case_when(occur == 0 ~ NA,
+                             .default = occur))%>%
+  pivot_wider(values_from = occur, names_from = Grid_code )%>%
+  select(-Virus)%>%
+  rbind(rep(9,42),.)%>%
+  as.list()%>%
+  map(., discard, .p = rlang::is_na)-> OUT_virus_grid_binary_list
 
 otu_plant_cam%>%
   pivot_longer(-Host_code, names_to = "Plant", values_to = "cover")  %>%
@@ -118,8 +152,28 @@ rownames(otu_virus_cam_trpose)
 Virus_richness_grid = c()
 Virus_shannon_grid = c()
 Virus_simpson_grid = c()
+test = rowSums(OUT_plant_grid_binary_trspose)
+x <- as.numeric(unlist(OUT_plant_grid_binary_trspose))
+t <- x[1]
+y <- x[-1]
+sum(x) == 0
+OUT_plant_grid_binary_list[["22_CAM_04"]]
+temp= iNEXT(as.data.frame(OUT_plant_grid_binary_list),q = 0, se=TRUE, size = c(1, 10, 20, 30, 40, 50, 80, 100), nboot = 100,
+            datatype="incidence_freq")
+
+temp%>%
+  ggiNEXT(., type = 1, color.var = "Order.q")+
+  #facet_wrap(~Assemblage)+
+  ylab("Plant richness")+
+  xlab("Sample size")
+
+iNEXT(OUT_virus_grid_binary_list[[38]],q = 0, se=TRUE, size = c(1, 10, 20, 30, 40, 50, 80, 100), nboot = 100) %>% 
+  ggiNEXT(., type = 1, color.var = "Order.q")
+ChaoRichness(temp, datatype="incidence_raw")
+
 # Loop through sample names and extract corresponding columns into list
-for(sample_name in unique(Metadata_grid_cam$Grid_code)) {
+otu_virus_cam
+for(sample_name in unique(Metadata_grid_cam$Grid_code)[1]) {
   ### Plant
   temp <- otu_plant_cam_binary[, str_detect(names(otu_plant_cam_binary), sample_name)]
   Plant_richness_grid = c(Plant_richness_grid , ChaoRichness(temp, datatype="incidence_raw")[[1]])
