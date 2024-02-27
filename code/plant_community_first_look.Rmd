@@ -31,8 +31,7 @@ main_theme = theme_bw()+
 ```
 
 ```{r}
-read.table("data/data_clean/Metadata_grid_CAM.txt", header = T)%>%
-  left_join(read.table("data/data_clean/Buffer_3ldscp_CAM.txt", header = T), by = "Grid_code") -> metadata_grid
+read.table("data/data_clean/Metadata_grid_CAM.txt", header = T) -> metadata_grid
   
 metadata_quadra = read.table("data/data_clean/Metadata_quadra_CAM.txt")
 OUT_plant = read.table("data/data_clean/OTU_plant_CAM.txt")
@@ -47,7 +46,7 @@ read.table("data/data_clean/TAX_plant_CAM.txt")-> tax_plant
 Grid_code = OUT_plant_grid_binary$Grid_code
 OUT_plant_grid_binary = as.data.frame(OUT_plant_grid_binary[, -1])
 rownames(OUT_plant_grid_binary) = Grid_code
-#str(OUT_plant_grid_binary)
+
 ```
 
 ```{r}
@@ -55,7 +54,7 @@ colnames(metadata_grid)
 metadata_grid%>%
   dplyr::select(pHwater, lime_tot, MO, Phos, K, Mg, Ca, Na, N, C, 
          CN, clay, SiltF, SiltC, SandF, SandC, Cl, Res, Cond,
-         dep_oxy_num, Pature, Fauche, natural, cultivated, artificial)%>%
+         dep_oxy_num, Pature, Fauche, natural_landscape, cultivated, artificial, non_emitting,wetland)%>%
   mutate(across(c(Pature,Fauche), as.factor),
     across(where(is.numeric), ~decostand(., method = "standardize")))-> metadata_grid_standard
 
@@ -91,8 +90,9 @@ plot(rda_full)
 ```
 
 ```{r}
+#-c(natural, MO, C, Cond, SiltF,clay,SandC,Cl,Mg)
 metadata_grid_standard%>%
-  select(-c(natural, MO, C, Cond, SiltF,clay,SandC,Cl,Mg)) -> metadata_grid_selected
+  select(-c(MO, N,Cond, SiltF, SandC, Mg, Na, artificial, cultivated, clay)) -> metadata_grid_selected
 rda_selected = rda(OUT_plant_stantdard ~ .  ,metadata_grid_selected)
 round(vif.cca(rda_selected),2)
 
@@ -192,12 +192,12 @@ cluster3_site_df = data.frame(cluster3_sites$data, clust = as.factor(cluster3_si
 ```
 
 ```{r}
-cluster3_sp_df = data.frame(cluster4_sp$data, clust = as.factor(cluster4_sp$cluster))
+cluster_sp_df = data.frame(cluster5_sp$data, clust = as.factor(cluster5_sp$cluster))
 
-cluster3_sp_df$Plant_species = rownames(cluster3_sp_df)
+cluster_sp_df$Plant_species = rownames(cluster_sp_df)
 
-cluster3_sp_df%>%
-  full_join(tax_plant, by = join_by("Plant_species"))-> cluster3_sp_df
+cluster_sp_df%>%
+  full_join(tax_plant, by = join_by("Plant_species"))-> cluster_sp_df
 ```
 
 ```{r}
@@ -205,8 +205,9 @@ ggplot()+
   geom_segment(data = env_var,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1.5, col = "gray3")+
   geom_label_repel(data = env_var,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
   geom_point(data = cluster3_site_df, aes(x=RDA1,y = RDA2, shape = clust), cex = 3)+
-  geom_point(data = cluster3_sp_df, aes(x=RDA1,y = RDA2, col = clust), size = 3,stroke=2, shape =4)+
-  geom_point(data = env_var_discret, aes(x=RDA1,y = RDA2,fill = as.factor(type)),  cex = 3.5,col = "steelblue", shape =21)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2, col = clust), size = 3,stroke=2, shape =4)+
+  geom_segment(data = env_var_discret,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1, col = "gray3")+
+  geom_label_repel(data = env_var_discret,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
   labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Cluster species", shape = "Cluster sites")+
   scale_color_brewer(palette ="Set1")+
   main_theme+
@@ -259,11 +260,11 @@ g1 = ggplot()+
   geom_segment(data = env_var,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1.5, col = "gray3")+
   geom_label_repel(data = env_var,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
   geom_point(data = cluster3_site_df, aes(x=RDA1,y = RDA2, shape = clust), cex = 3)+
-  geom_point(data = cluster3_sp_df, aes(x=RDA1,y = RDA2),col = "gray", size = 3,stroke=2, shape =4)+
-  geom_point(data = cluster3_sp_df, aes(x=RDA1,y = RDA2, col = Salinity_tolerance ), size = 3,stroke=2, shape =4, na.rm = TRUE)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2),col = "gray", size = 3,stroke=2, shape =4)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2, col = Salinity_tolerance ), size = 3,stroke=2, shape =4, na.rm = TRUE)+
   geom_segment(data = env_var_discret,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1, col = "gray3")+
   geom_label_repel(data = env_var_discret,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
-  labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Salnity tolerance", shape = "Cluster sites")+
+  labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Salinity tolerance", shape = "Cluster sites")+
   scale_color_brewer(palette ="Set1")+
   main_theme+
    theme(line = element_line())
@@ -272,8 +273,8 @@ g2 = ggplot()+
   geom_segment(data = env_var,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1.5, col = "gray3")+
   geom_label_repel(data = env_var,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
   geom_point(data = cluster3_site_df, aes(x=RDA1,y = RDA2, shape = clust), cex = 3)+
-  geom_point(data = cluster3_sp_df, aes(x=RDA1,y = RDA2),col = "gray", size = 3,stroke=2, shape =4)+
-  geom_point(data = cluster3_sp_df, aes(x=RDA1,y = RDA2, col = life_style), size = 3,stroke=2, shape =4,  na.rm = TRUE)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2),col = "gray", size = 3,stroke=2, shape =4)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2, col = life_style), size = 3,stroke=2, shape =4,  na.rm = TRUE)+
   geom_segment(data = env_var_discret,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"),    size = 1, col = "gray3")+
   geom_label_repel(data = env_var_discret,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
   labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Life span", shape = "Cluster sites")+
@@ -290,8 +291,8 @@ g2
   geom_segment(data = env_var,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1.5, col = "gray3")+
   geom_label_repel(data = env_var,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
   geom_point(data = cluster3_site_df, aes(x=RDA1,y = RDA2, shape = clust), cex = 3)+
-  geom_point(data = cluster3_sp_df, aes(x=RDA1,y = RDA2),col = "gray", size = 3,stroke=2, shape =4)+
-  geom_point(data = cluster3_sp_df, aes(x=RDA1,y = RDA2, col = GRIME), size = 3,stroke=2, shape =4,  na.rm = TRUE)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2),col = "gray", size = 3,stroke=2, shape =4)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2, col = GRIME), size = 3,stroke=2, shape =4,  na.rm = TRUE)+
   geom_segment(data = env_var_discret,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"),    size = 1, col = "gray3")+
   geom_label_repel(data = env_var_discret,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
   labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Life span", shape = "Cluster sites")+
@@ -303,8 +304,8 @@ g2
   geom_segment(data = env_var,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1.5, col = "gray3")+
   geom_label_repel(data = env_var,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
   geom_point(data = cluster3_site_df, aes(x=RDA1,y = RDA2, shape = clust), cex = 3)+
-  geom_point(data = cluster3_sp_df, aes(x=RDA1,y = RDA2),col = "gray", size = 3,stroke=2, shape =4)+
-  geom_point(data = cluster3_sp_df, aes(x=RDA1,y = RDA2, col = Plant_photosynthetic_pathway), size = 3,stroke=2, shape =4,  na.rm = TRUE)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2),col = "gray", size = 3,stroke=2, shape =4)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2, col = Plant_photosynthetic_pathway), size = 3,stroke=2, shape =4,  na.rm = TRUE)+
   geom_segment(data = env_var_discret,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"),    size = 1, col = "gray3")+
   geom_label_repel(data = env_var_discret,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
   labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Photo path", shape = "Cluster sites")+
@@ -312,6 +313,24 @@ g2
   main_theme+
    theme(line = element_line())
 ```
+```{r}
+
+ ggplot()+
+  geom_segment(data = env_var,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1.5, col = "gray3")+
+  geom_label_repel(data = env_var,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
+  geom_point(data = cluster3_site_df, aes(x=RDA1,y = RDA2, shape = clust), cex = 3)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2),col = "gray", size = 3,stroke=2, shape =4)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2, col = Plant_genus), size = 3,stroke=2, shape =4,  na.rm = TRUE)+
+  geom_segment(data = env_var_discret,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"),    size = 1, col = "gray3")+
+  geom_label_repel(data = env_var_discret,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
+  labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Photo path", shape = "Cluster sites")+
+  scale_color_brewer(palette ="Set1")+
+  main_theme+
+   theme(line = element_line())
+unique(cluster_sp_df$Plant_genus)
+```
+```
+
 
 ```{r}
 library(adespatial)
@@ -341,27 +360,28 @@ mem.gab.negative <- orthobasis.listw(listwgab, wt = rep(1, length(listwgab$neigh
                             MEM.autocor = "negative",
                             store.listw = T)
 
-scalo <- scalogram(OUT_plant_grid_binary_clean[,11], mem.gab)
+scalo <- scalogram(OUT_plant_grid_binary_clean[,11], mem.gab.positive)
 
-s.value(as.data.frame(mxy), mem.gab[,1:6])
+#s.value(as.data.frame(mxy), mem.gab.positive[,1:6])
 plot(mem.gab.positive, as.data.frame(mxy), pSp.cex = 3)
-mem.gab
-plot(scalo)
-barplot(mem.gab$MEM3)
 
-mspa.hell <- mspa(pca.hell, listwgab, scannf = FALSE, nf = 2)
+#plot(scalo)
+barplot(mem.gab.positive$MEM3)
 
-g.mspa <- scatter(mspa.hell, posieig = "topright", plot = FALSE)
-g.mem <- s.value(mafragh$xy, mem.gab[, c(1, 2, 6, 3)], Sp = mafragh$Spatial.contour, ppoints.cex = 0.4, plegend.drawKey = FALSE, plot = FALSE)
-g.abund <- s.value(mafragh$xy, mafragh$flo[, c(31,54,25)], Sp = mafragh$Spatial.contour, symbol = "circle", col = c("black", "palegreen4"), plegend.drawKey = FALSE, ppoint.cex = 0.4, plot = FALSE)
-
-p1 <- list(c(0.01, 0.44), c(0.64, 0.15), c(0.35, 0.01), c(0.15, 0.78))
-for (i in 1:4)
-g.mspa <- insert(g.mem[[i]], g.mspa, posi = p1[[i]], plot = FALSE)
-
-p2 <- list(c(0.27, 0.54), c(0.35, 0.35), c(0.75, 0.31))
-for (i in 1:3)
-g.mspa <- insert(g.abund[[i]], g.mspa, posi = p2[[i]], plot = FALSE)
-
-g.mspa
+# mspa.hell <- mspa(pca.hell, listwgab, scannf = FALSE, nf = 2)
+# 
+# g.mspa <- scatter(mspa.hell, posieig = "topright", plot = FALSE)
+# g.mem <- s.value(mafragh$xy, mem.gab.positive[, c(1, 2, 6, 3)], Sp = mafragh$Spatial.contour, ppoints.cex = 0.4, plegend.drawKey = FALSE, plot = FALSE)
+# g.abund <- s.value(mafragh$xy, mafragh$flo[, c(31,54,25)], Sp = mafragh$Spatial.contour, symbol = "circle", col = c("black", "palegreen4"), plegend.drawKey = FALSE, ppoint.cex = 0.4, plot = FALSE)
+# 
+# p1 <- list(c(0.01, 0.44), c(0.64, 0.15), c(0.35, 0.01), c(0.15, 0.78))
+# for (i in 1:4)
+# g.mspa <- insert(g.mem[[i]], g.mspa, posi = p1[[i]], plot = FALSE)
+# 
+# p2 <- list(c(0.27, 0.54), c(0.35, 0.35), c(0.75, 0.31))
+# for (i in 1:3)
+# g.mspa <- insert(g.abund[[i]], g.mspa, posi = p2[[i]], plot = FALSE)
+# 
+# g.mspa
 ```
+

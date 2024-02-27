@@ -30,8 +30,7 @@ main_theme = theme_bw()+
 ```
 
 ```{r}
-read.table("data/data_clean/Metadata_grid_CAM.txt", header = T)%>%
-  left_join(read.table("data/data_clean/Buffer_3ldscp_CAM.txt", header = T), by = "Grid_code") -> metadata_grid
+read.table("data/data_clean/Metadata_grid_CAM.txt", header = T)-> metadata_grid
   
 metadata_quadra = read.table("data/data_clean/Metadata_quadra_CAM.txt")
 
@@ -51,7 +50,7 @@ colnames(metadata_grid)
 metadata_grid%>%
   dplyr::select(pHwater, lime_tot, MO, Phos, K, Mg, Ca, Na, N, C, 
          CN, clay, SiltF, SiltC, SandF, SandC, Cl, Res, Cond,
-         dep_oxy_num, Pature, Fauche, natural, cultivated, artificial)%>%
+         dep_oxy_num, Pature, Fauche,  natural_landscape, cultivated, artificial, non_emitting)%>%
   mutate(across(c(Pature,Fauche), as.factor),
     across(where(is.numeric), ~decostand(., method = "standardize")))-> metadata_grid_standard
 
