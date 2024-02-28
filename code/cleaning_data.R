@@ -2,6 +2,18 @@ library(tidyverse)
 library(readxl)
 library(iNEXT)
 
+main_theme = theme_bw()+
+  theme(line = element_blank(), 
+        axis.line = element_line(colour = "black"),
+        panel.border = element_blank(),
+        axis.ticks =  element_line(colour = "black"),
+        axis.text.x = element_text(colour = "black", size=22),
+        axis.text.y = element_text(colour = "black", size=22),
+        legend.title = element_text(colour = "black", size=20),
+        legend.title.align=0.5,
+        legend.text = element_text(colour = "black", size=18),
+        axis.title=element_text(size=28))
+
 ##### OTU Camargue
 
 ### PLANT
@@ -97,19 +109,11 @@ read.table("data/data_clean/OTU_plant_CAM.txt")%>%
   group_by(Grid_code) %>%
   mutate(across(where(is.numeric), ~ifelse(. != 0,1,0 ))) %>%
   summarise_if(is.numeric, sum)%>%
-  #mutate(n_sample = rep(9,42))%>%
   pivot_longer(-c(Grid_code), names_to = "Plant", values_to = "occur")%>%
-  # mutate(occur  =  case_when(occur == 0 ~ NA,
-  #                            .default = occur))%>%
   pivot_wider(values_from = occur, names_from = Grid_code )%>%
-  column_to_rownames("Plant")-> OUT_plant_grid_binary_list
+  column_to_rownames("Plant")-> OUT_plant_grid_binary_df
 
-rbind(sample_size = rep(9,42),OUT_plant_grid_binary_list) -> OUT_plant_grid_binary_list
-
-OUT_plant_grid_binary_list
-  OUT_plant_grid_binary_list#%>%
-  as.list()%>%
-  map(., discard, .p = rlang::is_na)-> OUT_plant_grid_binary_list
+rbind(n = rep(9,42),OUT_plant_grid_binary_df) -> OUT_plant_grid_binary_df
 
 read.table("data/data_clean/OTU_virus_CAM.txt")%>%
   mutate( Grid_code = str_extract(Host_code, ".._CAM_.."))%>%
@@ -117,90 +121,95 @@ read.table("data/data_clean/OTU_virus_CAM.txt")%>%
   mutate(across(where(is.numeric), ~ifelse(. != 0,1,0 ))) %>%
   summarise_if(is.numeric, sum)%>%
   pivot_longer(-Grid_code, names_to = "Virus", values_to = "occur")%>%
-  mutate(occur  =  case_when(occur == 0 ~ NA,
-                             .default = occur))%>%
+  group_by(Grid_code)%>%
+  filter(sum(occur) >=2 )%>%
   pivot_wider(values_from = occur, names_from = Grid_code )%>%
-  select(-Virus)%>%
-  rbind(rep(9,42),.)%>%
-  as.list()%>%
-  map(., discard, .p = rlang::is_na)-> OUT_virus_grid_binary_list
+  column_to_rownames("Virus") -> OUT_virus_grid_binary_df
 
-otu_plant_cam%>%
-  pivot_longer(-Host_code, names_to = "Plant", values_to = "cover")  %>%
-  pivot_wider(values_from = cover, names_from = Host_code   , values_fill = 0) -> otu_plant_cam_trpose
-otu_plant_cam_trpose = as.data.frame(otu_plant_cam_trpose)
-rownames(otu_plant_cam_trpose) = otu_plant_cam_trpose$Plant
-as.data.frame(otu_plant_cam_trpose)%>%
-  dplyr::select(-Plant) -> otu_plant_cam_trpose
-otu_plant_cam_binary = otu_plant_cam_trpose
-otu_plant_cam_binary[otu_plant_cam_trpose != 0] = 1 
-
-Plant_richness_grid = c()
-Plant_shannon_grid = c()
-Plant_simpson_grid = c()
-
-
-otu_virus_cam%>%
-  pivot_longer(-Host_code, names_to = "Virus", values_to = "presence")  %>%
-  pivot_wider(values_from = presence, names_from = Host_code   , values_fill = 0) -> otu_virus_cam_trpose
-otu_virus_cam_trpose = as.data.frame(otu_virus_cam_trpose)
-rownames(otu_virus_cam_trpose) = otu_virus_cam_trpose$Virus
-as.data.frame(otu_virus_cam_trpose)%>%
-  dplyr::select(-Virus) -> otu_virus_cam_trpose
-
-rownames(otu_virus_cam_trpose)
-Virus_richness_grid = c()
-Virus_shannon_grid = c()
-Virus_simpson_grid = c()
-test = rowSums(OUT_plant_grid_binary_trspose)
-x <- as.numeric(unlist(OUT_plant_grid_binary_trspose))
-t <- x[1]
-y <- x[-1]
-sum(x) == 0
-OUT_plant_grid_binary_list[["22_CAM_04"]]
-temp= iNEXT(as.data.frame(OUT_plant_grid_binary_list),q = 0, se=TRUE, size = c(1, 10, 20, 30, 40, 50, 80, 100), nboot = 100,
+rbind(n = rep(9,ncol(OUT_virus_grid_binary_df)),OUT_virus_grid_binary_df) -> OUT_virus_grid_binary_df
+OUT_virus_grid_binary_df$`21_CAM_16`
+OUT_virus_grid_binary_df$`21_CAM_17`
+colSums(OUT_virus_grid_binary_df)
+# 
+# otu_plant_cam%>%
+#   pivot_longer(-Host_code, names_to = "Plant", values_to = "cover")  %>%
+#   pivot_wider(values_from = cover, names_from = Host_code   , values_fill = 0) -> otu_plant_cam_trpose
+# otu_plant_cam_trpose = as.data.frame(otu_plant_cam_trpose)
+# rownames(otu_plant_cam_trpose) = otu_plant_cam_trpose$Plant
+# as.data.frame(otu_plant_cam_trpose)%>%
+#   dplyr::select(-Plant) -> otu_plant_cam_trpose
+# otu_plant_cam_binary = otu_plant_cam_trpose
+# otu_plant_cam_binary[otu_plant_cam_trpose != 0] = 1 
+OUT_plant_grid_binary_df
+hills_numbers_plant_df = iNEXT(OUT_plant_grid_binary_df,q = 0, nboot = 100,
             datatype="incidence_freq")
+rowSums(OUT_virus_grid_binary_df)
+hills_numbers_virus_df = iNEXT(OUT_virus_grid_binary_df,q = 0, nboot = 100,
+                               datatype="incidence_freq")
+hills_numbers_plant_df%>%
+  ggiNEXT(., type = 3, color.var = "Order.q")+
+  facet_wrap(~Assemblage)
 
-temp%>%
+
+hills_numbers_virus_df%>%
   ggiNEXT(., type = 1, color.var = "Order.q")+
-  #facet_wrap(~Assemblage)+
-  ylab("Plant richness")+
-  xlab("Sample size")
+  facet_wrap(~Assemblage)+
+  ylab("Viral richness")+
+  xlab("Sample size")+
+  main_theme
+hills_numbers_virus_df%>%
+  ggiNEXT(., type = 3, color.var = "Order.q")+
+  facet_wrap(~Assemblage)+
+  main_theme
 
-iNEXT(OUT_virus_grid_binary_list[[38]],q = 0, se=TRUE, size = c(1, 10, 20, 30, 40, 50, 80, 100), nboot = 100) %>% 
-  ggiNEXT(., type = 1, color.var = "Order.q")
-ChaoRichness(temp, datatype="incidence_raw")
+DataInfo(OUT_plant_grid_binary_list, datatype = "incidence_freq")
 
-# Loop through sample names and extract corresponding columns into list
-otu_virus_cam
-for(sample_name in unique(Metadata_grid_cam$Grid_code)[1]) {
-  ### Plant
-  temp <- otu_plant_cam_binary[, str_detect(names(otu_plant_cam_binary), sample_name)]
-  Plant_richness_grid = c(Plant_richness_grid , ChaoRichness(temp, datatype="incidence_raw")[[1]])
-  Plant_shannon_grid = c(Plant_shannon_grid, ChaoShannon(temp, datatype="incidence_raw")[[1]])
-  Plant_simpson_grid = c(Plant_simpson_grid, ChaoSimpson(temp, datatype="incidence_raw")[[1]])
-  
-  ### Virus
-  temp <- otu_virus_cam_trpose[, str_detect(names(otu_virus_cam_trpose), sample_name)]
-  if(sum(temp) != 0){
-   
-    Virus_richness_grid = c(Virus_richness_grid , ChaoRichness(temp, datatype="incidence_raw")[[1]])
-    Virus_shannon_grid = c(Virus_shannon_grid, ChaoShannon(temp, datatype="incidence_raw")[[1]])
-    Virus_simpson_grid = c(Virus_simpson_grid, ChaoSimpson(temp, datatype="incidence_raw")[[1]])
-  }else{
-    Virus_richness_grid = c(Virus_richness_grid , 0)
-    Virus_shannon_grid = c(Virus_shannon_grid, 0)
-    Virus_simpson_grid = c(Virus_simpson_grid, 0)
-  }
-  
-}
-
-Metadata_grid_cam%>%
-  mutate(Plant_richness_grid = Plant_richness_grid,
-         Plant_shannon_grid = Plant_shannon_grid,
-         Plant_simpson_grid = Plant_simpson_grid,
-         Virus_richness_grid = Virus_richness_grid,
-         Virus_shannon_grid = Virus_shannon_grid,
-         Virus_simpson_grid = Virus_simpson_grid) -> Metadata_grid_cam
+iNEXT(rowSums(OUT_virus_grid_binary_df),q = 0, nboot = 100,
+      datatype="incidence_freq")%>%
+  ggiNEXT(., type = 1, color.var = "Order.q")+
+  ylab("Global Viral richness")+
+  xlab("Sample size")+
+  main_theme
+iNEXT(rowSums(OUT_plant_grid_binary_df),q = 0, nboot = 100,
+      datatype="incidence_freq")%>%
+  ggiNEXT(., type = 2, color.var = "Order.q")+
+  ylab("Global Plant richness")+
+  xlab("Sample size")+
+  main_theme
+# iNEXT(OUT_virus_grid_binary_list[[38]],q = 0, se=TRUE, size = c(1, 10, 20, 30, 40, 50, 80, 100), nboot = 100) %>% 
+#   ggiNEXT(., type = 1, color.var = "Order.q")
+# ChaoRichness(temp, datatype="incidence_raw")
+# 
+# # Loop through sample names and extract corresponding columns into list
+# otu_virus_cam
+# for(sample_name in unique(Metadata_grid_cam$Grid_code)[1]) {
+#   ### Plant
+#   temp <- otu_plant_cam_binary[, str_detect(names(otu_plant_cam_binary), sample_name)]
+#   Plant_richness_grid = c(Plant_richness_grid , ChaoRichness(temp, datatype="incidence_raw")[[1]])
+#   Plant_shannon_grid = c(Plant_shannon_grid, ChaoShannon(temp, datatype="incidence_raw")[[1]])
+#   Plant_simpson_grid = c(Plant_simpson_grid, ChaoSimpson(temp, datatype="incidence_raw")[[1]])
+#   
+#   ### Virus
+#   temp <- otu_virus_cam_trpose[, str_detect(names(otu_virus_cam_trpose), sample_name)]
+#   if(sum(temp) != 0){
+#    
+#     Virus_richness_grid = c(Virus_richness_grid , ChaoRichness(temp, datatype="incidence_raw")[[1]])
+#     Virus_shannon_grid = c(Virus_shannon_grid, ChaoShannon(temp, datatype="incidence_raw")[[1]])
+#     Virus_simpson_grid = c(Virus_simpson_grid, ChaoSimpson(temp, datatype="incidence_raw")[[1]])
+#   }else{
+#     Virus_richness_grid = c(Virus_richness_grid , 0)
+#     Virus_shannon_grid = c(Virus_shannon_grid, 0)
+#     Virus_simpson_grid = c(Virus_simpson_grid, 0)
+#   }
+#   
+# }
+# 
+# Metadata_grid_cam%>%
+#   mutate(Plant_richness_grid = Plant_richness_grid,
+#          Plant_shannon_grid = Plant_shannon_grid,
+#          Plant_simpson_grid = Plant_simpson_grid,
+#          Virus_richness_grid = Virus_richness_grid,
+#          Virus_shannon_grid = Virus_shannon_grid,
+#          Virus_simpson_grid = Virus_simpson_grid) -> Metadata_grid_cam
 
 write.table(Metadata_grid_cam, "data/data_clean/Metadata_grid_CAM.txt")
