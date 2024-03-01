@@ -179,6 +179,10 @@ area_per_class%>%
 #explication de la richesse par des combinaison linéaire de variables environnementales
 # et par les variables paysagéres.
 library(car)
+par(mfrow = c(2,2))
+hist((metadata_grid$Virus_richness_grid))
+hist(metadata_grid$Virus_shannon_grid)
+hist(log(metadata_grid$Virus_simpson_grid))
 metadata_grid
 metadata_grid%>%
   mutate(Na_class= cut(Na,
@@ -186,12 +190,14 @@ metadata_grid%>%
                        labels = c("0-500", "500-2000", ">2000"),
                        include.lowest = TRUE),
          clay_class= cut(clay,
-                       breaks = c(0, 25, Inf),
-                       labels = c("0-25", "25-50"),
-                       include.lowest = TRUE)) -> metadata_grid
-
-mod_no_land <- glm(Plant_richness_grid ~Pature*Fauche + Na_class +clay_class , family=poisson(link="log"), data = metadata_grid)
-summary(mod_no_land)
+                         breaks = c(0, 25, Inf),
+                         labels = c("0-25", "25-50"),
+                         include.lowest = TRUE)) -> metadata_grid
+library(lme4)
+lme4::glmer(Virus_richness_grid~ Dim.1 *Dim.2 *Dim.3, family=Gamma, data = metadata_grid)
+mod_no_land <- glm(Virus_richness_grid+1~ Dim.1 *Dim.2 *Dim.3, family=Gamma, data = metadata_grid)
+mod_step = step(glm(Virus_richness_grid+1~ 1, family=Gamma, data = metadata_grid), scope = ~ Dim.1 *Dim.2 *Dim.3, direction = "both")
+summary(mod_step)
 hist(mod_no_land$residuals, breaks = 20)
 Anova(mod_no_land,3)
 
@@ -200,10 +206,11 @@ Anova(mod_no_land,3)
 
 metadata_grid$richness_resid = mod_no_land$residual
 
-(fmla_res <- as.formula(paste("richness_resid~1 +", paste(cover_names, collapse= "+"))))
-mod_res = siland(fmla_res, land = soil_occu_crop, data = metadata_grid,init = c(100,300,500), wd = 5, family = "gaussian")
+(fmla_res <- as.formula(paste("log(richness_resid)~1 +", paste(cover_names, collapse= "+"))))
+mod_res = siland(fmla_res, land = soil_occu_crop, data = metadata_grid,init = c(400,400,400), wd = 10, family = "gaussian")
 summary(mod_res)
-(mod_res$result$null.deviance - mod_res$result$deviance)/mod_res$result$null.deviance*0.52
+hist(mod_res$result$residuals, breaks = 30)
+(mod_res$result$null.deviance - mod_res$result$deviance)/mod_res$result$null.deviance
 
 siland.quantile(mod_res)
 likres_res = siland.lik(mod_res,land = soil_occu_crop,data = metadata_grid, varnames = cover_names)
