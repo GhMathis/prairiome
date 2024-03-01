@@ -3,6 +3,8 @@ library(tidyverse)
 library(rtry)
 try_data_base = read.delim("data/TryAccSpecies.txt", header = T)
 tax_plant =read_xlsx("data/TAX_Plant.xlsx")
+AM
+str(tax_plant)
 try_data_base
 str(try_data_base)
 tax_plant$Plant_species
@@ -24,23 +26,35 @@ rtry_import("data/life_span/31810.txt")%>%
 
 ##################
 
-OTU_plant = read.table("data/data_clean/OTU_plant_CAM.txt")
 str_replace_all(tax_plant$Plant_species[1], "[ -]", ".")
+
+read_xlsx("data/TAX_plant_CAM_HF.xlsx")%>%
+  mutate( Plant_species= str_replace_all(species, "[ -]", "."))%>%
+  select(Plant_species, CLASSE, ORDRE, FAMILLE, SOUS_FAMILLE, TRIBU, RANG)%>%
+  rename(Plant_class = "CLASSE", Plant_order = "ORDRE", Plant_family ="FAMILLE",
+         Plant_sub_family = "SOUS_FAMILLE", Plant_tribu = "TRIBU", Plant_rank = "RANG")-> tax_plant_Cam_temp
 tax_plant%>%
   mutate(Plant_species = str_replace_all(Plant_species, "[ -]", "."))%>%
-  filter(Plant_species %in% names(OTU_plant)) -> tax_plant_CAM
+  filter(Plant_species %in% names(OTU_plant))%>%
+  select(Plant_species, Plant_genus, Sp_names)%>%
+  left_join(tax_plant_Cam_temp, by = "Plant_species")-> tax_plant_CAM
+
+
+
+OTU_plant = read.table("data/data_clean/OTU_plant_CAM.txt")
+
 
 tibble(try_data_base)%>%
   filter(AccSpeciesName %in% tax_plant_CAM$Sp_names) -> identified_sp_CAM
-
+str(traits)
 rtry_import("data/multiple_traits/31758.txt")-> traits
 
 c(6, 7, 8, 13, 14, 15, 22, 26, 30, 33, 37, 40, 42, 47, 128, 129, 145, 196, 231, 320, 385, 1254, 3106, 3117, 3364) -> trait
 
 traits %>% 
   filter(AccSpeciesID %in% identified_sp_CAM$AccSpeciesID, TraitID %in% trait)%>%
-  dplyr::select(AccSpeciesName, OriglName,TraitID, OrigValueStr) ->traits_temp
-
+  dplyr::select(AccSpeciesName, OriglName,TraitID, OrigValueStr)->traits_temp
+str(traits)
 unique(traits_temp$OrigValueStr)
 
 traits_temp%>%
@@ -122,8 +136,11 @@ life_span%>%
 traits_clean = rbind(traits_clean,life_span_CAM_clean)
 traits_clean = rbind(traits_clean,GRIME_clean)
 traits_clean = rbind(traits_clean,photo_path)
+
+
+
+#####
 tax_plant_CAM%>%
-  select(Plant_species, Plant_genus,  Sp_names)%>%
   full_join(traits_clean, by = join_by("Sp_names" == "AccSpeciesName"), relationship = "many-to-many")%>%
   mutate(OrigValueStr_modif  = case_when(OrigValueStr_modif == "None" ~ NA ,
                                          .default = OrigValueStr_modif

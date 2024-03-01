@@ -1,240 +1,240 @@
-"Plant_species" "Plant_genus" "Sp_names" "Plant_photosynthetic_pathway" "Salinity_tolerance" "GRIME" "life_style"
-"1" "Centaurium.tenuiflorum.subsp..acutiflorum" "Centaurium" "Centaurium tenuiflorum" "C3" NA NA NA
-"2" "Parapholis.filiformis" "Parapholis" "Parapholis filiformis" NA "High" "S" NA
-"3" "Trifolium.squamosum" "Trifolium" "Trifolium squamosum" "C3" "Medium" NA NA
-"4" "Limonium.narbonense" "Limonium" "Limonium narbonense" NA NA NA NA
-"5" "Inula.britannica" "Inula" "Inula britannica" NA NA NA NA
-"6" "Hordeum.secalinum" "Hordeum" "Hordeum secalinum" "C3" "High" "S" NA
-"7" "Bupleurum.tenuissimum" "Bupleurum" "Bupleurum tenuissimum" "C3" "High" "S" NA
-"8" "Leontodon.saxatilis" "Leontodon" "Leontodon saxatilis" NA NA NA NA
-"9" "Gastridium.ventricosum" "Gastridium" "Gastridium ventricosum" "C3" "Low" NA NA
-"10" "Lotus.jordanii" "Lotus" "Lotus jordanii" NA NA NA NA
-"11" "Elytrigia.sp." "Elytrigia" "Elytrigia sp" NA NA NA NA
-"12" "Hedypnois.rhagadioloides" "Hedypnois" "Hedypnois rhagadioloides" NA NA NA NA
-"13" "Plantago.coronopus" "Plantago" "Plantago coronopus" "C3" "Low" "S" NA
-"14" "Trifolium.lappaceum" "Trifolium" "Trifolium lappaceum" "C3" NA NA NA
-"15" "Trifolium.campestre" "Trifolium" "Trifolium campestre" "C3" NA "R" NA
-"16" "Blackstonia.acuminata" "Blackstonia" "Blackstonia acuminata" "C3" NA "RS" NA
-"17" "Oenanthe.sp." "Oenanthe" "Oenanthe sp" NA NA NA NA
-"18" "Galium.palustre" "Galium" "Galium palustre" "C3" "Medium" "CS" NA
-"19" "Cynodon.dactylon" "Cynodon" "Cynodon dactylon" "C4" "High" "CS" "Long"
-"20" "Carex.divisa" "Carex" "Carex divisa" "C3" "High" "CS" NA
-"21" "Juncus.gerardi" "Juncus" "Juncus gerardi" NA NA NA NA
-"22" "Sonchus.sp." "Sonchus" "Sonchus sp" NA NA NA NA
-"23" "Lactuca.saligna" "Lactuca" "Lactuca saligna" "C3" NA "CS" NA
-"24" "Lotus.glaber" "Lotus" "Lotus glaber" "C3" NA NA NA
-"25" "Podospermum.laciniatum" "Podospermum" "Podospermum laciniatum" NA NA "RS" NA
-"26" "Trifolium.resupinatum" "Trifolium" "Trifolium resupinatum" "C3" NA "CS" NA
-"27" "Cuscuta.sp." "Cuscuta" "Cuscuta sp" "C3" NA NA NA
-"28" "Linum.usitatissimum.subsp..angustifolium" "Linum" "Linum usitatissimum" "C3" NA "R" NA
-"29" "Bromus.hordeaceus" "Bromus" "Bromus hordeaceus" "C3" "Medium" "CS" "Short"
-"30" "Bupleurum.semicompositum" "Bupleurum" "Bupleurum semicompositum" NA NA "S" NA
-"31" "Melilotus.indicus" "Melilotus" "Melilotus indicus" "C3" NA "R" NA
-"32" "Aeluropus.littoralis" "Aeluropus" "Aeluropus littoralis" "C4" "High" NA NA
-"33" "Lysimachia.arvensis" "Lysimachia" "Lysimachia arvensis" NA NA NA NA
-"34" "Trifolium.nigrescens" "Trifolium" "Trifolium nigrescens" "C3" NA NA "Short"
-"35" "Medicago.polymorpha" "Medicago" "Medicago polymorpha" "C3" NA "R" "Short"
-"36" "Atriplex.prostrata" "Atriplex" "Atriplex prostrata" "C4" "High" "S" NA
-"37" "Bellis.annua" "Bellis" "Bellis annua" "C3" NA NA NA
-"38" "Aster.squamatus" "Aster" "Aster squamatus" "C3" NA "CS" NA
-"39" "Trifolium.tomentosum" "Trifolium" "Trifolium tomentosum" "C3" NA "S" NA
-"40" "Juncus.maritimus" "Juncus" "Juncus maritimus" "C3" "High" "CS" NA
-"41" "Crepis.pulchra" "Crepis" "Crepis pulchra" "C3" NA "CS" NA
-"42" "Polygonum.aviculare" "Polygonum" "Polygonum aviculare" "C3" "Medium" "R" NA
-"43" "Brachypodium.phoenicoides" "Brachypodium" "Brachypodium phoenicoides" "C3" NA "CS" "Long"
-"44" "Aristolochia.rotunda" "Aristolochia" "Aristolochia rotunda" "C3" NA "RS" "Long"
-"45" "Iris.reichenbachiana" "Iris" "Iris reichenbachiana" NA NA NA NA
-"46" "Ranunculus.bulbosus" "Ranunculus" "Ranunculus bulbosus" "C3" NA "CRS" "Long"
-"47" "Sherardia.arvensis" "Sherardia" "Sherardia arvensis" "C3" NA "R" NA
-"48" "Dactylis.glomerata.subsp..hispanica" "Dactylis" "Dactylis glomerata" "C3" "Low" "C" "Long"
-"49" "Torilis.nodosa.subsp..nodosa" "Torilis" "Torilis nodosa" "C3" NA "R" NA
-"50" "Geranium.dissectum" "Geranium" "Geranium dissectum" "C3" NA "CS" "Short"
-"51" "Galium.spurium" "Galium" "Galium spurium" "C3" NA "CS" NA
-"52" "Halimione.portulacoides" "Halimione" "Halimione portulacoides" NA NA NA NA
-"53" "Dactylis.glomerata" "Dactylis" "Dactylis glomerata" "C3" "Low" "C" "Long"
-"54" "Phillyrea.angustifolia" "Phillyrea" "Phillyrea angustifolia" "C3" NA "CS" "Long"
-"55" "Plantago.lanceolata" "Plantago" "Plantago lanceolata" "C3" "Medium" "CRS" "Long"
-"56" "Convolvulus.arvensis" "Convolvulus" "Convolvulus arvensis" "C3" NA "CS" "Long"
-"57" "Poa.trivialis" "Poa" "Poa trivialis" "C3" NA "CRS" "Long"
-"58" "Geranium.molle" "Geranium" "Geranium molle" "C3" NA "R" NA
-"59" "Gramineae.sp." "Gramineae" "Gramineae sp" NA NA NA NA
-"60" "Daucus.carota" "Daucus" "Daucus carota" "C3" "Medium" "CS" "Short"
-"61" "Poa.pratensis" "Poa" "Poa pratensis" "C3" "Medium" "C" "Long"
-"62" "Lolium.perenne" "Lolium" "Lolium perenne" "C3" "Medium" "C" "Short"
-"63" "Trifolium.pratense" "Trifolium" "Trifolium pratense" "C3" "Low" "C" "Short"
-"64" "Holcus.lanatus" "Holcus" "Holcus lanatus" "C3" NA "C" "Short"
-"65" "Trifolium.repens" "Trifolium" "Trifolium repens" "C3" "Low" "CRS" "Long"
-"66" "Cuscuta.campestris" "Cuscuta" "Cuscuta campestris" NA NA NA NA
-"67" "Sonchus.oleraceus" "Sonchus" "Sonchus oleraceus" "C3" "Low" "CS" "Short"
-"68" "Veronica.arvensis" "Veronica" "Veronica arvensis" "C3" NA "R" NA
-"69" "Galium.aparine" "Galium" "Galium aparine" "C3" NA "CS" "Short"
-"70" "Helminthotheca.echioides" "Helminthotheca" "Helminthotheca echioides" "C3" NA "CRS" NA
-"71" "Ranunculus.acris" "Ranunculus" "Ranunculus acris" "C3" "Medium" "C" "Long"
-"72" "Vicia.sativa" "Vicia" "Vicia sativa" "C3" NA "CS" "Short"
-"73" "Potentilla.reptans" "Potentilla" "Potentilla reptans" "C3" NA "CRS" "Long"
-"74" "Leontodon.sp." "Leontodon" "Leontodon sp" NA NA NA NA
-"75" "Plantago.lagopus" "Plantago" "Plantago lagopus" "C3" NA "RS" NA
-"76" "Euphorbia.exigua" "Euphorbia" "Euphorbia exigua" "C3" NA "R" NA
-"77" "Filago.pygmaea" "Filago" "Filago pygmaea" NA NA "RS" NA
-"78" "Erodium.cicutarium" "Erodium" "Erodium cicutarium" "C3" NA "R" NA
-"79" "Crepis.capillaris" "Crepis" "Crepis capillaris" "C3" "Medium" "CRS" NA
-"80" "Galium.murale" "Galium" "Galium murale" NA NA "S" NA
-"81" "Brachypodium.distachyon" "Brachypodium" "Brachypodium distachyon" "C3" NA "RS" NA
-"82" "Crepis.sancta" "Crepis" "Crepis sancta" "C3" NA "CS" NA
-"83" "Euphorbia.falcata" "Euphorbia" "Euphorbia falcata" "C3" NA "R" NA
-"84" "Centaurium.sp." "Centaurium" "Centaurium sp" NA NA NA NA
-"85" "Hypochaeris.glabra" "Hypochaeris" "Hypochaeris glabra" "C3" NA "RS" NA
-"86" "Cerastium.pumilum" "Cerastium" "Cerastium pumilum" "C3" NA "RS" NA
-"87" "Plantago.bellardii" "Plantago" "Plantago bellardii" "C3" NA NA NA
-"88" "Catapodium.rigidum" "Catapodium" "Catapodium rigidum" "C3" NA "R" NA
-"89" "Trifolium.sp." "Trifolium" "Trifolium sp" "C3" NA NA NA
-"90" "Poa.bulbosa" "Poa" "Poa bulbosa" "C3" "Low" "RS" "Long"
-"91" "Lobularia.maritima" "Lobularia" "Lobularia maritima" "C3" NA "RS" NA
-"92" "Arenaria.leptoclados" "Arenaria" "Arenaria leptoclados" "C3" NA "R" NA
-"93" "Crepis.vesicaria.subsp..taraxacifolia" "Crepis" "Crepis vesicaria" "C3" NA NA NA
-"94" "Lysimachia.linum.stellatum" "Lysimachia" "Lysimachia linum" NA NA NA NA
-"95" "Vulpia.ciliata.subsp..ciliata" "Vulpia" "Vulpia ciliata" "C3" "Medium" "S" NA
-"96" "Galium.parisiense" "Galium" "Galium parisiense" "C3" NA "R" NA
-"97" "Trifolium.scabrum" "Trifolium" "Trifolium scabrum" "C3" NA "S" NA
-"98" "Cerastium.semidecandrum" "Cerastium" "Cerastium semidecandrum" "C3" NA "R" NA
-"99" "Medicago.monspeliaca" "Medicago" "Medicago monspeliaca" "C3" NA "S" NA
-"100" "Sonchus.bulbosus" "Sonchus" "Sonchus bulbosus" "C3" NA "RS" NA
-"101" "Trifolium.suffocatum" "Trifolium" "Trifolium suffocatum" "C3" NA NA NA
-"102" "Scolymus.hispanicus" "Scolymus" "Scolymus hispanicus" "C3" NA "CS" NA
-"103" "Salvia.verbenaca.subsp..clandestina" "Salvia" "Salvia verbenaca" "C3" NA NA NA
-"104" "Erigeron.sp." "Erigeron" "Erigeron sp" NA NA NA NA
-"105" "Sabulina.tenuifolia" "Sabulina" "Sabulina tenuifolia" "C3" NA "RS" NA
-"106" "Filago.pyramidata" "Filago" "Filago pyramidata" "C3" NA "RS" NA
-"107" "Trigonella.esculenta" "Trigonella" "Trigonella esculenta" "C3" NA NA NA
-"108" "Polycarpon.tetraphyllum" "Polycarpon" "Polycarpon tetraphyllum" NA NA NA NA
-"109" "Lagurus.ovatus" "Lagurus" "Lagurus ovatus" "C3" NA "RS" NA
-"110" "Elytrigia.acuta" "Elytrigia" "Elytrigia acuta" NA NA NA NA
-"111" "Valantia.muralis" "Valantia" "Valantia muralis" "C3" NA "RS" NA
-"112" "Limonium.virgatum" "Limonium" "Limonium virgatum" "C3" NA "S" NA
-"113" "Parapholis.incurva" "Parapholis" "Parapholis incurva" "C3" "High" "RS" NA
-"114" "Blackstonia.sp." "Blackstonia" "Blackstonia sp" NA NA NA NA
-"115" "Bromus.diandrus" "Bromus" "Bromus diandrus" "C3" NA "RS" NA
-"116" "Medicago.littoralis" "Medicago" "Medicago littoralis" "C3" NA "S" "Short"
-"117" "Medicago.minima" "Medicago" "Medicago minima" "C3" NA "RS" "Short"
-"118" "Bromus.madritensis" "Bromus" "Bromus madritensis" "C3" NA "CS" "Short"
-"119" "Rostraria.pubescens" "Rostraria" "Rostraria pubescens" NA NA NA NA
-"120" "Vulpia.sp." "Vulpia" "Vulpia sp" NA NA NA NA
-"121" "Phleum.arenarium" "Phleum" "Phleum arenarium" "C3" "Medium" "RS" NA
-"122" "Hordeum.marinum" "Hordeum" "Hordeum marinum" "C3" "High" "CS" NA
-"123" "Juncus.subulatus" "Juncus" "Juncus subulatus" NA NA NA NA
-"124" "Salicornia.europaea" "Salicornia" "Salicornia europaea" "C3" "High" "S" NA
-"125" "Bolboschoenus.maritimus" "Bolboschoenus" "Bolboschoenus maritimus" "C3" "High" "CS" "Long"
-"126" "Phragmites.australis" "Phragmites" "Phragmites australis" "C3" "Low" "CS" "Long"
-"127" "Paspalum.distichum" "Paspalum" "Paspalum distichum" "C4" "High" NA "Short"
-"128" "Polypogon.monspeliensis" "Polypogon" "Polypogon monspeliensis" "C3" "Low" NA "Short"
-"129" "Asteraceae.sp." "Asteraceae" "Asteraceae sp" "C3" NA NA NA
-"130" "Puccinellia.festuciformis" "Puccinellia" "Puccinellia festuciformis" "C3" "High" NA NA
-"131" "Ranunculus.peltatus.subsp..peltatus" "Ranunculus" "Ranunculus peltatus" "C3" "High" "CRS" NA
-"132" "Spergularia.sp." "Spergularia" "Spergularia sp" NA NA NA NA
-"133" "Schedonorus.arundinaceus" "Schedonorus" "Schedonorus arundinaceus" NA NA NA NA
-"134" "Polypogon.sp." "Polypogon" "Polypogon sp" NA NA NA NA
-"135" "Aster.maritimus" "Aster" "Aster maritimus" NA NA NA NA
-"136" "Carex.otrubae" "Carex" "Carex otrubae" "C3" "Medium" "CS" NA
-"137" "Suaeda.splendens" "Suaeda" "Suaeda splendens" "C3" "High" "RS" NA
-"138" "Suaeda.spicata" "Suaeda" "Suaeda spicata" NA NA NA NA
-"139" "Paspalum.dilatatum" "Paspalum" "Paspalum dilatatum" "C4" "Medium" "CS" "Long"
-"140" "Schedonorus.pratensis" "Schedonorus" "Schedonorus pratensis" NA NA NA NA
-"141" "Tragopogon.sp." "Tragopogon" "Tragopogon sp" NA NA NA NA
-"142" "Solanum.villosum" "Solanum" "Solanum villosum" "C3" NA "R" NA
-"143" "Agrostis.stolonifera" "Agrostis" "Agrostis stolonifera" "C3" "Medium" "CRS" "Short"
-"144" "Trifolium.fragiferum" "Trifolium" "Trifolium fragiferum" "C3" "Low" "CRS" "Short"
-"145" "Ulmus.minor" "Ulmus" "Ulmus minor" "C3" NA "C" NA
-"146" "Agrimonia.eupatoria" "Agrimonia" "Agrimonia eupatoria" "C3" NA "C" "Long"
-"147" "Amaranthaceae.sp." "Amaranthaceae" "Amaranthaceae sp" NA NA NA NA
-"148" "Ranunculus.sardous" "Ranunculus" "Ranunculus sardous" "C3" NA "RS" NA
-"149" "Elytrigia.campestris" "Elytrigia" "Elytrigia campestris" NA NA NA NA
-"150" "Ervum.gracile" "Ervum" "Ervum gracile" NA NA NA NA
-"151" "Avena.barbata" "Avena" "Avena barbata" "C3" NA "RS" "Short"
-"152" "Avena.sterilis" "Avena" "Avena sterilis" "C3" NA "CS" NA
-"153" "Festuca.sp." "Festuca" "Festuca sp" "C3" NA NA NA
-"154" "Lathyrus.hirsutus" "Lathyrus" "Lathyrus hirsutus" "C3" NA "CS" "Long"
-"155" "Bromus.lanceolatus" "Bromus" "Bromus lanceolatus" "C3" NA NA NA
-"156" "Scabiosa.atropurpurea" "Scabiosa" "Scabiosa atropurpurea" NA NA NA NA
-"157" "Scorpiurus.muricatus" "Scorpiurus" "Scorpiurus muricatus" "C3" NA "S" NA
-"158" "Linum.strictum" "Linum" "Linum strictum" "C3" NA "RS" NA
-"159" "Hippocrepis.biflora" "Hippocrepis" "Hippocrepis biflora" NA NA "S" NA
-"160" "Blackstonia.perfoliata.subsp..perfoliata" "Blackstonia" "Blackstonia perfoliata" "C3" "Medium" "RS" NA
-"161" "Artemisia.campestris.subsp..glutinosa" "Artemisia" "Artemisia campestris" "C3" NA "CS" NA
-"162" "Helichrysum.stoechas" "Helichrysum" "Helichrysum stoechas" NA NA "S" "Long"
-"163" "Silene.italica" "Silene" "Silene italica" "C3" NA "C" NA
-"164" "Sporobolus.pungens" "Sporobolus" "Sporobolus pungens" "C4" NA "CS" NA
-"165" "Vulpia.fasciculata" "Vulpia" "Vulpia fasciculata" "C3" NA "S" NA
-"166" "Malcolmia.littorea" "Malcolmia" "Malcolmia littorea" NA NA NA NA
-"167" "Carex.extensa" "Carex" "Carex extensa" "C3" "High" "S" NA
-"168" "Limbarda.crithmoides" "Limbarda" "Limbarda crithmoides" "C3" "High" "CS" NA
-"169" "Spartina.patens" "Spartina" "Spartina patens" "C4" "High" NA "Long"
-"170" "Sonchus.maritimus" "Sonchus" "Sonchus maritimus" "C4" NA NA NA
-"171" "Pinus.pinea" "Pinus" "Pinus pinea" "C3" NA "CS" "Long"
-"172" "Schoenus.nigricans" "Schoenus" "Schoenus nigricans" "C3" "High" "CRS" NA
-"173" "Medicago.arabica" "Medicago" "Medicago arabica" "C3" NA "R" NA
-"174" "Filago.sp." "Filago" "Filago sp" NA NA NA NA
-"175" "Sabulina.mediterranea" "Sabulina" "Sabulina mediterranea" NA NA "RS" NA
-"176" "Stellaria.pallida" "Stellaria" "Stellaria pallida" "C3" "Medium" "R" NA
-"177" "Rumex.pulcher" "Rumex" "Rumex pulcher" "C3" NA "C" NA
-"178" "Draba.verna" "Draba" "Draba verna" "C3" NA "RS" NA
-"179" "Medicago.truncatula" "Medicago" "Medicago truncatula" "C3" NA "RS" NA
-"180" "Senecio.vulgaris.subsp..vulgaris" "Senecio" "Senecio vulgaris" "C3" NA "R" "Short"
-"181" "Ajuga.iva" "Ajuga" "Ajuga iva" NA NA "S" NA
-"182" "Romulea.ramiflora" "Romulea" "Romulea ramiflora" NA NA NA NA
-"183" "Herniaria.cinerea" "Herniaria" "Herniaria cinerea" "C3" NA NA NA
-"184" "Hordeum.murinum.subsp..leporinum" "Hordeum" "Hordeum murinum" "C3" "Medium" "R" "Short"
-"185" "Carduus.tenuiflorus" "Carduus" "Carduus tenuiflorus" "C3" NA "RS" NA
-"186" "Centaurea.melitensis" "Centaurea" "Centaurea melitensis" "C3" NA "RS" NA
-"187" "Sagina.apetala" "Sagina" "Sagina apetala" "C3" NA "R" NA
-"188" "Neatostema.apulum" "Neatostema" "Neatostema apulum" NA NA "RS" NA
-"189" "Bromus.sp." "Bromus" "Bromus sp" "C3" NA NA NA
-"190" "Allium.polyanthum" "Allium" "Allium polyanthum" NA NA NA NA
-"191" "Bromus.rubens" "Bromus" "Bromus rubens" "C3" "Medium" "RS" "Short"
-"192" "Taraxacum.sp." "Taraxacum" "Taraxacum sp" "C3" NA NA NA
-"193" "Linum.sp." "Linum" "Linum sp" "C3" NA NA NA
-"194" "Trifolium.stellatum" "Trifolium" "Trifolium stellatum" "C3" NA "S" NA
-"195" "Polygala.monspeliaca" "Polygala" "Polygala monspeliaca" "C3" NA "S" NA
-"196" "Sideritis.romana" "Sideritis" "Sideritis romana" "C3" NA "RS" NA
-"197" "Vulpia.unilateralis" "Vulpia" "Vulpia unilateralis" "C3" NA "RS" NA
-"198" "Parapholis.sp." "Parapholis" "Parapholis sp" NA NA NA NA
-"199" "Muscari.neglectum" "Muscari" "Muscari neglectum" "C3" NA "RS" NA
-"200" "Crepis.sp." "Crepis" "Crepis sp" NA NA NA NA
-"201" "Rostraria.cristata" "Rostraria" "Rostraria cristata" "C3" NA "RS" NA
-"202" "Asparagus.acutifolius" "Asparagus" "Asparagus acutifolius" "C3" NA "CS" "Long"
-"203" "Lolium.rigidum" "Lolium" "Lolium rigidum" "C3" "High" "CS" "Short"
-"204" "Hypochaeris.sp." "Hypochaeris" "Hypochaeris sp" NA NA NA NA
-"205" "Pallenis.spinosa" "Pallenis" "Pallenis spinosa" "C3" NA "RS" NA
-"206" "Hordeum.murinum" "Hordeum" "Hordeum murinum" "C3" "Medium" "R" "Short"
-"207" "Muscari.comosum" "Muscari" "Muscari comosum" NA NA NA NA
-"208" "Carduus.sp." "Carduus" "Carduus sp" "C3" NA NA NA
-"209" "Urospermum.picroides" "Urospermum" "Urospermum picroides" "C3" NA "RS" NA
-"210" "Cerastium.glomeratum" "Cerastium" "Cerastium glomeratum" "C3" NA "R" NA
-"211" "Sagina.maritima" "Sagina" "Sagina maritima" "C3" "High" "RS" NA
-"212" "Hornungia.procumbens" "Hornungia" "Hornungia procumbens" "C3" NA "RS" NA
-"213" "Polygonum.maritimum" "Polygonum" "Polygonum maritimum" "C3" NA NA NA
-"214" "Hainardia.cylindrica" "Hainardia" "Hainardia cylindrica" "C3" NA NA NA
-"215" "Rubus.ulmifolius" "Rubus" "Rubus ulmifolius" "C3" NA "C" NA
-"216" "Limonium.girardianum" "Limonium" "Limonium girardianum" "C3" NA NA NA
-"217" "Alopecurus.bulbosus" "Alopecurus" "Alopecurus bulbosus" "C3" "High" "CS" NA
-"218" "Prunus.spinosa" "Prunus" "Prunus spinosa" "C3" NA "C" "Long"
-"219" "Tragopogon.pratensis.subsp..orientalis" "Tragopogon" "Tragopogon pratensis" "C3" NA "CRS" NA
-"220" "Taraxacum.officinale.gpe" "Taraxacum" "Taraxacum officinale" NA NA NA NA
-"221" "Galium.mollugo" "Galium" "Galium mollugo" "C3" NA "C" NA
-"222" "Rumex.crispus" "Rumex" "Rumex crispus" "C3" "High" "C" NA
-"223" "Picris.hieracioides.subsp..hieracioides" "Picris" "Picris hieracioides" "C3" NA "CRS" "Long"
-"224" "Lathyrus.setifolius" "Lathyrus" "Lathyrus setifolius" "C3" NA "S" NA
-"225" "Eleocharis.palustris" "Eleocharis" "Eleocharis palustris" "C3" "Low" "CS" "Long"
-"226" "Plantago.major" "Plantago" "Plantago major" "C3" "Low" "CRS" "Short"
-"227" "Medicago.marina" "Medicago" "Medicago marina" "C3" NA NA NA
-"228" "Crepis.foetida" "Crepis" "Crepis foetida" "C3" NA "CS" "Short"
-"229" "Ammophila.arenaria.subsp..arundinacea" "Ammophila" "Ammophila arenaria" "C3" "Low" "CS" "Long"
-"230" "Elytrigia.juncea.subsp..juncea" "Elytrigia" "Elytrigia juncea" NA NA NA NA
-"231" "Anthemis.maritima" "Anthemis" "Anthemis maritima" NA NA "RS" NA
-"232" "Salicornia.alpini" "Salicornia" "Salicornia alpini" NA NA NA NA
-"233" "Salicornia.fruticosa" "Salicornia" "Salicornia fruticosa" NA NA NA NA
-"234" "Salicornia.sp." "Salicornia" "Salicornia sp" NA NA NA NA
-"235" "Arthrocaulon.macrostachyum" "Arthrocaulon" "Arthrocaulon macrostachyum" NA NA NA NA
-"236" "Juncus.bufonius.gpe" "Juncus" "Juncus bufonius" "C3" "Medium" "R" "Short"
-"237" "Myosurus.minimus" "Myosurus" "Myosurus minimus" "C3" "Low" "R" "Short"
-"238" "Spergularia.bocconei" "Spergularia" "Spergularia bocconei" "C3" NA "RS" NA
-"239" "Lythrum.hyssopifolia" "Lythrum" "Lythrum hyssopifolia" "C3" "High" "RS" NA
+"Plant_species" "Plant_genus" "Sp_names" "Plant_class" "Plant_order" "Plant_family" "Plant_sub_family" "Plant_tribu" "Plant_rank" "Plant_photosynthetic_pathway" "Salinity_tolerance" "GRIME" "life_style"
+"1" "Centaurium.tenuiflorum.subsp..acutiflorum" "Centaurium" "Centaurium tenuiflorum" "Equisetopsida" "Gentianales" "Gentianaceae" "0" "0" "SSES" "C3" NA NA NA
+"2" "Parapholis.filiformis" "Parapholis" "Parapholis filiformis" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" NA "High" "S" NA
+"3" "Trifolium.squamosum" "Trifolium" "Trifolium squamosum" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" "Medium" NA NA
+"4" "Limonium.narbonense" "Limonium" "Limonium narbonense" "Equisetopsida" "Caryophyllales" "Plumbaginaceae" "0" "0" "ES" NA NA NA NA
+"5" "Inula.britannica" "Inula" "Inula britannica" "Equisetopsida" "Asterales" "Asteraceae" "Asteroideae" "Inuleae" "ES" NA NA NA NA
+"6" "Hordeum.secalinum" "Hordeum" "Hordeum secalinum" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Triticeae" "ES" "C3" "High" "S" NA
+"7" "Bupleurum.tenuissimum" "Bupleurum" "Bupleurum tenuissimum" "Equisetopsida" "Apiales" "Apiaceae" "Apioideae" "Bupleureae" "ES" "C3" "High" "S" NA
+"8" "Leontodon.saxatilis" "Leontodon" "Leontodon saxatilis" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "ES" NA NA NA NA
+"9" "Gastridium.ventricosum" "Gastridium" "Gastridium ventricosum" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" "Low" NA NA
+"10" "Lotus.jordanii" "Lotus" "Lotus jordanii" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "Loteae" "ES" NA NA NA NA
+"11" "Elytrigia.sp." "Elytrigia" "Elytrigia sp" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Triticeae" "GN" NA NA NA NA
+"12" "Hedypnois.rhagadioloides" "Hedypnois" "Hedypnois rhagadioloides" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "ES" NA NA NA NA
+"13" "Plantago.coronopus" "Plantago" "Plantago coronopus" "Equisetopsida" "Lamiales" "Plantaginaceae" "0" "Plantagineae" "ES" "C3" "Low" "S" NA
+"14" "Trifolium.lappaceum" "Trifolium" "Trifolium lappaceum" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA NA NA
+"15" "Trifolium.campestre" "Trifolium" "Trifolium campestre" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA "R" NA
+"16" "Blackstonia.acuminata" "Blackstonia" "Blackstonia acuminata" "Equisetopsida" "Gentianales" "Gentianaceae" "0" "0" "ES" "C3" NA "RS" NA
+"17" "Oenanthe.sp." "Oenanthe" "Oenanthe sp" "Equisetopsida" "Apiales" "Apiaceae" "Apioideae" "Oenantheae" "GN" NA NA NA NA
+"18" "Galium.palustre" "Galium" "Galium palustre" "Equisetopsida" "Gentianales" "Rubiaceae" "Rubioideae" "Rubieae" "ES" "C3" "Medium" "CS" NA
+"19" "Cynodon.dactylon" "Cynodon" "Cynodon dactylon" "Equisetopsida" "Poales" "Poaceae" "Chloridoideae" "Cynodonteae" "ES" "C4" "High" "CS" "Long"
+"20" "Carex.divisa" "Carex" "Carex divisa" "Equisetopsida" "Poales" "Cyperaceae" "Cyperoideae" "Cariceae" "ES" "C3" "High" "CS" NA
+"21" "Juncus.gerardi" "Juncus" "Juncus gerardi" "Equisetopsida" "Poales" "Juncaceae" "0" "0" "ES" NA NA NA NA
+"22" "Sonchus.sp." "Sonchus" "Sonchus sp" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "GN" NA NA NA NA
+"23" "Lactuca.saligna" "Lactuca" "Lactuca saligna" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "ES" "C3" NA "CS" NA
+"24" "Lotus.glaber" "Lotus" "Lotus glaber" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "Loteae" "ES" "C3" NA NA NA
+"25" "Podospermum.laciniatum" "Podospermum" "Podospermum laciniatum" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "ES" NA NA "RS" NA
+"26" "Trifolium.resupinatum" "Trifolium" "Trifolium resupinatum" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA "CS" NA
+"27" "Cuscuta.sp." "Cuscuta" "Cuscuta sp" "Equisetopsida" "Solanales" "Convolvulaceae" "Cuscutoideae" "0" "GN" "C3" NA NA NA
+"28" "Linum.usitatissimum.subsp..angustifolium" "Linum" "Linum usitatissimum" "Equisetopsida" "Malpighiales" "Linaceae" "Linoideae" "0" "SSES" "C3" NA "R" NA
+"29" "Bromus.hordeaceus" "Bromus" "Bromus hordeaceus" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Bromeae" "ES" "C3" "Medium" "CS" "Short"
+"30" "Bupleurum.semicompositum" "Bupleurum" "Bupleurum semicompositum" "Equisetopsida" "Apiales" "Apiaceae" "Apioideae" "Bupleureae" "ES" NA NA "S" NA
+"31" "Melilotus.indicus" "Melilotus" "Melilotus indicus" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA "R" NA
+"32" "Aeluropus.littoralis" "Aeluropus" "Aeluropus littoralis" "Equisetopsida" "Poales" "Poaceae" "Chloridoideae" "Cynodonteae" "ES" "C4" "High" NA NA
+"33" "Lysimachia.arvensis" "Lysimachia" "Lysimachia arvensis" "Equisetopsida" "Ericales" "Primulaceae" "Myrsinoideae" "0" "ES" NA NA NA NA
+"34" "Trifolium.nigrescens" "Trifolium" "Trifolium nigrescens" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA NA "Short"
+"35" "Medicago.polymorpha" "Medicago" "Medicago polymorpha" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA "R" "Short"
+"36" "Atriplex.prostrata" "Atriplex" "Atriplex prostrata" "Equisetopsida" "Caryophyllales" "Amaranthaceae" "Chenopodioideae" "Atripliceae" "ES" "C4" "High" "S" NA
+"37" "Bellis.annua" "Bellis" "Bellis annua" "Equisetopsida" "Asterales" "Asteraceae" "Asteroideae" "Astereae" "ES" "C3" NA NA NA
+"38" "Aster.squamatus" "Aster" "Aster squamatus" "Equisetopsida" "Asterales" "Asteraceae" "Asteroideae" "Astereae" "ES" "C3" NA "CS" NA
+"39" "Trifolium.tomentosum" "Trifolium" "Trifolium tomentosum" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA "S" NA
+"40" "Juncus.maritimus" "Juncus" "Juncus maritimus" "Equisetopsida" "Poales" "Juncaceae" "0" "0" "ES" "C3" "High" "CS" NA
+"41" "Crepis.pulchra" "Crepis" "Crepis pulchra" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "ES" "C3" NA "CS" NA
+"42" "Polygonum.aviculare" "Polygonum" "Polygonum aviculare" "Equisetopsida" "Caryophyllales" "Polygonaceae" "Polygonoideae" "Polygoneae" "ES" "C3" "Medium" "R" NA
+"43" "Brachypodium.phoenicoides" "Brachypodium" "Brachypodium phoenicoides" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Brachypodieae" "ES" "C3" NA "CS" "Long"
+"44" "Aristolochia.rotunda" "Aristolochia" "Aristolochia rotunda" "Equisetopsida" "Piperales" "Aristolochiaceae" "0" "0" "ES" "C3" NA "RS" "Long"
+"45" "Iris.reichenbachiana" "Iris" "Iris reichenbachiana" "Equisetopsida" "Asparagales" "Iridaceae" "Iridoideae" "Irideae" "ES" NA NA NA NA
+"46" "Ranunculus.bulbosus" "Ranunculus" "Ranunculus bulbosus" "Equisetopsida" "Ranunculales" "Ranunculaceae" "Ranunculoideae" "Ranunculeae" "ES" "C3" NA "CRS" "Long"
+"47" "Sherardia.arvensis" "Sherardia" "Sherardia arvensis" "Equisetopsida" "Gentianales" "Rubiaceae" "Rubioideae" "Rubieae" "ES" "C3" NA "R" NA
+"48" "Dactylis.glomerata.subsp..hispanica" "Dactylis" "Dactylis glomerata" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "SSES" "C3" "Low" "C" "Long"
+"49" "Torilis.nodosa.subsp..nodosa" "Torilis" "Torilis nodosa" "Equisetopsida" "Apiales" "Apiaceae" "Apioideae" "Scandiceae" "SSES" "C3" NA "R" NA
+"50" "Geranium.dissectum" "Geranium" "Geranium dissectum" "Equisetopsida" "Geraniales" "Geraniaceae" "0" "0" "ES" "C3" NA "CS" "Short"
+"51" "Galium.spurium" "Galium" "Galium spurium" "Equisetopsida" "Gentianales" "Rubiaceae" "Rubioideae" "Rubieae" "ES" "C3" NA "CS" NA
+"52" "Halimione.portulacoides" "Halimione" "Halimione portulacoides" "Equisetopsida" "Caryophyllales" "Amaranthaceae" "Chenopodioideae" "Atripliceae" "ES" NA NA NA NA
+"53" "Dactylis.glomerata" "Dactylis" "Dactylis glomerata" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" "Low" "C" "Long"
+"54" "Phillyrea.angustifolia" "Phillyrea" "Phillyrea angustifolia" "Equisetopsida" "Lamiales" "Oleaceae" "0" "Oleeae" "ES" "C3" NA "CS" "Long"
+"55" "Plantago.lanceolata" "Plantago" "Plantago lanceolata" "Equisetopsida" "Lamiales" "Plantaginaceae" "0" "Plantagineae" "ES" "C3" "Medium" "CRS" "Long"
+"56" "Convolvulus.arvensis" "Convolvulus" "Convolvulus arvensis" "Equisetopsida" "Solanales" "Convolvulaceae" "Convolvuloideae" "Convolvuleae" "ES" "C3" NA "CS" "Long"
+"57" "Poa.trivialis" "Poa" "Poa trivialis" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" NA "CRS" "Long"
+"58" "Geranium.molle" "Geranium" "Geranium molle" "Equisetopsida" "Geraniales" "Geraniaceae" "0" "0" "ES" "C3" NA "R" NA
+"59" "Gramineae.sp." "Gramineae" "Gramineae sp" "Equisetopsida" "Poales" "Poaceae" "0" "0" "FM" NA NA NA NA
+"60" "Daucus.carota" "Daucus" "Daucus carota" "Equisetopsida" "Apiales" "Apiaceae" "Apioideae" "Scandiceae" "ES" "C3" "Medium" "CS" "Short"
+"61" "Poa.pratensis" "Poa" "Poa pratensis" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" "Medium" "C" "Long"
+"62" "Lolium.perenne" "Lolium" "Lolium perenne" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" "Medium" "C" "Short"
+"63" "Trifolium.pratense" "Trifolium" "Trifolium pratense" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" "Low" "C" "Short"
+"64" "Holcus.lanatus" "Holcus" "Holcus lanatus" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" NA "C" "Short"
+"65" "Trifolium.repens" "Trifolium" "Trifolium repens" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" "Low" "CRS" "Long"
+"66" "Cuscuta.campestris" "Cuscuta" "Cuscuta campestris" "Equisetopsida" "Solanales" "Convolvulaceae" "Cuscutoideae" "0" "ES" NA NA NA NA
+"67" "Sonchus.oleraceus" "Sonchus" "Sonchus oleraceus" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "ES" "C3" "Low" "CS" "Short"
+"68" "Veronica.arvensis" "Veronica" "Veronica arvensis" "Equisetopsida" "Lamiales" "Plantaginaceae" "0" "Veroniceae" "ES" "C3" NA "R" NA
+"69" "Galium.aparine" "Galium" "Galium aparine" "Equisetopsida" "Gentianales" "Rubiaceae" "Rubioideae" "Rubieae" "ES" "C3" NA "CS" "Short"
+"70" "Helminthotheca.echioides" "Helminthotheca" "Helminthotheca echioides" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "ES" "C3" NA "CRS" NA
+"71" "Ranunculus.acris" "Ranunculus" "Ranunculus acris" "Equisetopsida" "Ranunculales" "Ranunculaceae" "Ranunculoideae" "Ranunculeae" "ES" "C3" "Medium" "C" "Long"
+"72" "Vicia.sativa" "Vicia" "Vicia sativa" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA "CS" "Short"
+"73" "Potentilla.reptans" "Potentilla" "Potentilla reptans" "Equisetopsida" "Rosales" "Rosaceae" "Rosoideae" "Potentilleae" "ES" "C3" NA "CRS" "Long"
+"74" "Leontodon.sp." "Leontodon" "Leontodon sp" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "GN" NA NA NA NA
+"75" "Plantago.lagopus" "Plantago" "Plantago lagopus" "Equisetopsida" "Lamiales" "Plantaginaceae" "0" "Plantagineae" "ES" "C3" NA "RS" NA
+"76" "Euphorbia.exigua" "Euphorbia" "Euphorbia exigua" "Equisetopsida" "Malpighiales" "Euphorbiaceae" "Euphorbioideae" "Euphorbieae" "ES" "C3" NA "R" NA
+"77" "Filago.pygmaea" "Filago" "Filago pygmaea" "Equisetopsida" "Asterales" "Asteraceae" "Asteroideae" "Gnaphalieae" "ES" NA NA "RS" NA
+"78" "Erodium.cicutarium" "Erodium" "Erodium cicutarium" "Equisetopsida" "Geraniales" "Geraniaceae" "0" "0" "ES" "C3" NA "R" NA
+"79" "Crepis.capillaris" "Crepis" "Crepis capillaris" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "ES" "C3" "Medium" "CRS" NA
+"80" "Galium.murale" "Galium" "Galium murale" "Equisetopsida" "Gentianales" "Rubiaceae" "Rubioideae" "Rubieae" "ES" NA NA "S" NA
+"81" "Brachypodium.distachyon" "Brachypodium" "Brachypodium distachyon" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Brachypodieae" "ES" "C3" NA "RS" NA
+"82" "Crepis.sancta" "Crepis" "Crepis sancta" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "ES" "C3" NA "CS" NA
+"83" "Euphorbia.falcata" "Euphorbia" "Euphorbia falcata" "Equisetopsida" "Malpighiales" "Euphorbiaceae" "Euphorbioideae" "Euphorbieae" "ES" "C3" NA "R" NA
+"84" "Centaurium.sp." "Centaurium" "Centaurium sp" "Equisetopsida" "Gentianales" "Gentianaceae" "0" "0" "GN" NA NA NA NA
+"85" "Hypochaeris.glabra" "Hypochaeris" "Hypochaeris glabra" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "ES" "C3" NA "RS" NA
+"86" "Cerastium.pumilum" "Cerastium" "Cerastium pumilum" "Equisetopsida" "Caryophyllales" "Caryophyllaceae" "0" "0" "ES" "C3" NA "RS" NA
+"87" "Plantago.bellardii" "Plantago" "Plantago bellardii" "Equisetopsida" "Lamiales" "Plantaginaceae" "0" "Plantagineae" "ES" "C3" NA NA NA
+"88" "Catapodium.rigidum" "Catapodium" "Catapodium rigidum" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" NA "R" NA
+"89" "Trifolium.sp." "Trifolium" "Trifolium sp" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "GN" "C3" NA NA NA
+"90" "Poa.bulbosa" "Poa" "Poa bulbosa" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" "Low" "RS" "Long"
+"91" "Lobularia.maritima" "Lobularia" "Lobularia maritima" "Equisetopsida" "Brassicales" "Brassicaceae" "0" "0" "ES" "C3" NA "RS" NA
+"92" "Arenaria.leptoclados" "Arenaria" "Arenaria leptoclados" "Equisetopsida" "Caryophyllales" "Caryophyllaceae" "0" "0" "ES" "C3" NA "R" NA
+"93" "Crepis.vesicaria.subsp..taraxacifolia" "Crepis" "Crepis vesicaria" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "SSES" "C3" NA NA NA
+"94" "Lysimachia.linum.stellatum" "Lysimachia" "Lysimachia linum" "Equisetopsida" "Ericales" "Primulaceae" "Myrsinoideae" "0" "ES" NA NA NA NA
+"95" "Vulpia.ciliata.subsp..ciliata" "Vulpia" "Vulpia ciliata" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "SSES" "C3" "Medium" "S" NA
+"96" "Galium.parisiense" "Galium" "Galium parisiense" "Equisetopsida" "Gentianales" "Rubiaceae" "Rubioideae" "Rubieae" "ES" "C3" NA "R" NA
+"97" "Trifolium.scabrum" "Trifolium" "Trifolium scabrum" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA "S" NA
+"98" "Cerastium.semidecandrum" "Cerastium" "Cerastium semidecandrum" "Equisetopsida" "Caryophyllales" "Caryophyllaceae" "0" "0" "ES" "C3" NA "R" NA
+"99" "Medicago.monspeliaca" "Medicago" "Medicago monspeliaca" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA "S" NA
+"100" "Sonchus.bulbosus" "Sonchus" "Sonchus bulbosus" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "ES" "C3" NA "RS" NA
+"101" "Trifolium.suffocatum" "Trifolium" "Trifolium suffocatum" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA NA NA
+"102" "Scolymus.hispanicus" "Scolymus" "Scolymus hispanicus" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "ES" "C3" NA "CS" NA
+"103" "Salvia.verbenaca.subsp..clandestina" "Salvia" "Salvia verbenaca" "Equisetopsida" "Lamiales" "Lamiaceae" "Nepetoideae" "Mentheae" "SSES" "C3" NA NA NA
+"104" "Erigeron.sp." "Erigeron" "Erigeron sp" "Equisetopsida" "Asterales" "Asteraceae" "Asteroideae" "Astereae" "GN" NA NA NA NA
+"105" "Sabulina.tenuifolia" "Sabulina" "Sabulina tenuifolia" "Equisetopsida" "Caryophyllales" "Caryophyllaceae" "0" "0" "ES" "C3" NA "RS" NA
+"106" "Filago.pyramidata" "Filago" "Filago pyramidata" "Equisetopsida" "Asterales" "Asteraceae" "Asteroideae" "Gnaphalieae" "ES" "C3" NA "RS" NA
+"107" "Trigonella.esculenta" "Trigonella" "Trigonella esculenta" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA NA NA
+"108" "Polycarpon.tetraphyllum" "Polycarpon" "Polycarpon tetraphyllum" "Equisetopsida" "Caryophyllales" "Caryophyllaceae" "0" "0" "ES" NA NA NA NA
+"109" "Lagurus.ovatus" "Lagurus" "Lagurus ovatus" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" NA "RS" NA
+"110" "Elytrigia.acuta" "Elytrigia" "Elytrigia acuta" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Triticeae" "ES" NA NA NA NA
+"111" "Valantia.muralis" "Valantia" "Valantia muralis" "Equisetopsida" "Gentianales" "Rubiaceae" "Rubioideae" "Rubieae" "ES" "C3" NA "RS" NA
+"112" "Limonium.virgatum" "Limonium" "Limonium virgatum" "Equisetopsida" "Caryophyllales" "Plumbaginaceae" "0" "0" "ES" "C3" NA "S" NA
+"113" "Parapholis.incurva" "Parapholis" "Parapholis incurva" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" "High" "RS" NA
+"114" "Blackstonia.sp." "Blackstonia" "Blackstonia sp" "Equisetopsida" "Gentianales" "Gentianaceae" "0" "0" "GN" NA NA NA NA
+"115" "Bromus.diandrus" "Bromus" "Bromus diandrus" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Bromeae" "ES" "C3" NA "RS" NA
+"116" "Medicago.littoralis" "Medicago" "Medicago littoralis" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA "S" "Short"
+"117" "Medicago.minima" "Medicago" "Medicago minima" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA "RS" "Short"
+"118" "Bromus.madritensis" "Bromus" "Bromus madritensis" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Bromeae" "ES" "C3" NA "CS" "Short"
+"119" "Rostraria.pubescens" "Rostraria" "Rostraria pubescens" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" NA NA NA NA
+"120" "Vulpia.sp." "Vulpia" "Vulpia sp" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "GN" NA NA NA NA
+"121" "Phleum.arenarium" "Phleum" "Phleum arenarium" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" "Medium" "RS" NA
+"122" "Hordeum.marinum" "Hordeum" "Hordeum marinum" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Triticeae" "ES" "C3" "High" "CS" NA
+"123" "Juncus.subulatus" "Juncus" "Juncus subulatus" "Equisetopsida" "Poales" "Juncaceae" "0" "0" "ES" NA NA NA NA
+"124" "Salicornia.europaea" "Salicornia" "Salicornia europaea" "Equisetopsida" "Caryophyllales" "Amaranthaceae" "Salicornioideae" "0" "ES" "C3" "High" "S" NA
+"125" "Bolboschoenus.maritimus" "Bolboschoenus" "Bolboschoenus maritimus" "Equisetopsida" "Poales" "Cyperaceae" "Cyperoideae" "Fuireneae" "ES" "C3" "High" "CS" "Long"
+"126" "Phragmites.australis" "Phragmites" "Phragmites australis" "Equisetopsida" "Poales" "Poaceae" "Arundinoideae" "Molinieae" "ES" "C3" "Low" "CS" "Long"
+"127" "Paspalum.distichum" "Paspalum" "Paspalum distichum" "Equisetopsida" "Poales" "Poaceae" "Panicoideae" "Paspaleae" "ES" "C4" "High" NA "Short"
+"128" "Polypogon.monspeliensis" "Polypogon" "Polypogon monspeliensis" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" "Low" NA "Short"
+"129" "Asteraceae.sp." "Asteraceae" "Asteraceae sp" "Equisetopsida" "Asterales" "Asteraceae" "0" "0" "FM" "C3" NA NA NA
+"130" "Puccinellia.festuciformis" "Puccinellia" "Puccinellia festuciformis" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" "High" NA NA
+"131" "Ranunculus.peltatus.subsp..peltatus" "Ranunculus" "Ranunculus peltatus" "Equisetopsida" "Ranunculales" "Ranunculaceae" "Ranunculoideae" "Ranunculeae" "SSES" "C3" "High" "CRS" NA
+"132" "Spergularia.sp." "Spergularia" "Spergularia sp" "Equisetopsida" "Caryophyllales" "Caryophyllaceae" "0" "0" "GN" NA NA NA NA
+"133" "Schedonorus.arundinaceus" "Schedonorus" "Schedonorus arundinaceus" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" NA NA NA NA
+"134" "Polypogon.sp." "Polypogon" "Polypogon sp" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "GN" NA NA NA NA
+"135" "Aster.maritimus" "Aster" "Aster maritimus" "Equisetopsida" "Asterales" "Asteraceae" "Asteroideae" "Astereae" "ES" NA NA NA NA
+"136" "Carex.otrubae" "Carex" "Carex otrubae" "Equisetopsida" "Poales" "Cyperaceae" "Cyperoideae" "Cariceae" "ES" "C3" "Medium" "CS" NA
+"137" "Suaeda.splendens" "Suaeda" "Suaeda splendens" "Equisetopsida" "Caryophyllales" "Amaranthaceae" "Suaedoideae" "0" "ES" "C3" "High" "RS" NA
+"138" "Suaeda.spicata" "Suaeda" "Suaeda spicata" "Equisetopsida" "Caryophyllales" "Amaranthaceae" "Suaedoideae" "0" "ES" NA NA NA NA
+"139" "Paspalum.dilatatum" "Paspalum" "Paspalum dilatatum" "Equisetopsida" "Poales" "Poaceae" "Panicoideae" "Paspaleae" "ES" "C4" "Medium" "CS" "Long"
+"140" "Schedonorus.pratensis" "Schedonorus" "Schedonorus pratensis" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" NA NA NA NA
+"141" "Tragopogon.sp." "Tragopogon" "Tragopogon sp" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "GN" NA NA NA NA
+"142" "Solanum.villosum" "Solanum" "Solanum villosum" "Equisetopsida" "Solanales" "Solanaceae" "Solanoideae" "Solaneae" "ES" "C3" NA "R" NA
+"143" "Agrostis.stolonifera" "Agrostis" "Agrostis stolonifera" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" "Medium" "CRS" "Short"
+"144" "Trifolium.fragiferum" "Trifolium" "Trifolium fragiferum" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" "Low" "CRS" "Short"
+"145" "Ulmus.minor" "Ulmus" "Ulmus minor" "Equisetopsida" "Rosales" "Ulmaceae" "0" "0" "ES" "C3" NA "C" NA
+"146" "Agrimonia.eupatoria" "Agrimonia" "Agrimonia eupatoria" "Equisetopsida" "Rosales" "Rosaceae" "Rosoideae" "Agrimonieae" "ES" "C3" NA "C" "Long"
+"147" "Amaranthaceae.sp." "Amaranthaceae" "Amaranthaceae sp" "Equisetopsida" "Caryophyllales" "Amaranthaceae" "0" "0" "FM" NA NA NA NA
+"148" "Ranunculus.sardous" "Ranunculus" "Ranunculus sardous" "Equisetopsida" "Ranunculales" "Ranunculaceae" "Ranunculoideae" "Ranunculeae" "ES" "C3" NA "RS" NA
+"149" "Elytrigia.campestris" "Elytrigia" "Elytrigia campestris" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Triticeae" "ES" NA NA NA NA
+"150" "Ervum.gracile" "Ervum" "Ervum gracile" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" NA NA NA NA
+"151" "Avena.barbata" "Avena" "Avena barbata" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" NA "RS" "Short"
+"152" "Avena.sterilis" "Avena" "Avena sterilis" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Bromeae" "ES" "C3" NA "CS" NA
+"153" "Festuca.sp." "Festuca" "Festuca sp" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "GN" "C3" NA NA NA
+"154" "Lathyrus.hirsutus" "Lathyrus" "Lathyrus hirsutus" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA "CS" "Long"
+"155" "Bromus.lanceolatus" "Bromus" "Bromus lanceolatus" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Bromeae" "ES" "C3" NA NA NA
+"156" "Scabiosa.atropurpurea" "Scabiosa" "Scabiosa atropurpurea" "Equisetopsida" "Dipsacales" "Caprifoliaceae" "0" "0" "ES" NA NA NA NA
+"157" "Scorpiurus.muricatus" "Scorpiurus" "Scorpiurus muricatus" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "Loteae" "ES" "C3" NA "S" NA
+"158" "Linum.strictum" "Linum" "Linum strictum" "Equisetopsida" "Malpighiales" "Linaceae" "Linoideae" "0" "ES" "C3" NA "RS" NA
+"159" "Hippocrepis.biflora" "Hippocrepis" "Hippocrepis biflora" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "Loteae" "ES" NA NA "S" NA
+"160" "Blackstonia.perfoliata.subsp..perfoliata" "Blackstonia" "Blackstonia perfoliata" "Equisetopsida" "Gentianales" "Gentianaceae" "0" "0" "SSES" "C3" "Medium" "RS" NA
+"161" "Artemisia.campestris.subsp..glutinosa" "Artemisia" "Artemisia campestris" "Equisetopsida" "Asterales" "Asteraceae" "Asteroideae" "Anthemideae" "SSES" "C3" NA "CS" NA
+"162" "Helichrysum.stoechas" "Helichrysum" "Helichrysum stoechas" "Equisetopsida" "Asterales" "Asteraceae" "Asteroideae" "Gnaphalieae" "ES" NA NA "S" "Long"
+"163" "Silene.italica" "Silene" "Silene italica" "Equisetopsida" "Caryophyllales" "Caryophyllaceae" "0" "0" "ES" "C3" NA "C" NA
+"164" "Sporobolus.pungens" "Sporobolus" "Sporobolus pungens" "Equisetopsida" "Poales" "Poaceae" "Chloridoideae" "Zoysieae" "ES" "C4" NA "CS" NA
+"165" "Vulpia.fasciculata" "Vulpia" "Vulpia fasciculata" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" NA "S" NA
+"166" "Malcolmia.littorea" "Malcolmia" "Malcolmia littorea" "Equisetopsida" "Brassicales" "Brassicaceae" "0" "0" "ES" NA NA NA NA
+"167" "Carex.extensa" "Carex" "Carex extensa" "Equisetopsida" "Poales" "Cyperaceae" "Cyperoideae" "Cariceae" "ES" "C3" "High" "S" NA
+"168" "Limbarda.crithmoides" "Limbarda" "Limbarda crithmoides" "Equisetopsida" "Asterales" "Asteraceae" "Asteroideae" "Inuleae" "ES" "C3" "High" "CS" NA
+"169" "Spartina.patens" "Spartina" "Spartina patens" "Equisetopsida" "Poales" "Poaceae" "Chloridoideae" "Zoysieae" "ES" "C4" "High" NA "Long"
+"170" "Sonchus.maritimus" "Sonchus" "Sonchus maritimus" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "ES" "C4" NA NA NA
+"171" "Pinus.pinea" "Pinus" "Pinus pinea" "Equisetopsida" "Pinales" "Pinaceae" "0" "0" "ES" "C3" NA "CS" "Long"
+"172" "Schoenus.nigricans" "Schoenus" "Schoenus nigricans" "Equisetopsida" "Poales" "Cyperaceae" "Cyperoideae" "Schoeneae" "ES" "C3" "High" "CRS" NA
+"173" "Medicago.arabica" "Medicago" "Medicago arabica" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA "R" NA
+"174" "Filago.sp." "Filago" "Filago sp" "Equisetopsida" "Asterales" "Asteraceae" "Asteroideae" "Gnaphalieae" "GN" NA NA NA NA
+"175" "Sabulina.mediterranea" "Sabulina" "Sabulina mediterranea" "Equisetopsida" "Caryophyllales" "Caryophyllaceae" "0" "0" "ES" NA NA "RS" NA
+"176" "Stellaria.pallida" "Stellaria" "Stellaria pallida" "Equisetopsida" "Caryophyllales" "Caryophyllaceae" "0" "0" "ES" "C3" "Medium" "R" NA
+"177" "Rumex.pulcher" "Rumex" "Rumex pulcher" "Equisetopsida" "Caryophyllales" "Polygonaceae" "Polygonoideae" "Rumiceae" "ES" "C3" NA "C" NA
+"178" "Draba.verna" "Draba" "Draba verna" "Equisetopsida" "Brassicales" "Brassicaceae" "0" "0" "ES" "C3" NA "RS" NA
+"179" "Medicago.truncatula" "Medicago" "Medicago truncatula" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA "RS" NA
+"180" "Senecio.vulgaris.subsp..vulgaris" "Senecio" "Senecio vulgaris" "Equisetopsida" "Asterales" "Asteraceae" "Asteroideae" "Senecioneae" "SSES" "C3" NA "R" "Short"
+"181" "Ajuga.iva" "Ajuga" "Ajuga iva" "Equisetopsida" "Lamiales" "Lamiaceae" "Ajugoideae" "0" "ES" NA NA "S" NA
+"182" "Romulea.ramiflora" "Romulea" "Romulea ramiflora" "Equisetopsida" "Asparagales" "Iridaceae" "Crocoideae" "Ixieae" "ES" NA NA NA NA
+"183" "Herniaria.cinerea" "Herniaria" "Herniaria cinerea" "Equisetopsida" "Caryophyllales" "Caryophyllaceae" "0" "0" "ES" "C3" NA NA NA
+"184" "Hordeum.murinum.subsp..leporinum" "Hordeum" "Hordeum murinum" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Triticeae" "SSES" "C3" "Medium" "R" "Short"
+"185" "Carduus.tenuiflorus" "Carduus" "Carduus tenuiflorus" "Equisetopsida" "Asterales" "Asteraceae" "Carduoideae" "Cardueae" "ES" "C3" NA "RS" NA
+"186" "Centaurea.melitensis" "Centaurea" "Centaurea melitensis" "Equisetopsida" "Asterales" "Asteraceae" "Carduoideae" "Cardueae" "ES" "C3" NA "RS" NA
+"187" "Sagina.apetala" "Sagina" "Sagina apetala" "Equisetopsida" "Caryophyllales" "Caryophyllaceae" "0" "0" "ES" "C3" NA "R" NA
+"188" "Neatostema.apulum" "Neatostema" "Neatostema apulum" "Equisetopsida" "Boraginales" "Boraginaceae" "0" "0" "ES" NA NA "RS" NA
+"189" "Bromus.sp." "Bromus" "Bromus sp" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Bromeae" "GN" "C3" NA NA NA
+"190" "Allium.polyanthum" "Allium" "Allium polyanthum" "Equisetopsida" "Asparagales" "Amaryllidaceae" "Allioideae" "Allieae" "ES" NA NA NA NA
+"191" "Bromus.rubens" "Bromus" "Bromus rubens" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Bromeae" "ES" "C3" "Medium" "RS" "Short"
+"192" "Taraxacum.sp." "Taraxacum" "Taraxacum sp" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "GN" "C3" NA NA NA
+"193" "Linum.sp." "Linum" "Linum sp" "Equisetopsida" "Malpighiales" "Linaceae" "Linoideae" "0" "GN" "C3" NA NA NA
+"194" "Trifolium.stellatum" "Trifolium" "Trifolium stellatum" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA "S" NA
+"195" "Polygala.monspeliaca" "Polygala" "Polygala monspeliaca" "Equisetopsida" "Fabales" "Polygalaceae" "0" "Polygaleae" "ES" "C3" NA "S" NA
+"196" "Sideritis.romana" "Sideritis" "Sideritis romana" "Equisetopsida" "Lamiales" "Lamiaceae" "Lamioideae" "Stachydeae" "ES" "C3" NA "RS" NA
+"197" "Vulpia.unilateralis" "Vulpia" "Vulpia unilateralis" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" NA "RS" NA
+"198" "Parapholis.sp." "Parapholis" "Parapholis sp" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "GN" NA NA NA NA
+"199" "Muscari.neglectum" "Muscari" "Muscari neglectum" "Equisetopsida" "Asparagales" "Asparagaceae" "Scilloideae" "Hyacintheae" "ES" "C3" NA "RS" NA
+"200" "Crepis.sp." "Crepis" "Crepis sp" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "GN" NA NA NA NA
+"201" "Rostraria.cristata" "Rostraria" "Rostraria cristata" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" NA "RS" NA
+"202" "Asparagus.acutifolius" "Asparagus" "Asparagus acutifolius" "Equisetopsida" "Asparagales" "Asparagaceae" "Asparagoideae" "0" "ES" "C3" NA "CS" "Long"
+"203" "Lolium.rigidum" "Lolium" "Lolium rigidum" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" "High" "CS" "Short"
+"204" "Hypochaeris.sp." "Hypochaeris" "Hypochaeris sp" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "GN" NA NA NA NA
+"205" "Pallenis.spinosa" "Pallenis" "Pallenis spinosa" "Equisetopsida" "Asterales" "Asteraceae" "Asteroideae" "Inuleae" "ES" "C3" NA "RS" NA
+"206" "Hordeum.murinum" "Hordeum" "Hordeum murinum" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Triticeae" "ES" "C3" "Medium" "R" "Short"
+"207" "Muscari.comosum" "Muscari" "Muscari comosum" "Equisetopsida" "Asparagales" "Asparagaceae" "Scilloideae" "Hyacintheae" "ES" NA NA NA NA
+"208" "Carduus.sp." "Carduus" "Carduus sp" "Equisetopsida" "Asterales" "Asteraceae" "Carduoideae" "Cardueae" "GN" "C3" NA NA NA
+"209" "Urospermum.picroides" "Urospermum" "Urospermum picroides" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "ES" "C3" NA "RS" NA
+"210" "Cerastium.glomeratum" "Cerastium" "Cerastium glomeratum" "Equisetopsida" "Caryophyllales" "Caryophyllaceae" "0" "0" "ES" "C3" NA "R" NA
+"211" "Sagina.maritima" "Sagina" "Sagina maritima" "Equisetopsida" "Caryophyllales" "Caryophyllaceae" "0" "0" "ES" "C3" "High" "RS" NA
+"212" "Hornungia.procumbens" "Hornungia" "Hornungia procumbens" "Equisetopsida" "Brassicales" "Brassicaceae" "0" "0" "ES" "C3" NA "RS" NA
+"213" "Polygonum.maritimum" "Polygonum" "Polygonum maritimum" "Equisetopsida" "Caryophyllales" "Polygonaceae" "Polygonoideae" "Polygoneae" "ES" "C3" NA NA NA
+"214" "Hainardia.cylindrica" "Hainardia" "Hainardia cylindrica" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" NA NA NA
+"215" "Rubus.ulmifolius" "Rubus" "Rubus ulmifolius" "Equisetopsida" "Rosales" "Rosaceae" "Rosoideae" "Rubeae" "ES" "C3" NA "C" NA
+"216" "Limonium.girardianum" "Limonium" "Limonium girardianum" "Equisetopsida" "Caryophyllales" "Plumbaginaceae" "0" "0" "ES" "C3" NA NA NA
+"217" "Alopecurus.bulbosus" "Alopecurus" "Alopecurus bulbosus" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "ES" "C3" "High" "CS" NA
+"218" "Prunus.spinosa" "Prunus" "Prunus spinosa" "Equisetopsida" "Rosales" "Rosaceae" "Amygdaloideae" "Amygdaleae" "ES" "C3" NA "C" "Long"
+"219" "Tragopogon.pratensis.subsp..orientalis" "Tragopogon" "Tragopogon pratensis" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "SSES" "C3" NA "CRS" NA
+"220" "Taraxacum.officinale.gpe" "Taraxacum" "Taraxacum officinale" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "GN" NA NA NA NA
+"221" "Galium.mollugo" "Galium" "Galium mollugo" "Equisetopsida" "Gentianales" "Rubiaceae" "Rubioideae" "Rubieae" "ES" "C3" NA "C" NA
+"222" "Rumex.crispus" "Rumex" "Rumex crispus" "Equisetopsida" "Caryophyllales" "Polygonaceae" "Polygonoideae" "Rumiceae" "ES" "C3" "High" "C" NA
+"223" "Picris.hieracioides.subsp..hieracioides" "Picris" "Picris hieracioides" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "SSES" "C3" NA "CRS" "Long"
+"224" "Lathyrus.setifolius" "Lathyrus" "Lathyrus setifolius" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA "S" NA
+"225" "Eleocharis.palustris" "Eleocharis" "Eleocharis palustris" "Equisetopsida" "Poales" "Cyperaceae" "Cyperoideae" "Eleocharideae" "ES" "C3" "Low" "CS" "Long"
+"226" "Plantago.major" "Plantago" "Plantago major" "Equisetopsida" "Lamiales" "Plantaginaceae" "0" "Plantagineae" "ES" "C3" "Low" "CRS" "Short"
+"227" "Medicago.marina" "Medicago" "Medicago marina" "Equisetopsida" "Fabales" "Fabaceae" "Papilionoideae" "0" "ES" "C3" NA NA NA
+"228" "Crepis.foetida" "Crepis" "Crepis foetida" "Equisetopsida" "Asterales" "Asteraceae" "Cichorioideae" "Cichorieae" "ES" "C3" NA "CS" "Short"
+"229" "Ammophila.arenaria.subsp..arundinacea" "Ammophila" "Ammophila arenaria" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Poeae" "SSES" "C3" "Low" "CS" "Long"
+"230" "Elytrigia.juncea.subsp..juncea" "Elytrigia" "Elytrigia juncea" "Equisetopsida" "Poales" "Poaceae" "Pooideae" "Triticeae" "SSES" NA NA NA NA
+"231" "Anthemis.maritima" "Anthemis" "Anthemis maritima" "Equisetopsida" "Asterales" "Asteraceae" "Asteroideae" "Anthemideae" "ES" NA NA "RS" NA
+"232" "Salicornia.alpini" "Salicornia" "Salicornia alpini" "Equisetopsida" "Caryophyllales" "Amaranthaceae" "Salicornioideae" "0" "ES" NA NA NA NA
+"233" "Salicornia.fruticosa" "Salicornia" "Salicornia fruticosa" "Equisetopsida" "Caryophyllales" "Amaranthaceae" "Salicornioideae" "0" "ES" NA NA NA NA
+"234" "Salicornia.sp." "Salicornia" "Salicornia sp" "Equisetopsida" "Caryophyllales" "Amaranthaceae" "Salicornioideae" "0" "GN" NA NA NA NA
+"235" "Arthrocaulon.macrostachyum" "Arthrocaulon" "Arthrocaulon macrostachyum" "Equisetopsida" "Caryophyllales" "Amaranthaceae" "Salicornioideae" "0" "ES" NA NA NA NA
+"236" "Juncus.bufonius.gpe" "Juncus" "Juncus bufonius" "Equisetopsida" "Poales" "Juncaceae" "0" "0" "ES" "C3" "Medium" "R" "Short"
+"237" "Myosurus.minimus" "Myosurus" "Myosurus minimus" "Equisetopsida" "Ranunculales" "Ranunculaceae" "Ranunculoideae" "Ranunculeae" "ES" "C3" "Low" "R" "Short"
+"238" "Spergularia.bocconei" "Spergularia" "Spergularia bocconei" "Equisetopsida" "Caryophyllales" "Caryophyllaceae" "0" "0" "ES" "C3" NA "RS" NA
+"239" "Lythrum.hyssopifolia" "Lythrum" "Lythrum hyssopifolia" "Equisetopsida" "Myrtales" "Lythraceae" "Lythroideae" "0" "ES" "C3" "High" "RS" NA

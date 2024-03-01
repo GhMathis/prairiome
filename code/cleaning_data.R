@@ -141,21 +141,21 @@ colSums(OUT_virus_grid_binary_df)
 # otu_plant_cam_binary = otu_plant_cam_trpose
 # otu_plant_cam_binary[otu_plant_cam_trpose != 0] = 1 
 OUT_plant_grid_binary_df
-hills_numbers_plant_df = iNEXT(OUT_plant_grid_binary_df,q = 0, nboot = 100,
+hills_numbers_plant_df = iNEXT(OUT_plant_grid_binary_df,q = 0,nboot = 120,
             datatype="incidence_freq")
-rowSums(OUT_virus_grid_binary_df)
-hills_numbers_virus_df = iNEXT(OUT_virus_grid_binary_df,q = 0, nboot = 100,
+hills_numbers_plant_df2 = iNEXT(OUT_plant_grid_binary_df[,1:10],q = 0,nboot = 120,
+                               datatype="incidence_freq")
+
+hills_numbers_virus_df = iNEXT(OUT_virus_grid_binary_df,q = 0, nboot = 120,
                                datatype="incidence_freq")
 hills_numbers_plant_df%>%
   ggiNEXT(., type = 3, color.var = "Order.q")+
   facet_wrap(~Assemblage)
 
-
+colSums(OUT_virus_grid_binary_df)
 hills_numbers_virus_df%>%
   ggiNEXT(., type = 1, color.var = "Order.q")+
   facet_wrap(~Assemblage)+
-  ylab("Viral richness")+
-  xlab("Sample size")+
   main_theme
 hills_numbers_virus_df%>%
   ggiNEXT(., type = 3, color.var = "Order.q")+
