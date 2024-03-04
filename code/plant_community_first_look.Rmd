@@ -282,6 +282,19 @@ g2 = ggplot()+
   main_theme+
    theme(line = element_line())
 #ggarrange(g1, g2)
+
+g3 = ggplot()+
+  geom_segment(data = env_var,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"), size = 1.5, col = "gray3")+
+  geom_label_repel(data = env_var,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
+  geom_point(data = cluster3_site_df, aes(x=RDA1,y = RDA2, shape = clust), cex = 3)+
+  geom_point(data = metadata_grid, aes(x=RDA1,y = RDA2),col = "gray", size = 3,stroke=2, shape =4)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2, col = life_style), size = 3,stroke=2, shape =4,  na.rm = TRUE)+
+  geom_segment(data = env_var_discret,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"),    size = 1, col = "gray3")+
+  geom_label_repel(data = env_var_discret,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
+  labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Life span", shape = "Cluster sites")+
+  scale_color_brewer(palette ="Set1")+
+  main_theme+
+   theme(line = element_line())
 g1
 g2
 ```
@@ -305,11 +318,11 @@ g2
   geom_label_repel(data = env_var,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
   geom_point(data = cluster3_site_df, aes(x=RDA1,y = RDA2, shape = clust), cex = 3)+
   geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2),col = "gray", size = 3,stroke=2, shape =4)+
-  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2, col = Plant_photosynthetic_pathway), size = 3,stroke=2, shape =4,  na.rm = TRUE)+
+  geom_point(data = cluster_sp_df, aes(x=RDA1,y = RDA2, col = Plant_order), size = 3,stroke=2, shape =4,  na.rm = TRUE)+
   geom_segment(data = env_var_discret,aes(x=RDA1,y = RDA2, xend =0, yend = 0), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"),    size = 1, col = "gray3")+
   geom_label_repel(data = env_var_discret,aes(x=RDA1,y = RDA2,label = type),  cex = 5)+
   labs(x = paste0("RDA1 (", perc[1], "%)"), y = paste0("RDA2 (", perc[2], "%)"), col = "Photo path", shape = "Cluster sites")+
-  scale_color_brewer(palette ="Set1")+
+  #scale_color_brewer(palette ="Set1")+
   main_theme+
    theme(line = element_line())
 ```
