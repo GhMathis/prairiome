@@ -25,7 +25,7 @@ read_xlsx("data/OTU_plant.xlsx")%>%
   select(Host_code, where(~is.numeric(.x) && sum(.x) != 0 )) -> otu_plant_cam
 
 write.table(otu_plant_cam, "data/data_clean/OTU_plant_CAM.txt")
-table(str_detect(otu_plant_cam$Host_code, "21_CAM_07"))
+
 ### VIRUS
 read.delim2("data/S1_Viral_OTU.txt",header = T)%>%
   rename(Host_code = "X")%>%
@@ -33,9 +33,8 @@ read.delim2("data/S1_Viral_OTU.txt",header = T)%>%
          !str_detect(Host_code, "21_CAM_1[45]")) %>%
   select(Host_code, where(~is.numeric(.x) && sum(.x) != 0 ))-> otu_virus_cam
 
-
 write.table(otu_virus_cam, "data/data_clean/OTU_virus_CAM.txt")
-
+ 
 ##### Metadata Quadra 
 read_xlsx("data/Metadata_Sample.xlsx")%>%
   filter(str_detect(Locality, "Arles"))%>%
@@ -141,16 +140,21 @@ colSums(OUT_virus_grid_binary_df)
 # otu_plant_cam_binary = otu_plant_cam_trpose
 # otu_plant_cam_binary[otu_plant_cam_trpose != 0] = 1 
 OUT_plant_grid_binary_df
-hills_numbers_plant_df = iNEXT(OUT_plant_grid_binary_df,q = 0,nboot = 120,
-            datatype="incidence_freq")
-hills_numbers_plant_df2 = iNEXT(OUT_plant_grid_binary_df[,1:10],q = 0,nboot = 120,
-                               datatype="incidence_freq")
+if(file.exists("data/data_clean/Inext_plant_grid.RData")){
+  load("data/data_clean/Inext_plant_grid.RData")
+}else{
+  hills_numbers_plant_df = iNEXT(OUT_plant_grid_binary_df, q = 0,nboot = 140,
+                                 datatype="incidence_freq")
+  save(hills_numbers_plant_df, file = "data/data_clean/Inext_plant_grid.RData")
+}
 
-hills_numbers_virus_df = iNEXT(OUT_virus_grid_binary_df,q = 0, nboot = 120,
+
+hills_numbers_virus_df = iNEXT(OUT_virus_grid_binary_df,q = 1, nboot = 120,
                                datatype="incidence_freq")
 hills_numbers_plant_df%>%
-  ggiNEXT(., type = 3, color.var = "Order.q")+
-  facet_wrap(~Assemblage)
+  ggiNEXT(., type = 1, color.var = "Order.q")+
+  facet_wrap(~Assemblage)+
+  main_theme
 
 colSums(OUT_virus_grid_binary_df)
 hills_numbers_virus_df%>%
@@ -162,17 +166,25 @@ hills_numbers_virus_df%>%
   facet_wrap(~Assemblage)+
   main_theme
 
-DataInfo(OUT_plant_grid_binary_list, datatype = "incidence_freq")
-
 iNEXT(rowSums(OUT_virus_grid_binary_df),q = 0, nboot = 100,
       datatype="incidence_freq")%>%
   ggiNEXT(., type = 1, color.var = "Order.q")+
   ylab("Global Viral richness")+
   xlab("Sample size")+
   main_theme
-iNEXT(rowSums(OUT_plant_grid_binary_df),q = 0, nboot = 100,
-      datatype="incidence_freq")%>%
-  ggiNEXT(., type = 2, color.var = "Order.q")+
+
+temp_plant = iNEXT(rowSums(OUT_plant_grid_binary_df),q = 0, nboot = 100,
+      datatype="incidence_freq")
+temp_plant%>%  
+ggiNEXT(., type = 3, color.var = "Order.q")+
+  ylab("Global Plant richness")+
+  xlab("Sample size")+
+  main_theme
+
+temp = iNEXT(rowSums(OUT_virus_grid_binary_df),q = 0, nboot = 100,
+      datatype="incidence_freq")
+temp%>%  
+ggiNEXT(., type = 3, color.var = "Order.q")+
   ylab("Global Plant richness")+
   xlab("Sample size")+
   main_theme
@@ -204,12 +216,12 @@ iNEXT(rowSums(OUT_plant_grid_binary_df),q = 0, nboot = 100,
 #   
 # }
 # 
-# Metadata_grid_cam%>%
-#   mutate(Plant_richness_grid = Plant_richness_grid,
-#          Plant_shannon_grid = Plant_shannon_grid,
-#          Plant_simpson_grid = Plant_simpson_grid,
-#          Virus_richness_grid = Virus_richness_grid,
-#          Virus_shannon_grid = Virus_shannon_grid,
-#          Virus_simpson_grid = Virus_simpson_grid) -> Metadata_grid_cam
+Metadata_grid_cam%>%
+  mutate(Plant_richness_grid = OUT_plant_grid_binary_df,
+         Plant_shannon_grid = Plant_shannon_grid,
+         Plant_simpson_grid = Plant_simpson_grid,
+         Virus_richness_grid = Virus_richness_grid,
+         Virus_shannon_grid = Virus_shannon_grid,
+         Virus_simpson_grid = Virus_simpson_grid) -> Metadata_grid_cam
 
 write.table(Metadata_grid_cam, "data/data_clean/Metadata_grid_CAM.txt")
