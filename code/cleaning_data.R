@@ -26,6 +26,15 @@ read_xlsx("data/OTU_plant.xlsx")%>%
 
 write.table(otu_plant_cam, "data/data_clean/OTU_plant_CAM.txt")
 
+otu_plant_cam%>%
+  mutate( Grid_code = str_extract(Host_code, ".._CAM_.."))%>%
+  group_by(Grid_code) %>%
+  mutate(across(where(is.numeric), ~.*20))%>%
+  summarise_if(is.numeric, sum)-> abund_plant_grid 
+
+
+write.table(abund_plant_grid, "data/data_clean/abund_plant_grid.txt",row.names = F)
+
 ### VIRUS
 read.delim2("data/S1_Viral_OTU.txt",header = T)%>%
   rename(Host_code = "X")%>%
@@ -34,7 +43,8 @@ read.delim2("data/S1_Viral_OTU.txt",header = T)%>%
   select(Host_code, where(~is.numeric(.x) && sum(.x) != 0 ))-> otu_virus_cam
 
 write.table(otu_virus_cam, "data/data_clean/OTU_virus_CAM.txt")
- 
+
+
 ##### Metadata Quadra 
 read_xlsx("data/Metadata_Sample.xlsx")%>%
   filter(str_detect(Locality, "Arles"))%>%
