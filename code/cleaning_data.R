@@ -24,7 +24,7 @@ read_xlsx("data/OTU_plant.xlsx")%>%
   select(-Richness)%>%
   select(Host_code, where(~is.numeric(.x) && sum(.x) != 0 )) -> otu_plant_cam
 
-write.table(otu_plant_cam, "data/data_clean/OTU_plant_CAM.txt")
+write.table(otu_plant_cam, "data/data_clean/OTU_plant_CAM.txt",row.names = F)
 
 otu_plant_cam%>%
   mutate( Grid_code = str_extract(Host_code, ".._CAM_.."))%>%
@@ -42,7 +42,7 @@ read.delim2("data/S1_Viral_OTU.txt",header = T)%>%
          !str_detect(Host_code, "21_CAM_1[45]")) %>%
   select(Host_code, where(~is.numeric(.x) && sum(.x) != 0 ))-> otu_virus_cam
 
-write.table(otu_virus_cam, "data/data_clean/OTU_virus_CAM.txt")
+write.table(otu_virus_cam, "data/data_clean/OTU_virus_CAM.txt",row.names = F)
 
 
 ##### Metadata Quadra 
