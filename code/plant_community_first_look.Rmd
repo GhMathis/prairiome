@@ -55,7 +55,7 @@ metadata_grid%>%
     across(where(is.numeric), ~decostand(., method = "standardize")))-> metadata_grid_standard
 
 abund_plant_grid %>%
-  select(where( function(x) sum(x) >10))%>%
+  select(where( function(x) sum(x) >1))%>%
   decostand(method = "hellinger")-> abund_plant_stantdard # select species represented at only one site. 10 is the lower abundance possible
 str(abund_plant_stantdard)
 ```

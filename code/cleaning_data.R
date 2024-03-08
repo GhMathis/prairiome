@@ -29,7 +29,7 @@ write.table(otu_plant_cam, "data/data_clean/OTU_plant_CAM.txt")
 otu_plant_cam%>%
   mutate( Grid_code = str_extract(Host_code, ".._CAM_.."))%>%
   group_by(Grid_code) %>%
-  mutate(across(where(is.numeric), ~.*20))%>%
+  mutate(across(where(is.numeric), ~.*2))%>%
   summarise_if(is.numeric, sum)-> abund_plant_grid 
 
 
