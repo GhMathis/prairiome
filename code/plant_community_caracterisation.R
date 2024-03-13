@@ -134,9 +134,9 @@ fviz_silhouette(cluster3_site_CCA)
 fviz_silhouette(cluster4_site_CCA)
 fviz_silhouette(cluster5_site_CCA)
 
-cluster_site_df_CCA = data.frame(cluster3_site_CCA$data, clust_CCA = as.factor(cluster3_site_CCA$cluster))
+cluster_site_df_CCA = data.frame(cluster3_site_CCA$data, clust_CCA_plant = as.factor(cluster3_site_CCA$cluster))
 
-cluster_sp_df_CCA = data.frame(cluster3_sp_CCA$data, clust_CCA = as.factor(cluster3_sp_CCA$cluster))
+cluster_sp_df_CCA = data.frame(cluster3_sp_CCA$data, clust_CCA_plant = as.factor(cluster3_sp_CCA$cluster))
 
 cluster_sp_df_CCA$Plant_species = rownames(cluster_sp_df_CCA)
 
@@ -149,10 +149,10 @@ env_var_discret_CCA$type = c("Mow", "Pasture")
 ggplot()+
   geom_segment(data = env_var_CCA ,aes(x=CCA1,y = CCA2, xend =0, yend = 0), arrow = arrow(length=unit(0.20,"cm"), ends="first", type = "open"), size = 1.5, col = "gray3")+
   geom_label_repel(data = env_var_CCA ,aes(x=CCA1,y = CCA2,label = type),  cex = 5, alpha = 0.75)+
-  geom_point(data = cluster_sp_df_CCA, aes(x=CCA1,y = CCA2, col = clust_CCA), size = 2, stroke=1.2, shape =4)+
-  geom_label_repel(data = cluster_sp_df_CCA,aes(x=CCA1,y = CCA2, col = clust_CCA, label = Plant_species), cex = 2,alpha = 0.80)+
-  geom_point(data = cluster_site_df_CCA, aes(x=CCA1,y = CCA2, shape = clust_CCA), cex = 2.4, col = "black")+
-  geom_point(data = cluster_site_df_CCA, aes(x=CCA1,y = CCA2, shape = clust_CCA), cex = 2, col = "darkgray")+
+  geom_point(data = cluster_sp_df_CCA, aes(x=CCA1,y = CCA2, col = clust_CCA_plant), size = 2, stroke=1.2, shape =4)+
+  geom_label_repel(data = cluster_sp_df_CCA,aes(x=CCA1,y = CCA2, col = clust_CCA_plant, label = Plant_species), cex = 2,alpha = 0.80)+
+  geom_point(data = cluster_site_df_CCA, aes(x=CCA1,y = CCA2, shape = clust_CCA_plant), cex = 2.4, col = "black")+
+  geom_point(data = cluster_site_df_CCA, aes(x=CCA1,y = CCA2, shape = clust_CCA_plant), cex = 2, col = "darkgray")+
   geom_segment(data = env_var_discret_CCA,aes(x=CCA1,y = CCA2, xend =0, yend = 0), arrow = arrow(length=unit(0.20,"cm"), ends="first", type = "open"), size = 1, col = "gray3")+
   geom_label_repel(data = env_var_discret_CCA,aes(x=CCA1,y = CCA2,label = type),  cex = 5, alpha = 0.75)+
   labs(x = paste0("CCA1 (", perc[1], "%)"), y = paste0("CCA2 (", perc[2], "%)"), col = "Cluster species", shape = "Cluster sites")+
@@ -164,6 +164,8 @@ ggplot()+
 ##### SBM Plants #####
 library(alluvial)
 library(sbm)
+library(pals)
+read.table("data/data_clean/Metadata_quadra_CAM.txt", header = T) -> metadata_quadra
 
 read.table("data/data_clean/OTU_plant_CAM.txt", header = T, row.names = "Host_code")%>%
   mutate(across(where(is.numeric), ~ifelse(. != 0,1,0 ))) %>%
@@ -198,17 +200,18 @@ cluster_site_df_CCA%>%
   rownames_to_column(var = "Grid_code") ->cluster_site_df_CCA
 
 data.frame(Host_code = colnames(bin_plant_quadra),
-           memb_qdt_obs = LBM_bin$memberships$Quadrats)%>%
+           clust_smb_quad_plant = LBM_bin$memberships$Quadrats)%>%
   mutate( Grid_code = str_extract(Host_code, ".._CAM_.."))%>%
-  left_join(cluster_site_df_CAA, by = "Grid_code" ) ->alluvial_site_df
+  left_join(cluster_site_df_CCA%>%select(-c(CCA1,CCA2)), by = "Grid_code" ) ->alluvial_site_df
 
-alluvial_site_df$memb_qdt_obs
+alluvial_site_df$clust_smb_quad_plant
 B <-
   as.data.frame(
     table(
       alluvial_site_df$Grid_code,
-      alluvial_site_df$memb_qdt_obs,
-      alluvial_site_df$clust_CCA))
+      alluvial_site_df$clust_smb_quad_plant,
+      alluvial_site_df$clust_CCA_plant)
+    )
 
 
 colnames(B) = c( "Grid", "Quadra profiles",  "CCAclust", "Freq")
@@ -221,15 +224,20 @@ alluvial(B[, c(1, 2, 3)],
          col = case_when(B$CCAclust == 1 ~ col_clust[1],
                          B$CCAclust == 2 ~ col_clust[2],
                          .default = col_clust[3]))
-alluvial_site_df%>%
-  left_join(metadata_quadra%>%select(-c(Grid_code, CCA1, CCA2)), by = "Host_code") -> alluvial_site_df
+
+metadata_quadra%>%
+  select(-c(Grid_code,Host_community))%>%
+  left_join(alluvial_site_df, by = "Host_code") -> metadata_quadra2
+
+write.table(metadata_quadra2, "data/data_clean/Metadata_quadra2_CAM.txt")
+str(metadata_quadra2)
 B <-
   as.data.frame(
     table(
       alluvial_site_df$Grid_code,
       alluvial_site_df$Ecosystem,
-      alluvial_site_df$memb_qdt_obs,
-      alluvial_site_df$clust_CCA))
+      alluvial_site_df$clust_smb_quad_plant,
+      alluvial_site_df$clust_CCA_plant))
 
 
 colnames(B) = c( "Grid","Ecosystem", "Quadra profiles",  "CCAclust", "Freq")
@@ -245,19 +253,17 @@ alluvial(B[, c(1, 2, 3,4)],
          freq = B$Freq,
          col = B$Col_Ecosys)
 ##### Species
-library(pals)
-cluster_sp_df_CCA
 
 data.frame(Plant_species = rownames(bin_plant_quadra),
-           memb_plt_obs = LBM_bin$memberships$Plants)%>%
+           memb_plant_obs = LBM_bin$memberships$Plants)%>%
   left_join(cluster_sp_df_CCA, by = "Plant_species" ) -> alluvial_sp_df
 B <-
   as.data.frame(
     table(
       alluvial_sp_df$Plant_species,
       alluvial_sp_df$Plant_order,
-      alluvial_sp_df$memb_plt_obs,
-      alluvial_sp_df$clust_CCA))
+      alluvial_sp_df$memb_plant_obs,
+      alluvial_sp_df$clust_CCA_plant))
 
 
 colnames(B) = c( "Plant","Plant_order", "Plant profiles",  "CCAclust", "Freq")
@@ -281,9 +287,10 @@ alluvial(B[, c(1, 2, 3, 4)],
          col = B$Col_order)
 
 
+
+
+
 ##### SBM Virus #####
-library(alluvial)
-library(sbm)
 
 read.table("data/data_clean/OTU_virus_CAM.txt", header = T, row.names = "Host_code")%>%
   select(where( function(x) sum(x) >1))%>%
@@ -311,22 +318,22 @@ LBM_bin_virus$storedModels %>% arrange(ICL)
 plot(LBM_bin_virus, dimLabels = list(row = "Virus", col= "Quadrats"))
 
 ##### Alluvile plot #####
-cluster_site_df_CCA%>%
-  rownames_to_column(var = "Grid_code") ->cluster_site_df_CCA
 
 data.frame(Host_code = colnames(bin_virus_quadra),
            memb_qdt_virus_obs = LBM_bin_virus$memberships$Quadrats)%>%
-  left_join(alluvial_site_df, by = "Host_code" ) ->alluvial_site_df
+  left_join(alluvial_site_virus_df, by = "Host_code" ) ->alluvial_site_virus_df
+
+
 
 
 B <-
   as.data.frame(
     table(
-      alluvial_site_df$Grid_code,
-      alluvial_site_df$memb_qdt_obs,
-      alluvial_site_df$memb_qdt_virus_obs,
-      alluvial_site_df$clust_CCA,
-      alluvial_site_df$Ecosystem))
+      alluvial_site_virus_df$Grid_code,
+      alluvial_site_virus_df$clust_smb_quad_plant,
+      alluvial_site_virus_df$memb_qdt_virus_obs,
+      alluvial_site_virus_df$clust_CCA_plant,
+      alluvial_site_virus_df$Ecosystem))
 
 
 colnames(B) = c( "Grid", "Quadra profiles Plt",  "Quadra profiles Vir",
@@ -340,15 +347,15 @@ alluvial(B[, c(5, 1, 3, 5)],
          col = case_when(B[,3] == 1 ~ col_clust[1],
                          #B$memb_qdt_virus_obs == 2 ~ col_clust[2],
                          .default = col_clust[3]))
-alluvial_site_df%>%
-  left_join(metadata_quadra%>%select(-c(Grid_code, CCA1, CCA2)), by = "Host_code") -> alluvial_site_df
+alluvial_site_virus_df%>%
+  left_join(metadata_quadra%>%select(-c(Grid_code)), by = "Host_code") -> alluvial_site_virus_df
 B <-
   as.data.frame(
     table(
-      alluvial_site_df$Grid_code,
-      alluvial_site_df$Ecosystem,
-      alluvial_site_df$memb_qdt_obs,
-      alluvial_site_df$clust_CCA))
+      alluvial_site_virus_df$Grid_code,
+      alluvial_site_virus_df$Ecosystem,
+      alluvial_site_virus_df$clust_smb_quad_plant,
+      alluvial_site_virus_df$clust_CCA_plant))
 
 
 colnames(B) = c( "Grid","Ecosystem", "Quadra profiles",  "CCAclust", "Freq")
@@ -364,29 +371,73 @@ alluvial(B[, c(1, 2, 3,4)],
          freq = B$Freq,
          col = B$Col_Ecosys)
 
-alluvial_site_df$memb_qdt_obs
+alluvial_site_virus_df$clust_smb_quad_plant
+
+##### Species
+
+data.frame(Virus_species = rownames(bin_virus_quadra),
+           memb_vir_obs = LBM_bin_virus$memberships$Virus) -> alluvial_sp_virus_df
+  #left_join(cluster_sp_df_CCA, by = "Virus_species" )
+B <-
+  as.data.frame(
+    table(
+      alluvial_sp_virus_df$Virus_species,
+      #alluvial_sp_virus_df$Plant_order,
+      alluvial_sp_virus_df$memb_vir_obs))
+      #alluvial_sp_virus_df$clust_CCA_plant))
+
+
+colnames(B) = c( "Virus", "Virus profiles", "Freq")
+
+w   <- which(B$Freq != 0)
+B <- B[w, ]
+col_clust = brewer.pal(3, "Set1")
+
+alluvial(B[, c(1, 2)],
+         freq = B$Freq
+         # col = case_when(B$CCAclust == 1 ~ col_clust[1],
+         #                 B$CCAclust == 2 ~ col_clust[2],
+         #                 .default = col_clust[3])
+         )
+
+data.frame(Plant_order = unique(B$Plant_order),
+           Col_order = watlington()) -> col_order
+B%>%
+  left_join(col_order, by = "Plant_order") -> B
+alluvial(B[, c(1, 2, 3, 4)],
+         freq = B$Freq,
+         col = B$Col_order)
+
+alluvial_site_virus_df%>%
+  filter(memb_qdt_virus_obs == 1)%>%
+  pull(Host_code) -> temp
+alluvial_sp_virus_df%>%
+  filter(memb_vir_obs == 1)%>%
+  pull(Virus_species ) -> temp2
+sort(rowSums(bin_virus_quadra[temp2, temp]))
 
 ##### PLN Virus ~ plant_community_cluster #####
+
 library(Hmsc)
 vignette("Hmsc")
 str(as.data.frame(t(bin_virus_quadra)))
 str(alluvial_site_df%>%
-      select(memb_qdt_obs, Host_code, Grid_code))
-length(alluvial_site_df$memb_qdt_obs)
+      select(clust_smb_quad_plant, Host_code, Grid_code))
+length(alluvial_site_df$clust_smb_quad_plant)
 quad_mat <- prepare_data(as.data.frame(t(bin_virus_quadra)),
                          alluvial_site_df%>%
-                           select(memb_qdt_obs, Host_code, Grid_code)%>%
-                           mutate(memb_qdt_obs = as.factor(memb_qdt_obs))%>%
+                           select(clust_smb_quad_plant, Host_code, Grid_code)%>%
+                           mutate(clust_smb_quad_plant = as.factor(clust_smb_quad_plant))%>%
                            column_to_rownames("Host_code")
                          )
 quad_mat
 str(alluvial_site_df)
 alluvial_site_df%>%
-  select(memb_qdt_obs)%>%
+  select(clust_smb_quad_plant)%>%
   as.matrix() -> covar
 hmsc_plant_null <- Hmsc(Y = as.data.frame(t(bin_virus_quadra)),
                         X = covar,
-                        XFormula = ~memb_qdt_obs,
+                        XFormula = ~clust_smb_quad_plant,
                         distr = "probit")
 nChains = 2
 thin = 1 
@@ -400,7 +451,7 @@ postBeta = getPostEstimate(m, parName = "Beta")
 plotBeta(m, post = postBeta, param = "Support",
          supportLevel = 0.95, split=.4, spNamesNumbers = c(F,F))
 
-str(postBeta)
+
 data.frame(
   fitted   = as.vector(fitted(PLN_plant_null)+1),
   observed = as.vector(quad_mat$Abundance+1)
