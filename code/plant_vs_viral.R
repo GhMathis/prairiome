@@ -55,7 +55,7 @@ fviz_pca_biplot(pca_env,col.var = "orange2", repel = TRUE, habillage = CAH_env$d
 
 colSums(otu_plant[-1] !=0)>1-> plant_filter
 table(plant_filter) 
-
+  
 colSums(otu_virus[-1])>1-> virus_filter
 table(virus_filter) 
 
@@ -285,11 +285,4 @@ plot(1:100, log(dpois(1:100, 11)), "l")
 rand_pt = rpois(100, 11)
 plot(seq(1,10,length.out = 100), log(rand_pt))
 points(seq(1,10,length.out = 100), rand_pt, col="red")
-##### PNL #####
-grid_plant_mat <- prepare_data(otu_plant%>%select(-Host_code), covariate_grid)
-PLN_plant_null <- PLN(Abundance ~ 1, grid_plant_mat)
-summary(PLN_plant)
-PLN_plant_full <- PLN(Abundance ~ Res + non_emitting + Fauche + Pature + Phos + 
-                        K + Cl + Ca + wetland + dep_oxy_num , grid_plant_mat)
-PLN_plant_null$criteria
-PLN_plant_full$criteria
+

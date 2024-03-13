@@ -32,17 +32,20 @@ main_theme = theme_bw()+
 ```{r}
 read.table("data/data_clean/Metadata_grid_CAM.txt", header = T)-> metadata_grid
   
-metadata_quadra = read.table("data/data_clean/Metadata_quadra_CAM.txt")
+metadata_quadra = read.table("data/data_clean/Metadata_quadra2_CAM.txt")
 
-read.table("data/data_clean/OTU_virus_CAM.txt")%>%
+read.table("data/data_clean/OTU_virus_CAM.txt", header = T)%>%
   mutate( Grid_code = str_extract(Host_code, ".._CAM_.."))%>%
   group_by(Grid_code) %>%
-  summarise_if(is.numeric, sum) -> OUT_virus_grid
+  summarise_if(is.numeric, sum)%>%
+  column_to_rownames("Grid_code") -> OUT_virus_grid
 
-Grid_code = OUT_virus_grid$Grid_code
-OUT_virus_grid = as.data.frame(OUT_virus_grid[, -1])
-rownames(OUT_virus_grid) = Grid_code
-#str(OUT_virus_grid)
+SVD_virus  = svd(OUT_virus_grid)
+#str(OUT_virus_grid)  
+str( diag(sqrt(SVD_virus$d))[,1:10])
+str((SVD_virus$u[,1:10]%*%diag(sqrt(SVD_virus$d))[1:10,]))
+B_virus = (SVD_virus$u[,1:10]%*%diag(sqrt(SVD_virus$d))[1:10,]) %*% (diag(sqrt(SVD_virus$d))[,1:10] %*% SVD_virus$u[1:10,])
+B_virus
 ```
 
 ```{r}
@@ -52,7 +55,7 @@ metadata_grid%>%
          CN, clay, SiltF, SiltC, SandF, SandC, Cl, Res, Cond,
          dep_oxy_num, Pature, Fauche,  natural_landscape, cultivated, artificial, non_emitting)%>%
   mutate(across(c(Pature,Fauche), as.factor),
-    across(where(is.numeric), ~decostand(., method = "standardize")))-> metadata_grid_standard
+  across(where(is.numeric), ~decostand(., method = "standardize")))-> metadata_grid_standard
 
 
 length(which(colSums(OUT_virus_grid)<=1))/length(colSums(OUT_virus_grid)) # propostion of virus observed only one time (and 0 time)
@@ -70,7 +73,7 @@ metadata_grid_standard%>%
 ```
 
 ```{r}
-rda_full = rda(OUT_virus_stantdard ~ .  ,metadata_grid_standard)
+rda_full = rda(B_virus ~ .  ,metadata_grid_standard)
 rda_full$call
 
 p_var_full = summary(rda_full)
@@ -96,19 +99,18 @@ plot(rda_full)
 ```{r}
 #, MO, C, Cond, SiltF,clay,SandC,Cl,Mg
 metadata_grid_standard%>%
-  select(-c(natural, MO, C, Cond, Mg, SiltF, clay, SandC, Cl,N, SiltC) )-> metadata_grid_selected
-rda_selected = rda(OUT_virus_stantdard ~ .  ,metadata_grid_selected)
+  select(-c( MO,C, Cond, Mg, SiltF, clay, SandC, Na, non_emitting, artificial) )-> metadata_grid_selected
+rda_selected = rda(B_virus ~ .  ,metadata_grid_selected)
 round(vif.cca(rda_selected),2)
 
 ```
 
 ```{r}
 plot(rda_selected)
-summary(rda_selected)
 ```
 
 ```{r}
-rda_ordistep <- ordiR2step(rda(OUT_virus_stantdard ~ 1, metadata_grid_selected),
+rda_ordistep <- ordiR2step(rda(B_virus ~ 1, metadata_grid_selected),
                       scope = formula(rda_selected),
                       direction = "both",
                       R2scope = F,
@@ -133,10 +135,11 @@ anova_rda_ordistep
 ```
 
 ```{r}
-RsquareAdj(rda_selected)$r.square # 18 param ( 46%)
-
+#formula(rda_selected)
+RsquareAdj(rda_selected)$r.square # 16 param ( 52%)
+#formula(rda_ordistep)
 RsquareAdj(rda_ordistep)$r.square # 3 param
-# -30% of variance explaine for 15
+# -30% of variance explaine for 17
 ```
 
 ```{r, fig.show='hide'}
@@ -194,16 +197,14 @@ fviz_silhouette(cluster3_sites)
 fviz_silhouette(cluster4_sites)
 fviz_silhouette(cluster5_sites)
 
-cluster3_site_df = data.frame(cluster3_sites$data, clust = as.factor(cluster3_sites$cluster))
+cluster3_site_df = data.frame(cluster2_sites$data, clust = as.factor(cluster2_sites$cluster))
 ```
 
 ```{r}
-cluster_sp_df = data.frame(cluster5_sp$data, clust = as.factor(cluster5_sp$cluster))
+cluster_sp_df = data.frame(cluster2_sp$data, clust = as.factor(cluster2_sp$cluster))
 
 cluster_sp_df$Plant_species = rownames(cluster_sp_df)
 
-cluster_sp_df%>%
-  full_join(tax_plant, by = join_by("Plant_species"))-> cluster_sp_df
 ```
 
 ```{r}
