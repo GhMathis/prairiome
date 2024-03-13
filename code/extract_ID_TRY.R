@@ -33,6 +33,8 @@ read_xlsx("data/TAX_plant_CAM_HF.xlsx")%>%
   select(Plant_species, CLASSE, ORDRE, FAMILLE, SOUS_FAMILLE, TRIBU, RANG)%>%
   rename(Plant_class = "CLASSE", Plant_order = "ORDRE", Plant_family ="FAMILLE",
          Plant_sub_family = "SOUS_FAMILLE", Plant_tribu = "TRIBU", Plant_rank = "RANG")-> tax_plant_Cam_temp
+
+OTU_plant = read.table("data/data_clean/OTU_plant_CAM.txt")
 tax_plant%>%
   mutate(Plant_species = str_replace_all(Plant_species, "[ -]", "."))%>%
   filter(Plant_species %in% names(OTU_plant))%>%
@@ -41,12 +43,12 @@ tax_plant%>%
 
 
 
-OTU_plant = read.table("data/data_clean/OTU_plant_CAM.txt")
+
 
 
 tibble(try_data_base)%>%
   filter(AccSpeciesName %in% tax_plant_CAM$Sp_names) -> identified_sp_CAM
-str(traits)
+
 rtry_import("data/multiple_traits/31758.txt")-> traits
 
 c(6, 7, 8, 13, 14, 15, 22, 26, 30, 33, 37, 40, 42, 47, 128, 129, 145, 196, 231, 320, 385, 1254, 3106, 3117, 3364) -> trait
