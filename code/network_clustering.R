@@ -22,6 +22,8 @@ library(doParallel)
 library(igraph)
 library(incidentally)
 
+# NMI
+library(aricode)
 source("code/functions_modified.R")
 
 main_theme = theme_bw()+
@@ -31,8 +33,7 @@ main_theme = theme_bw()+
         axis.ticks =  element_line(colour = "black"),
         axis.text.x = element_text(colour = "black", size=22),
         axis.text.y = element_text(colour = "black", size=22),
-        legend.title = element_text(colour = "black", size=20),
-        legend.title.align=0.5,
+        legend.title = element_text(colour = "black", size=20, hjust = 0.5),
         legend.text = element_text(colour = "black", size=18),
         axis.title=element_text(size=28))
 ##### SBM Plants #####
@@ -187,7 +188,7 @@ data.frame(Host_code = colnames(bin_plant_quadra),
 
 
 clust_quad_df$clust_smb_quad_plant
-B <-
+B1 <-
   as.data.frame(
     table(
       clust_quad_df$Grid_code,
@@ -197,25 +198,40 @@ B <-
   )
 
 
-colnames(B) = c( "Grid", "Quadra profiles plant",
+colnames(B1) = c( "Grid", "Quadra profiles plant",
                  "Quadra profiles Virus",
                  "Quadra profiles Env FAMD", "Freq")
 
-w   <- which(B$Freq != 0)
-B <- B[w, ]
+w   <- which(B1$Freq != 0)
+B1 <- B1[w, ]
 col_clust = brewer.pal(7, "Set1")
-alluvial(B[, c(4, 2, 3)],
-         freq = B$Freq,
-         col = case_when(B$`Quadra profiles Env FAMD` == 1 ~ col_clust[1],
-                         B$`Quadra profiles Env FAMD` == 2 ~ col_clust[2],
-                         .default = col_clust[7]))
+alluvial(B1[, c(1, 2)],
+         freq = B1$Freq)
 # 
+# ,
+# col = case_when(B1$`Quadra profiles Env FAMD` == 1 ~ col_clust[1],
+#                 B1$`Quadra profiles Env FAMD` == 2 ~ col_clust[2],
+#                 .default = col_clust[7]
 # lapply(metadata_grid_standard%>%t(), function(x) dist(cbind(x,x)))
 # dist(metadata_grid_standard%>%t())
 # MultiplexFitIndep <- estimateMultiplexSBM(list(netA, netB), dependent = FALSE,
 #                                           estimOptions = list(verbosity = 0))
 # 
+temp = clust_quad_df%>%
+  mutate(Grid_code = str_extract(Host_code,".._CAM_.."))%>%
+  group_by(Grid_code)%>%
+  summarise(clust_smb_grid = round(mean(clust_smb_quad_plant)))
 
+metadata_grid%>%
+  ggplot()+
+  geom_point(aes(X,Y, col = as.factor(temp$clust_smb_grid)), cex = 3)+
+  scale_colour_brewer(palette = "Set1")+
+  main_theme
+
+
+LBM_bin$storedModels%>%
+  arrange(ICL)
+LBM_bin$memberships$Quadrats
 ##### CCA on plant community #####
 
 ##### Full model
@@ -308,7 +324,7 @@ permutation_virus <- foreach(icount(trials), .combine=cbind,
                    LBM_bin_rand$memberships$Quadrats
                  }
 stopCluster(cl)
-
+ordiR2step()
 permutation_virus[,1:10]
 test_env_ana = analysis.function.alt(incid = bin_virus_quadra%>%t(),memb_obs = as.factor(clust_quad_df$clust_smb_quad_virus),
                                      var1 = as.factor(clust_quad_df$clust_smb_quad_plant), 
@@ -370,8 +386,8 @@ approx.from.svd(incid = bin_virus_quadra%>%t() ,svd.L = svd_L_virus,svd.R = svd_
     axis.text.y = element_text(size = 4))
 
 ##### RGPD approx
-
-approx_virus_quadra = svd_L_virus[,1:50] %*% t(svd_R_virus[,1:50])
+str(svd_L_virus)
+approx_virus_quadra = svd_L_virus[,1:100] %*% t(svd_R_virus[,1:100])
 
 analysis.function.rda<-function(incid,var1,var2,var3,configs=NULL){#industrial processing of rda
   n<-dim(incid)[1]
@@ -478,6 +494,7 @@ rda_variance = analysis.function.rda(incid = approx_virus_quadra,
                       var3 = as.factor(metadata_quadra$Collection_date), 
                       configs = permutation_virus_rgpd)
 
+
 mod1 = varpart(Y = as.data.frame(approx_virus_quadra),clust_quad_df%>%select(clust_smb_quad_plant),
         clust_quad_df%>%select(clus_famd_grid_env),
         clust_quad_df%>%select(Collection_date))
@@ -487,6 +504,8 @@ mod2 = varpart(Y = clust_quad_df%>%select(clust_smb_quad_virus),
                clust_quad_df%>%select(clust_smb_quad_plant),
               clust_quad_df%>%select(clus_famd_grid_env),
               clust_quad_df%>%select(Collection_date))
+
+plot(mod2)
 str(clust_quad_df)
 clust_quad_df%>%
   ggplot()+
@@ -495,20 +514,49 @@ clust_quad_df%>%
   labs(x ="date quadra cluster", y = "plant quadra cluster")
 hist(clust_quad_df$Collection_date)
 
+mod3 = varpart(Y = as.data.frame(approx_virus_quadra),clust_quad_df%>%select(clust_smb_quad_plant),
+               clust_quad_df%>%select(clus_famd_grid_env))
+mod3
+plot(mod3)
+
 clust_quad_df%>%
   ggplot()+
   #facet_wrap(~as.factor(clust_smb_quad_virus))+
-  geom_bin_2d(aes(clus_famd_grid_env,clust_smb_quad_plant,
-                  fill = after_stat(density), group),
-              alpha =0.8)+
   geom_jitter(aes(clus_famd_grid_env,clust_smb_quad_plant, col = as.factor(clust_smb_quad_virus)),width = 0.1, height = 0.1,
               cex = 2, alpha =0.6)+
+  stat_bin_2d(aes(clus_famd_grid_env, clust_smb_quad_plant,
+                  fill = after_stat(density),
+                  label = round(after_stat(density), 2)),
+              geom = "text", size = 3, vjust = -1)+
+  geom_bin_2d(aes(clus_famd_grid_env, clust_smb_quad_plant,
+                  fill = after_stat(density)),
+              alpha =0.8)+
+
+  labs(x ="Env quadra cluster", y = "plant quadra cluster", col = "clust  vir")+
+  scale_fill_distiller(palette = "OrRd", direction = 1)+
+  main_theme
+
+clust_quad_df%>%
+  ggplot()+
+  
+  geom_jitter(aes(clus_famd_grid_env,clust_smb_quad_plant),width = 0.1, height = 0.1,
+              cex = 2, alpha =0.05)+
+  stat_bin_2d(aes(clus_famd_grid_env, clust_smb_quad_plant-0.5,
+                  group = as.factor(clust_smb_quad_virus),
+                  fill = after_stat(density),
+                  label = round(after_stat(density), 2)),
+              geom = "text", size = 3, vjust = -1)+
+  geom_bin_2d(aes(clus_famd_grid_env, clust_smb_quad_plant,
+                  group = as.factor(clust_smb_quad_virus),
+                  fill = after_stat(density)),
+              alpha =0.8)+
+  
   labs(x ="Env quadra cluster", y = "plant quadra cluster", col = "clust  vir")+
   scale_fill_distiller(palette = "OrRd", direction = 1)+
   main_theme
 
 ##### NMI #####
-library(aricode)
+
 clust_quad_df$clust_smb_quad_virus
 
 obs_nmi_plant  = NMI(clust_quad_df$clust_smb_quad_virus, clust_quad_df$clust_smb_quad_plant)
@@ -532,3 +580,40 @@ prem_nmi_row2 = sapply(1:1000, function(x) NMI(sample(clust_quad_df$clust_smb_qu
 hist(prem_nmi_row2, breaks = 100)
 abline(v = obs_nmi_date ,col = "red")
 
+
+##### MEM ######
+library(ade4)
+library(adespatial)
+library(spdep)
+read.table("data/data_clean/OTU_plant_CAM.txt")
+mxy <- as.matrix(data.frame(X = metadata_grid$X, Y = metadata_grid$Y))
+
+nbgab <- graph2nb(gabrielneigh(mxy), sym = TRUE)
+ade4::s.label(
+  boxes = F,
+  as.data.frame(mxy),
+  neig = nb2neig(nbgab),
+  xlim=c(min(mxy[,1]), max(mxy[,1])),
+  ylim=c(min(mxy[,2])-0.01, max(mxy[,2])+0.01)
+)
+
+distgab <- nbdists(nbgab, mxy)
+
+fdist <- lapply(distgab, function(x) 1 - x/max(dist(mxy)))
+
+listwgab <- nb2listw(nbgab, glist = distgab)
+mem.gab.positive <- orthobasis.listw(listwgab, wt = rep(1, length(listwgab$neighbours)),
+                                     MEM.autocor = "positive",
+                                     store.listw = T)
+mem.gab.negative <- orthobasis.listw(listwgab, wt = rep(1, length(listwgab$neighbours)),
+                                     MEM.autocor = "negative",
+                                     store.listw = T)
+
+scalo <- scalogram(metadata_grid_standard$Res, mem.gab.positive)
+
+#s.value(as.data.frame(mxy), mem.gab.positive[,1:6])
+plot(mem.gab.positive, as.data.frame(mxy), pSp.cex = 3)
+
+scalogram()
+#plot(scalo)
+barplot(mem.gab.positive$MEM3)
