@@ -1,0 +1,71 @@
+---
+title: "Untitled"
+output:
+  pdf_document: default
+  html_document: default
+date: "2024-03-25"
+---
+
+# Phytobiome
+
+## Plant
+
+### Richness and Biomass \~ Environnement
+
+![Famd of environmental variables (quanti)](images/fig_recap_march/Famd_env_quanti.png){#fig-famd_quanti}
+
+![Correlation between all environmental variables and landscape variables](images/fig_recap_march/corrplot_env.png){#fig-corrplot}
+
+![Correlogram of all the variables used in the following analysis](images/fig_recap_march/correlogram_selected_var.png){#fig-correlogram}
+
+![Relation between Biomass and richness. The color show the richness per biomass units in *ln(+1)* scale.](images/fig_recap_march/Pr_x_Biom_x_ratio.png)
+
+#### Biomass
+
+##### GLM
+
+glm(Y\$Biomass \~ depth_oxy + clay + lime_tot + pHwater + MO + Cond, data = X_selected, family = Gamma(link = "log"))
+
+step wise selection -\> glm(Y\$Biomass \~ ~~depth_oxy + clay +~~ lime_tot + pHwater + MO + Cond, data = X_selected, family = Gamma(link = "log"))
+
+![Partial responses and residuals on biomass for each environmental gradient, extracted form the glm presented above.](images/fig_recap_march/partial_predictor_biom_glm.png)
+
+|             | Estimate | Std. Error | t value | Pr(\>\|t\|) |
+|:------------|---------:|-----------:|--------:|------------:|
+| (Intercept) |   -1.539 |      1.038 |  -1.483 |       0.139 |
+| lime_tot    |    0.015 |      0.008 |   1.842 |      0.066. |
+| pHwater     |    0.390 |      0.113 |   3.446 | 0.001\*\*\* |
+| MO          |    0.138 |      0.019 |   7.081 | 0.000\*\*\* |
+| Cond        |   -0.002 |      0.000 |  -4.628 | 0.000\*\*\* |
+
+: Coefficient of the glm for biomass
+
+###### GAM
+
+|                                                                                |        df |      AIC |
+|:---------------------------------------|---------------:|---------------:|
+| GLM                                                                            |   6.00000 |     2454 |
+| GAM Biomass \~ s(lime_tot) + s(clay) + depth_oxy +s(pHwater) + s(MO) + s(Cond) |     38.98 |     2240 |
+| GAM **Biomass \~ s(lime_tot) + s(clay) + s(pHwater) + s(MO) + s(Cond)**        | **39.05** | **2240** |
+| GAM Biomass \~ s(lime_tot) + s(pHwater) + s(MO) + s(Cond)                      |     30.15 |     2260 |
+: AIC selection
+
+![Partial responses and residuals on biomass for each environmental gradient, extracted form the GAM selected (bold) above.](images/fig_recap_march/partial_predictor_biom_gam.png)
+
+#### Richness
+
+![Partial responses and residuals of plnat richness for each environmental gradient, extracted form the GLM](images/fig_recap_march/partial_predictor_richn_glm.png)
+
+|                | Estimate | Std. Error | t value | Pr(\>\|t\|) |
+|:---------------|---------:|-----------:|--------:|------------:|
+| (Intercept)    |    4.240 |      0.884 |   4.798 |       0.000 |
+| depth_oxy10-19 |    0.192 |      0.100 |   1.912 |       0.057 |
+| depth_oxy20-29 |   -0.308 |      0.129 |  -2.397 |       0.017 |
+| depth_oxy30-39 |    0.247 |      0.108 |   2.288 |       0.023 |
+| depth_oxy\>40  |    0.513 |      0.113 |   4.553 |       0.000 |
+| clay           |   -0.021 |      0.005 |  -3.845 |       0.000 |
+| lime_tot       |    0.022 |      0.008 |   2.761 |       0.006 |
+| pHwater        |   -0.327 |      0.093 |  -3.526 |       0.000 |
+| MO             |    0.060 |      0.024 |   2.502 |       0.013 |
+| Cond           |    0.001 |      0.000 |   2.758 |       0.006 |
+: Coefficient of the glm for plant richness
